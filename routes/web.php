@@ -9,7 +9,7 @@ use App\Http\Controllers\UjianController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\Materi\MateriController;
 use App\Http\Controllers\SurveyController;
-use App\Http\Controllers\Diskusi\DiskusiController;
+// use App\Http\Controllers\Diskusi\DiskusiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\PengajarController;
@@ -208,29 +208,29 @@ Route::middleware('auth')->controller(PengumumanController::class)->group(functi
 });
 
 // Diskusi
-Route::middleware('auth')->controller(DiskusiController::class)->group(function () {
-// Umum (semua user login bisa akses)
-Route::get('/diskusi/{diskusi}', 'viewDiskusi')
-    ->name('viewDiskusi');
+// Route::middleware('auth')->controller(DiskusiController::class)->group(function () {
+// // Umum (semua user login bisa akses)
+// Route::get('/diskusi/{diskusi}', 'viewDiskusi')
+//     ->name('viewDiskusi');
 
-// Khusus Pengajar
-Route::middleware('role:Pengajar')->group(function () {
-    Route::get('/diskusi/add/{kelasMapel}', 'viewCreateDiskusi')
-        ->name('viewCreateDiskusi');
+// // Khusus Pengajar
+// Route::middleware('role:Pengajar')->group(function () {
+//     Route::get('/diskusi/add/{kelasMapel}', 'viewCreateDiskusi')
+//         ->name('viewCreateDiskusi');
 
-    Route::get('/diskusi/update/{diskusi}', 'viewUpdateDiskusi')
-        ->name('viewUpdateDiskusi');
+//     Route::get('/diskusi/update/{diskusi}', 'viewUpdateDiskusi')
+//         ->name('viewUpdateDiskusi');
 
-    Route::post('/store-diskusi', 'createDiskusi')
-        ->name('createDiskusi');
+//     Route::post('/store-diskusi', 'createDiskusi')
+//         ->name('createDiskusi');
 
-    Route::post('/update-diskusi', 'updateDiskusi')
-        ->name('updateDiskusi');
+//     Route::post('/update-diskusi', 'updateDiskusi')
+//         ->name('updateDiskusi');
 
-  Route::delete('/diskusi/{diskusi}', 'destroyDiskusi')->name('destroyDiskusi');
+//   Route::delete('/diskusi/{diskusi}', 'destroyDiskusi')->name('destroyDiskusi');
 
-});
-});
+// });
+// });
 
 
 
@@ -318,106 +318,106 @@ Route::middleware(['auth', 'role:Admin'])->controller(PengajarController::class)
 });
 
 // All Roles
-Route::middleware('auth')->controller(ProfileController::class)->group(function () {
-    // Khusus Admin
-    Route::middleware('role:Admin')->group(function () {
-        Route::get('/data-pengajar/profile/{pengajar}', 'viewProfilePengajar')
-            ->name('viewProfileAdmin');
-    });
+// Route::middleware('auth')->controller(ProfileController::class)->group(function () {
+//     // Khusus Admin
+//     Route::middleware('role:Admin')->group(function () {
+//         Route::get('/data-pengajar/profile/{pengajar}', 'viewProfilePengajar')
+//             ->name('viewProfileAdmin');
+//     });
 
-    // Umum (semua user login bisa akses)
-    Route::get('/profile-pengajar/{pengajar}', 'viewProfilePengajar')
-        ->name('viewProfilePengajar');
+//     // Umum (semua user login bisa akses)
+//     Route::get('/profile-pengajar/{pengajar}', 'viewProfilePengajar')
+//         ->name('viewProfilePengajar');
 
-    Route::get('/profile/{siswa}', 'viewProfileSiswa')
-        ->name('viewProfileSiswa');
+//     Route::get('/profile/{siswa}', 'viewProfileSiswa')
+//         ->name('viewProfileSiswa');
 
-    Route::get('/user-setting/{user}', 'viewProfileSetting')
-        ->name('viewProfileSetting');
+//     Route::get('/user-setting/{user}', 'viewProfileSetting')
+//         ->name('viewProfileSetting');
 
-    // Update / Action
-    Route::post('/crop-photo-user', 'cropImageUser')
-        ->name('cropImageUser');
-});
+//     // Update / Action
+//     Route::post('/crop-photo-user', 'cropImageUser')
+//         ->name('cropImageUser');
+// });
 
 
 
-Route::middleware(['auth', 'role:Admin'])->controller(MapelController::class)->group(function () {
-    // ==================== MAIN CRUD ROUTES ====================
-    Route::get('/data-mapel', 'viewMapel')->name('viewMapel');
-    Route::get('/data-mapel/tambah-mapel', 'viewTambahMapel')->name('viewTambahMapel');
-    Route::get('/data-mapel/update-mapel/{mapel}', 'viewUpdateMapel')->name('viewUpdateMapel');
+// Route::middleware(['auth', 'role:Admin'])->controller(MapelController::class)->group(function () {
+//     // ==================== MAIN CRUD ROUTES ====================
+//     Route::get('/data-mapel', 'viewMapel')->name('viewMapel');
+//     Route::get('/data-mapel/tambah-mapel', 'viewTambahMapel')->name('viewTambahMapel');
+//     Route::get('/data-mapel/update-mapel/{mapel}', 'viewUpdateMapel')->name('viewUpdateMapel');
 
-    Route::post('/validate-mapel', 'validateNamaMapel')->name('validateNamaMapel');
-    Route::post('/update-mapel', 'updateMapel')->name('updateMapel');
-    Route::post('/destroy-mapel', 'destroyMapel')->name('destroyMapel');
-    Route::get('/search-mapel', 'searchMapel')->name('searchMapel');
+//     Route::post('/validate-mapel', 'validateNamaMapel')->name('validateNamaMapel');
+//     Route::post('/update-mapel', 'updateMapel')->name('updateMapel');
+//     Route::post('/destroy-mapel', 'destroyMapel')->name('destroyMapel');
+//     Route::get('/search-mapel', 'searchMapel')->name('searchMapel');
 
-    // ==================== IMPORT / EXPORT ====================
-    Route::get('/export-mapel', 'exportTT')->name('exportMapel');
-    Route::get('/contoh-mapel', 'contohMapel')->name('contohMapel');
-    Route::post('/import-mapel', 'import')->name('importMapel');
-  Route::get('/search-mapel-from-kelas', 'searchKelasMapel')->name('searchKelasMapel');
-    // ==================== EDITOR ACCESS ====================
-    Route::get('/cek-kelas-mapel', 'cekKelasMapel')->name('cekKelasMapel');
-    Route::post('/add-change-access', 'addChangeEditorAccess')->name('addChangeEditorAccess');
-    Route::post('/add-editor-access', 'tambahEditorAccess')->name('tambahEditorAccess');
-    Route::post('/delete-editor-access', 'deleteEditorAccess')->name('deleteEditorAccess');
-});
+//     // ==================== IMPORT / EXPORT ====================
+//     Route::get('/export-mapel', 'exportTT')->name('exportMapel');
+//     Route::get('/contoh-mapel', 'contohMapel')->name('contohMapel');
+//     Route::post('/import-mapel', 'import')->name('importMapel');
+//   Route::get('/search-mapel-from-kelas', 'searchKelasMapel')->name('searchKelasMapel');
+//     // ==================== EDITOR ACCESS ====================
+//     Route::get('/cek-kelas-mapel', 'cekKelasMapel')->name('cekKelasMapel');
+//     Route::post('/add-change-access', 'addChangeEditorAccess')->name('addChangeEditorAccess');
+//     Route::post('/add-editor-access', 'tambahEditorAccess')->name('tambahEditorAccess');
+//     Route::post('/delete-editor-access', 'deleteEditorAccess')->name('deleteEditorAccess');
+// });
 
 
 
 // DataSiswa
-Route::controller(DataSiswaController::class)->group(function () {
-    // Hanya login (umum, tidak wajib Admin)
-    Route::post('/update-user-siswa', 'updateUserSiswa')->middleware('auth')->name('updateUserSiswa');
-    Route::get('/search-siswa-kelas', 'viewSiswaKelas')->middleware('auth')->name('viewSiswaKelas');
-});
+// Route::controller(DataSiswaController::class)->group(function () {
+//     // Hanya login (umum, tidak wajib Admin)
+//     Route::post('/update-user-siswa', 'updateUserSiswa')->middleware('auth')->name('updateUserSiswa');
+//     Route::get('/search-siswa-kelas', 'viewSiswaKelas')->middleware('auth')->name('viewSiswaKelas');
+// });
 
-Route::middleware(['auth', 'role:Admin'])->controller(DataSiswaController::class)->group(function () {
-    // ==================== MAIN CRUD ROUTES ====================
-    Route::get('/data-siswa', 'viewSiswa')->name('viewSiswa');
-    Route::get('/data-siswa/tambah-siswa', 'viewTambahSiswa')->name('viewTambahSiswa');
-    Route::get('/data-siswa/update-siswa/{data_siswa:id}', 'viewUpdateDataSiswa')->name('viewUpdateDataSiswa');
-    Route::get('/data-siswa/update/{token}', 'viewUpdateUserSiswa')->name('viewUpdateUserSiswa');
+// Route::middleware(['auth', 'role:Admin'])->controller(DataSiswaController::class)->group(function () {
+//     // ==================== MAIN CRUD ROUTES ====================
+//     Route::get('/data-siswa', 'viewSiswa')->name('viewSiswa');
+//     Route::get('/data-siswa/tambah-siswa', 'viewTambahSiswa')->name('viewTambahSiswa');
+//     Route::get('/data-siswa/update-siswa/{data_siswa:id}', 'viewUpdateDataSiswa')->name('viewUpdateDataSiswa');
+//     Route::get('/data-siswa/update/{token}', 'viewUpdateUserSiswa')->name('viewUpdateUserSiswa');
     
 
-    Route::post('/validate-data-siswa', 'validateDataSiswa')->name('validateDataSiswa');
-    Route::post('/destroy-siswa', 'destroyDataSiswa')->name('destroyDataSiswa');
-    Route::post('/update-siswa', 'updateDataSiswa')->name('updateSiswa');
+//     Route::post('/validate-data-siswa', 'validateDataSiswa')->name('validateDataSiswa');
+//     Route::post('/destroy-siswa', 'destroyDataSiswa')->name('destroyDataSiswa');
+//     Route::post('/update-siswa', 'updateDataSiswa')->name('updateSiswa');
 
-    // ==================== IMPORT / EXPORT ====================
-    Route::get('/export-siswa', 'export')->name('exportSiswa');
-    Route::get('/contoh-siswa', 'contohSiswa')->name('contohSiswa');
-    Route::post('/import-siswa', 'import')->name('importSiswa');
+//     // ==================== IMPORT / EXPORT ====================
+//     Route::get('/export-siswa', 'export')->name('exportSiswa');
+//     Route::get('/contoh-siswa', 'contohSiswa')->name('contohSiswa');
+//     Route::post('/import-siswa', 'import')->name('importSiswa');
 
-    // ==================== API / SEARCH ====================
-    Route::get('/search-siswa', 'searchSiswa')->name('searchSiswa');
-});
+//     // ==================== API / SEARCH ====================
+//     Route::get('/search-siswa', 'searchSiswa')->name('searchSiswa');
+// });
 
 
 
-Route::middleware(['auth', 'role:Admin'])->controller(KelasController::class)->group(function () {
-    // ==================== MAIN CRUD ROUTES ====================
-    Route::get('/data-kelas', 'viewKelas')->name('viewKelas');
-    Route::get('/data-kelas/tambah-kelas', 'viewTambahKelas')->name('viewTambahKelas');
-    Route::get('/data-kelas/update-kelas/{kelas}', 'viewUpdateKelas')->name('viewUpdateKelas');
-    Route::get('/data-kelas/success', 'dataKelasSuccess')->name('dataKelasSuccess');
+// Route::middleware(['auth', 'role:Admin'])->controller(KelasController::class)->group(function () {
+//     // ==================== MAIN CRUD ROUTES ====================
+//     Route::get('/data-kelas', 'viewKelas')->name('viewKelas');
+//     Route::get('/data-kelas/tambah-kelas', 'viewTambahKelas')->name('viewTambahKelas');
+//     Route::get('/data-kelas/update-kelas/{kelas}', 'viewUpdateKelas')->name('viewUpdateKelas');
+//     Route::get('/data-kelas/success', 'dataKelasSuccess')->name('dataKelasSuccess');
 
-    // ==================== ACTION ROUTES ====================
-    Route::post('/store-kelas', 'storeKelas')->name('storeKelas');
-    Route::post('/update-kelas', 'updateKelas')->name('updateKelas');
-    Route::post('/destroy-kelas', 'destroyKelas')->name('destroyKelas');
-    Route::post('/validate-kelas', 'validateNamaKelas')->name('validateNamaKelas');
+//     // ==================== ACTION ROUTES ====================
+//     Route::post('/store-kelas', 'storeKelas')->name('storeKelas');
+//     Route::post('/update-kelas', 'updateKelas')->name('updateKelas');
+//     Route::post('/destroy-kelas', 'destroyKelas')->name('destroyKelas');
+//     Route::post('/validate-kelas', 'validateNamaKelas')->name('validateNamaKelas');
 
-    // ==================== IMPORT / EXPORT ====================
-    Route::get('/export-kelas', 'export')->name('exportKelas');
-    Route::get('/contoh-kelas', 'contohKelas')->name('contohKelas');
-    Route::post('/import-kelas', 'import')->name('importKelas');
+//     // ==================== IMPORT / EXPORT ====================
+//     Route::get('/export-kelas', 'export')->name('exportKelas');
+//     Route::get('/contoh-kelas', 'contohKelas')->name('contohKelas');
+//     Route::post('/import-kelas', 'import')->name('importKelas');
 
-    // ==================== API / SEARCH ====================
-    Route::get('/search-kelas', 'searchKelas')->name('searchKelas');
-});
+//     // ==================== API / SEARCH ====================
+//     Route::get('/search-kelas', 'searchKelas')->name('searchKelas');
+// });
 // File
 // File
 Route::controller(FileController::class)->group(function () {

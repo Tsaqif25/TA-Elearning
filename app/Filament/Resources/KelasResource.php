@@ -57,5 +57,6 @@ class KelasResource extends Resource
             'create' => Pages\CreateKelas::route('/create'),
             'edit' => Pages\EditKelas::route('/{record}/edit'),
         ];
+        
     }
 }

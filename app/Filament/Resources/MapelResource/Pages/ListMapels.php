@@ -2,18 +2,30 @@
 
 namespace App\Filament\Resources\MapelResource\Pages;
 
+
 use App\Filament\Resources\MapelResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
+
 class ListMapels extends ListRecords
 {
-    protected static string $resource = MapelResource::class;
+protected static string $resource = MapelResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\CreateAction::make(),
-        ];
-    }
+
+protected function getHeaderActions(): array
+{
+return [
+Actions\CreateAction::make(),
+
+
+// 🔹 Tombol Import Excel custom
+Actions\Action::make('import')
+->label('Import Excel')
+->icon('heroicon-o-arrow-up-tray')
+->color('success')
+->url(route('filament.admin.pages.import-mapel')),
+];
 }
+}
+

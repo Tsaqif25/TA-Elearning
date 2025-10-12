@@ -83,24 +83,54 @@ class PengajarResource extends Resource
         ]);
     }
 
-    public static function table(Table $table): Table
-    {
-        return $table->columns([
-            Tables\Columns\ImageColumn::make('gambar')->label('Foto')->circular(),
-            Tables\Columns\TextColumn::make('name')->label('Nama')->searchable(),
-            Tables\Columns\TextColumn::make('email')->label('Email'),
-            Tables\Columns\TextColumn::make('contact.nuptk')->label('NUPTK'),
-            Tables\Columns\TextColumn::make('contact.no_telp')->label('No Telp'),
-            Tables\Columns\TextColumn::make('editorAccess_count')
-                ->counts('editorAccess')
-                ->label('Total Akses')
-                ->badge(),
+public static function table(Table $table): Table
+{
+    return $table
+        ->columns([
+            Tables\Columns\ImageColumn::make('gambar')
+                ->label('Foto')
+                ->circular()
+                ->defaultImageUrl('/asset/icons/profile-men.svg')
+                ->width(40)
+                ->height(40),
+
+            Tables\Columns\TextColumn::make('name')
+                ->label('Nama')
+                ->searchable()
+                ->sortable(),
+
+            Tables\Columns\TextColumn::make('contact.nuptk')
+                ->label('NUPTK')
+                ->default('-'),
+
+            Tables\Columns\TextColumn::make('contact.nik')
+                ->label('NIK')
+                ->default('-'),
+
+            // 🧠 Kolom Mengajar (jumlah kelas/mapel dari EditorAccess)
+            Tables\Columns\TextColumn::make('editor_access_count')
+    ->counts('editorAccess')
+    ->label('Mengajar')
+    ->formatStateUsing(fn ($state) => $state > 0 ? "{$state} Kelas" : 'Belum Ada')
+    ->sortable(),
+
+
+            Tables\Columns\TextColumn::make('email')
+                ->label('Email')
+                ->limit(20),
+
+            Tables\Columns\TextColumn::make('contact.no_telp')
+                ->label('No Telp')
+                ->default('-'),
         ])
+        ->filters([])
         ->actions([
             Tables\Actions\EditAction::make(),
             Tables\Actions\DeleteAction::make(),
         ]);
-    }
+}
+
+
 
     public static function getPages(): array
     {

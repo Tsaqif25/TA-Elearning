@@ -239,18 +239,18 @@
 
     </div>
 
-    <div class="col-lg-12 col-md-12 mt-4">
+    {{-- <div class="col-lg-12 col-md-12 mt-4">
         <h3 class="fw-bold text-primary"><i class="fa-solid fa-comments"></i> Diskusi
             @if (Auth::user()->hasRole('Pengajar'))
                 <a href="{{ route('viewCreateDiskusi', $kelasMapel->id) }}">
                     <button type="button" class="btn btn-outline-primary">+ Tambah Diskusi</button>
                 </a>
             @endif
-        </h3>
-        <div class="p-4 bg-white rounded-3">
+        </h3> --}}
+        {{-- <div class="p-4 bg-white rounded-3">
             <div class="row">
                 {{-- Tabel Diskusi --}}
-                <div class="table-responsive col-lg-6 col-12 p-3" style="max-height: 300px; overflow-y:auto;">
+                {{-- <div class="table-responsive col-lg-6 col-12 p-3" style="max-height: 300px; overflow-y:auto;">
                     @if ($diskusi->count() > 0)
                         <table id="table" class="table table-striped table-hover table-lg p-3">
                             <thead>
@@ -281,19 +281,19 @@
                                             <td>
                                                 @if (Auth::user()->hasRole('Pengajar'))
                                                     {{-- viewDiskusi hanya butuh diskusi --}}
-                                                    <a href="{{ route('viewDiskusi', $key->id) }}"
+                                                    {{-- <a href="{{ route('viewDiskusi', $key->id) }}"
                                                         class="badge bg-info p-2 mb-1 animate-btn-small">
                                                         <i class="fa-regular fa-eye fa-xl"></i>
-                                                    </a>
+                                                    </a> --}} 
 
                                                     {{-- viewUpdateDiskusi hanya butuh diskusi --}}
-                                                    <a href="{{ route('viewUpdateDiskusi', $key->id) }}"
+                                                    {{-- <a href="{{ route('viewUpdateDiskusi', $key->id) }}"
                                                         class="badge bg-secondary p-2 mb-1 animate-btn-small">
                                                         <i class="fa-solid fa-pen-to-square fa-xl"></i>
-                                                    </a>
+                                                    </a> --}}
 
                                                     {{-- Hapus pakai modal --}}
-                                                    <form action="{{ route('destroyDiskusi', $key->id) }}" method="POST"
+                                                    {{-- <form action="{{ route('destroyDiskusi', $key->id) }}" method="POST"
                                                         class="d-inline"
                                                         onsubmit="return confirm('Yakin ingin menghapus diskusi ini?')">
                                                         @csrf
@@ -301,15 +301,15 @@
                                                         <button type="submit" class="badge bg-danger p-2 border-0">
                                                             <i class="fa-solid fa-trash"></i>
                                                         </button>
-                                                    </form>
-                                                @else
+                                                    </form> --}}
+                                                {{-- @else
                                                     <a href="{{ route('viewDiskusi', $key->id) }}">
                                                         <button type="button" class="btn btn-primary">
                                                             <i class="fa-regular fa-eye fa-xl"></i> View
                                                         </button>
                                                     </a>
-                                                @endif
-                                            </td>
+                                                @endif --}}
+                                            {{-- </td>
                                         </tr>
                                     @endif
                                 @endforeach
@@ -323,10 +323,10 @@
                             <strong>Belum ada Diskusi</strong>
                         </div>
                     @endif
-                </div>
+                </div> --}}
 
                 {{-- Tabel Kanan --}}
-                <div class="p-4 col-lg-6 col-12">
+                {{-- <div class="p-4 col-lg-6 col-12">
                     <div class="border border-primary rounded-2 h-100 p-3">
                         <h6 class="text-primary fw-bold text-center">Diskusi</h6>
                         <p>
@@ -340,7 +340,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}} 
 
 
     {{-- Section  tUGAS --}}
@@ -600,7 +600,7 @@
     </div>
 
 
-    <div class="modal fade" id="modalHapusDiskusi" tabindex="-1" aria-labelledby="modalHapusDiskusiLabel"
+    {{-- <div class="modal fade" id="modalHapusDiskusi" tabindex="-1" aria-labelledby="modalHapusDiskusiLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -610,7 +610,7 @@
                 </div>
                 <div class="modal-body">
                     Apakah Anda yakin ingin menghapus diskusi ini?
-                </div>
+                </div> --}}
                 {{-- <div class="modal-footer">
                       <form action="{{ route('destroyDiskusi') }}" method="POST">
                         @csrf
@@ -620,9 +620,9 @@
                         <button type="submit" class="btn btn-danger">Hapus</button>
                     </form>
                 </div> --}}
-            </div>
+            {{-- </div>
         </div>
-    </div>
+    </div> --}}
     <div class="modal fade" id="modalHapusPengumuman" tabindex="-1" aria-labelledby="modalHapusPengumumanLabel"
         aria-hidden="true">
         <div class="modal-dialog">
@@ -691,13 +691,13 @@
             kelasMapelMateri.setAttribute('value', "{{ $kelasMapel->id ?? '' }}");
         }
 
-        function changeValueDiskusi(itemId) {
-            console.log(itemId);
-            const diskusiId = document.getElementById('diskusiId');
-            const kelasMapelDiskusi = document.getElementById('kelasMapelDiskusi');
-            diskusiId.setAttribute('value', itemId);
-            kelasMapelDiskusi.setAttribute('value', "{{ $kelasMapel->id ?? '' }}");
-        }
+        // function changeValueDiskusi(itemId) {
+        //     console.log(itemId);
+        //     const diskusiId = document.getElementById('diskusiId');
+        //     const kelasMapelDiskusi = document.getElementById('kelasMapelDiskusi');
+        //     diskusiId.setAttribute('value', itemId);
+        //     kelasMapelDiskusi.setAttribute('value', "{{ $kelasMapel->id ?? '' }}");
+        // }
 
         function changeValuePengumuman(itemId) {
             console.log(itemId);

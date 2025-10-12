@@ -10,7 +10,7 @@ use App\Models\Mapel; // Mengimpor model Mapel
 use App\Models\Materi; // Mengimpor model Materi
 use App\Models\Rekomendasi; // Mengimpor model Rekomendasi
 use App\Models\Pengumuman; // Mengimpor model Pengumuman
-use App\Models\Diskusi; // Mengimpor model Diskusi
+// use App\Models\Diskusi; // Mengimpor model Diskusi
 use App\Models\Tugas; // Mengimpor model Tugas
 use App\Models\Ujian; // Mengimpor model Ujian
 use App\Models\User; // Mengimpor model User
@@ -40,7 +40,7 @@ class KelasMapelController extends Controller // Mendeklarasikan kelas controlle
     // Load resources terkait
     $materi      = Materi::where('kelas_mapel_id', $kelasMapel->id)->get();
     $pengumuman  = Pengumuman::where('kelas_mapel_id', $kelasMapel->id)->get();
-    $diskusi     = Diskusi::where('kelas_mapel_id', $kelasMapel->id)->get();
+    // $diskusi     = Diskusi::where('kelas_mapel_id', $kelasMapel->id)->get();
     $tugas       = Tugas::where('kelas_mapel_id', $kelasMapel->id)->get();
     $ujian       = Ujian::where('kelas_mapel_id', $kelasMapel->id)->get();
 
@@ -63,7 +63,7 @@ class KelasMapelController extends Controller // Mendeklarasikan kelas controlle
     return view('menu.kelasMapel.viewKelasMapel', [
         'editor'        => $editor,
         'assignedKelas' => $assignedKelas,
-        'diskusi'       => $diskusi,
+        // 'diskusi'       => $diskusi,
         'pengumuman'    => $pengumuman,
         'roles'         => $roles,
         'title'         => 'Dashboard',
@@ -83,7 +83,7 @@ class KelasMapelController extends Controller // Mendeklarasikan kelas controlle
         $materi = Materi::all(); // Mengambil semua data materi
         $pengumuman = Pengumuman::all(); // Mengambil semua data pengumuman
         // $rekomendasi = Rekomendasi::all(); // Mengambil semua data rekomendasi
-        $diskusi = Diskusi::all(); // Mengambil semua data diskusi
+        // $diskusi = Diskusi::all(); // Mengambil semua data diskusi
         $tugas = Tugas::all(); // Mengambil semua data tugas
         $ujian = Ujian::all(); // Mengambil semua data ujian
         $roles = DashboardController::getRolesName(); // Mendapatkan peran pengguna
@@ -110,7 +110,7 @@ class KelasMapelController extends Controller // Mendeklarasikan kelas controlle
         return view('menu.admin.activity', [
             'materi' => $materi,
             'pengumuman' => $pengumuman,
-            'diskusi' => $diskusi,
+            // 'diskusi' => $diskusi,
             'tugas' => $tugas,
             'ujian' => $ujian,
             'title' => 'Activity',
