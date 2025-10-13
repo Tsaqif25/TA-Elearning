@@ -48,11 +48,14 @@ class PengajarResource extends Resource
                         ->label('Email')
                         ->required(),
 
-                    Forms\Components\TextInput::make('password')
-                        ->password()
-                        ->label('Password')
-                        ->dehydrated(fn ($state) => filled($state))
-                        ->required(fn (string $context) => $context === 'create'),
+                  Forms\Components\TextInput::make('password')
+    ->password()
+    ->label('Password')
+    ->required(fn(string $context) => $context === 'create')
+    ->dehydrated(fn($state) => filled($state))
+    ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null)
+    ->helperText('Biarkan kosong jika tidak ingin mengubah password.'),
+
 
                     Forms\Components\TextInput::make('contact.no_telp')->label('Nomor Telepon')->maxLength(15),
                     Forms\Components\TextInput::make('contact.nuptk')->label('NUPTK'),
@@ -77,7 +80,9 @@ class PengajarResource extends Resource
                                         ]);
                                 })
                                 ->searchable()
-                                ->required(),
+                                ->required()
+                                
+
                         ])
                         ->addActionLabel('Tambah Kelas & Mapel')
                         ->columns(1)

@@ -13,6 +13,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('kelas_mapel_id')->constrained('kelas_mapels')->onDelete('cascade');
             $table->timestamps();
+
+              $table->unique(['user_id', 'kelas_mapel_id']);
         });
     }
 

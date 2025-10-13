@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_tugas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tugas_id')->constrained('tugas')->onDelete('cascade');
-            $table->foreignid('user_id')->constrained('user')->onDelete('cascade');
+            $table->foreignid('user_id')->constrained('users')->onDelete('cascade');
             $table->string('status')->default('Belum Mengerjakan');
             $table->BigInteger('nilai')->nullable();
             $table->timestamps();
