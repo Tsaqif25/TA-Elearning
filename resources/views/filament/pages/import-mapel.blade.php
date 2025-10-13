@@ -1,6 +1,6 @@
 <x-filament-panels::page>
     <div class="space-y-6">
-        {{-- Instruksi --}}
+        {{-- 📋 Instruksi Import --}}
         <x-filament::section>
             <x-slot name="heading">
                 📋 Instruksi Import
@@ -8,25 +8,25 @@
             
             <div class="prose dark:prose-invert max-w-none">
                 <ol class="list-decimal list-inside space-y-2">
-                    <li>Download template Excel atau gunakan format berikut:</li>
+                    <li>Gunakan format Excel berikut:</li>
                     <ul class="list-disc list-inside ml-6">
                         <li><strong>Kolom A (No):</strong> Nomor urut</li>
-                        <li><strong>Kolom B (Nama Kelas):</strong> Nama kelas (Wajib diisi)</li>
-                        <li><strong>Kolom C (Mata Pelajaran):</strong> Nama mapel, pisahkan dengan koma jika lebih dari 1</li>
+                        <li><strong>Kolom B (Nama Mapel):</strong> Nama mapel <em>(Wajib diisi)</em></li>
+                        <li><strong>Kolom C (Deskripsi):</strong> Keterangan atau penjelasan singkat tentang mapel (Opsional)</li>
                     </ul>
-                    <li>Upload file Excel (.xlsx atau .xls)</li>
-                    <li>Klik tombol "Import Data"</li>
+                    <li>Upload file Excel dengan format <code>.xlsx</code>, <code>.xls</code>, atau <code>.csv</code>.</li>
+                    <li>Klik tombol <strong>"Import Data"</strong>.</li>
                 </ol>
 
                 <div class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
                     <p class="text-sm text-yellow-800 dark:text-yellow-200">
-                        ⚠️ <strong>Catatan:</strong> Jika nama kelas sudah ada, sistem akan menambahkan mapel baru tanpa duplikasi.
+                        ⚠️ <strong>Catatan:</strong> Jika nama mapel sudah ada, sistem akan otomatis memperbarui data tersebut tanpa membuat duplikasi.
                     </p>
                 </div>
             </div>
         </x-filament::section>
 
-        {{-- Form Upload --}}
+        {{-- 📤 Form Upload --}}
         <x-filament::section>
             <x-slot name="heading">
                 📤 Upload File Excel
@@ -55,7 +55,7 @@
             </form>
         </x-filament::section>
 
-        {{-- Contoh Format --}}
+        {{-- 📊 Contoh Format Excel --}}
         <x-filament::section>
             <x-slot name="heading">
                 📊 Contoh Format Excel
@@ -66,20 +66,25 @@
                     <thead class="bg-gray-50 dark:bg-gray-800">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Kelas</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mata Pelajaran</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Mapel</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deskripsi (Opsional)</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
                         <tr>
                             <td class="px-6 py-4 text-sm">1</td>
-                            <td class="px-6 py-4 text-sm">X IPA 1</td>
-                            <td class="px-6 py-4 text-sm">Matematika, Fisika, Kimia</td>
+                            <td class="px-6 py-4 text-sm">Matematika</td>
+                            <td class="px-6 py-4 text-sm">Dasar perhitungan numerik dan logika</td>
                         </tr>
                         <tr>
                             <td class="px-6 py-4 text-sm">2</td>
-                            <td class="px-6 py-4 text-sm">X IPA 2</td>
-                            <td class="px-6 py-4 text-sm">Matematika, Biologi</td>
+                            <td class="px-6 py-4 text-sm">Fisika</td>
+                            <td class="px-6 py-4 text-sm">Ilmu yang mempelajari energi dan materi</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm">3</td>
+                            <td class="px-6 py-4 text-sm">Bahasa Inggris</td>
+                            <td class="px-6 py-4 text-sm">Pemahaman dan komunikasi bahasa Inggris</td>
                         </tr>
                     </tbody>
                 </table>

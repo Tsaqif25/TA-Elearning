@@ -89,9 +89,9 @@
                             </div>
                             <div class="col-lg-8">
                                 @if ($editor)
-                                    <a href="{{ route('viewProfilePengajar', ['pengajar' => $editor->id]) }}">
+                                    {{-- <a href="{{ route('viewProfilePengajar', ['pengajar' => $editor->id]) }}">
                                         {{ $editor->name }}
-                                    </a>
+                                    </a> --}}
                                 @else
                                     <span class="text-muted">Tidak ada pengajar</span>
                                 @endif

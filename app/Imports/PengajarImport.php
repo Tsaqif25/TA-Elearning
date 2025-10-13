@@ -58,15 +58,17 @@ class PengajarImport implements ToModel, WithStartRow
             return null;
         }
 
-        return [
-            'nama'   => !empty($row[1]) ? trim($row[1]) : null,
-            'email'  => trim($row[2]),
-            'no_telp' => $this->cleanValue($row[3] ?? null),
-            'nuptk'  => $this->cleanValue($row[4] ?? null),
-            'nik'    => $this->cleanValue($row[5] ?? null),
-            'kelas'  => !empty($row[6]) ? trim($row[6]) : null,
-            'mapel'  => !empty($row[7]) ? trim($row[7]) : null,
-        ];
+      return [
+    'nama'   => !empty($row[1]) ? trim($row[1]) : null,
+    'email'  => trim($row[2]),
+    'password' => !empty($row[3]) ? trim($row[3]) : null,
+    'no_telp' => $this->cleanValue($row[4] ?? null),
+    'nuptk'  => $this->cleanValue($row[5] ?? null),
+    'nik'    => $this->cleanValue($row[6] ?? null),
+    'kelas'  => !empty($row[7]) ? trim($row[7]) : null,
+    'mapel'  => !empty($row[8]) ? trim($row[8]) : null,
+];
+
     }
 
     /**
@@ -87,40 +89,46 @@ class PengajarImport implements ToModel, WithStartRow
     {
         $user = User::where('email', $data['email'])->first();
 
-        if ($user) {
-            // UPDATE user yang sudah ada
-            Log::info('🔄 Update user: ' . $data['email']);
-            
-            if ($data['nama']) {
-                $user->update(['name' => $data['nama']]);
-            }
+   if ($user) {
+    // UPDATE user yang sudah ada
+    Log::info('🔄 Update user: ' . $data['email']);
 
-            $this->ensurePengajarRole($user);
-            $this->updateContact($user, $data);
+    if ($data['nama']) {
+        $user->update(['name' => $data['nama']]);
+    }
 
-        } else {
-            // BUAT user baru
-            Log::info('➕ Buat user baru: ' . $data['email']);
-            
-            if (!$data['nama']) {
-                throw new \Exception('Nama wajib diisi untuk user baru!');
-            }
+    // Jika import menyertakan kolom password dan tidak kosong, hash lalu update
+    if (!empty($data['password'])) {
+        $user->update(['password' => Hash::make($data['password'])]);
+    }
 
-            $user = User::create([
-                'name'     => $data['nama'],
-                'email'    => $data['email'],
-                'password' => Hash::make('password123'),
-            ]);
+    $this->ensurePengajarRole($user);
+    $this->updateContact($user, $data);
 
-            $user->assignRole('Pengajar');
-            
-            Contact::create([
-                'user_id' => $user->id,
-                'no_telp' => $data['no_telp'],
-                'nuptk'   => $data['nuptk'],
-                'nik'     => $data['nik'],
-            ]);
-        }
+} else {
+    // BUAT user baru
+    Log::info('➕ Buat user baru: ' . $data['email']);
+    
+    if (!$data['nama']) {
+        throw new \Exception('Nama wajib diisi untuk user baru!');
+    }
+
+    $user = User::create([
+        'name'     => $data['nama'],
+        'email'    => $data['email'],
+        // Jika password dari Excel ada → hash-nya, kalau tidak pakai default 'password123' (juga di-hash)
+        'password' => Hash::make($data['password'] ?? 'password123'),
+    ]);
+
+    $user->assignRole('Pengajar');
+    
+    Contact::create([
+        'user_id' => $user->id,
+        'no_telp' => $data['no_telp'],
+        'nuptk'   => $data['nuptk'],
+        'nik'     => $data['nik'],
+    ]);
+}
 
         return $user;
     }
@@ -182,7 +190,7 @@ class PengajarImport implements ToModel, WithStartRow
                 'kelas_mapel_id' => $kelasMapel->id,
             ]);
 
-            Log::info("📚 {$user->email} → {$kelas->name} → {$mapel->name}");
+            Log::info(" {$user->email} → {$kelas->name} → {$mapel->name}");
         }
     }
 

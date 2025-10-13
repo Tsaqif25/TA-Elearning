@@ -35,18 +35,22 @@ class SiswaResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([
-            Tables\Columns\TextColumn::make('name')->label('Nama Siswa')->searchable(),
-            Tables\Columns\TextColumn::make('nis')->label('NIS'),
-            Tables\Columns\TextColumn::make('kelas.name')->label('Kelas'),
-            Tables\Columns\IconColumn::make('punya_akun')
-                ->boolean()
-                ->label('Punya Akun'),
-        ])
-        ->actions([
-            Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make(),
-        ]);
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('name')->label('Nama Siswa')->searchable(),
+                Tables\Columns\TextColumn::make('nis')->label('NIS'),
+                Tables\Columns\TextColumn::make('kelas.name')->label('Kelas'),
+                Tables\Columns\IconColumn::make('punya_akun')
+                    ->boolean()
+                    ->label('Punya Akun'),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(), 
+            ]);
     }
 
     public static function getPages(): array

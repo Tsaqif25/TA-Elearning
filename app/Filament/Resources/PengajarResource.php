@@ -20,10 +20,13 @@ class PengajarResource extends Resource
     protected static ?string $navigationLabel = 'Pengajar';
 
     /** 🔹 tampilkan hanya user dengan role “Pengajar” */
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->whereHas('roles', fn ($q) => $q->where('name', 'Pengajar'));
-    }
+  public static function getEloquentQuery(): Builder
+{
+    return parent::getEloquentQuery()
+        ->select('users.*', 'users.password as password_plaintext')
+        ->whereHas('roles', fn ($q) => $q->where('name', 'Pengajar'));
+}
+
 
     public static function form(Form $form): Form
     {
@@ -83,7 +86,7 @@ class PengajarResource extends Resource
         ]);
     }
 
-public static function table(Table $table): Table
+ public static function table(Table $table): Table
 {
     return $table
         ->columns([
@@ -94,42 +97,30 @@ public static function table(Table $table): Table
                 ->width(40)
                 ->height(40),
 
-            Tables\Columns\TextColumn::make('name')
-                ->label('Nama')
-                ->searchable()
+            Tables\Columns\TextColumn::make('name')->label('Nama')->searchable()->sortable(),
+            Tables\Columns\TextColumn::make('contact.nuptk')->label('NUPTK')->default('-'),
+            Tables\Columns\TextColumn::make('contact.nik')->label('NIK')->default('-'),
+
+            Tables\Columns\TextColumn::make('editor_access_count')
+                ->counts('editorAccess')
+                ->label('Mengajar')
+                ->formatStateUsing(fn ($state) => $state > 0 ? "{$state} Kelas" : 'Belum Ada')
                 ->sortable(),
 
-            Tables\Columns\TextColumn::make('contact.nuptk')
-                ->label('NUPTK')
-                ->default('-'),
+            Tables\Columns\TextColumn::make('email')->label('Email')->limit(20),
+            Tables\Columns\TextColumn::make('contact.no_telp')->label('No Telp')->default('-'),
 
-            Tables\Columns\TextColumn::make('contact.nik')
-                ->label('NIK')
-                ->default('-'),
+  
 
-            // 🧠 Kolom Mengajar (jumlah kelas/mapel dari EditorAccess)
-            Tables\Columns\TextColumn::make('editor_access_count')
-    ->counts('editorAccess')
-    ->label('Mengajar')
-    ->formatStateUsing(fn ($state) => $state > 0 ? "{$state} Kelas" : 'Belum Ada')
-    ->sortable(),
-
-
-            Tables\Columns\TextColumn::make('email')
-                ->label('Email')
-                ->limit(20),
-
-            Tables\Columns\TextColumn::make('contact.no_telp')
-                ->label('No Telp')
-                ->default('-'),
         ])
-        ->filters([])
         ->actions([
             Tables\Actions\EditAction::make(),
             Tables\Actions\DeleteAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\DeleteBulkAction::make(),
         ]);
 }
-
 
 
     public static function getPages(): array

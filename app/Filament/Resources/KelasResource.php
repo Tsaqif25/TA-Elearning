@@ -26,28 +26,30 @@ class KelasResource extends Resource
                 ->required()
                 ->unique(ignoreRecord: true),
 
-          Forms\Components\Select::make('mapels')
-    ->label('Pilih Mata Pelajaran')
-    ->relationship('mapels', 'name')
-    ->multiple()
-    ->preload()
-   
-    ->helperText('Pilih satu atau lebih mapel yang diampu di kelas ini.'),
-
+            Forms\Components\Select::make('mapels')
+                ->label('Pilih Mata Pelajaran')
+                ->relationship('mapels', 'name')
+                ->multiple()
+                ->preload()
+                ->helperText('Pilih satu atau lebih mapel yang diampu di kelas ini.'),
         ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table->columns([
-            Tables\Columns\TextColumn::make('name')->label('Nama Kelas')->searchable(),
-            Tables\Columns\BadgeColumn::make('mapels_count')->counts('mapels')->label('Jumlah Mapel'),
-            Tables\Columns\TextColumn::make('created_at')->label('Dibuat')->date('d M Y'),
-        ])
-        ->actions([
-            Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make(),
-        ]);
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('name')->label('Nama Kelas')->searchable(),
+                Tables\Columns\BadgeColumn::make('mapels_count')->counts('mapels')->label('Jumlah Mapel'),
+                Tables\Columns\TextColumn::make('created_at')->label('Dibuat')->date('d M Y'),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(), 
+            ]);
     }
 
     public static function getPages(): array
@@ -57,6 +59,5 @@ class KelasResource extends Resource
             'create' => Pages\CreateKelas::route('/create'),
             'edit' => Pages\EditKelas::route('/{record}/edit'),
         ];
-        
     }
 }

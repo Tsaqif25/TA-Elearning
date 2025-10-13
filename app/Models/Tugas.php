@@ -24,10 +24,7 @@ class Tugas extends Model
         return $this->belongsTo(KelasMapel::class);
     }
 
-    public function forumDiskusi()
-    {
-        return $this->hasMany(Diskusi::class);
-    }
+  
 
     public function userTugas()
     {

@@ -24,13 +24,6 @@ class MapelResource extends Resource
                 ->label('Nama Mapel')
                 ->required(),
 
-            Forms\Components\FileUpload::make('gambar')
-                ->label('Gambar (Opsional)')
-                ->directory('mapel')
-                ->image()
-                ->imageEditor()
-                ->maxSize(2048),
-
             Forms\Components\Textarea::make('deskripsi')
                 ->label('Deskripsi')
                 ->rows(3)
@@ -40,15 +33,22 @@ class MapelResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([
-            Tables\Columns\ImageColumn::make('gambar')->label('Gambar')->circular(),
-            Tables\Columns\TextColumn::make('name')->label('Nama Mapel')->searchable(),
-            Tables\Columns\TextColumn::make('deskripsi')->label('Deskripsi')->limit(50),
-        ])
-        ->actions([
-            Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make(),
-        ]);
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nama Mapel')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('deskripsi')
+                    ->label('Deskripsi')
+                    ->limit(50),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(), // 🧹 Tambahkan ini untuk hapus massal
+            ]);
     }
 
     public static function getPages(): array

@@ -34,10 +34,10 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    // protected $hidden = [
+    //     'password',
+    //     'remember_token',
+    // ];
 
     /**
      * The attributes that should be cast.
@@ -46,7 +46,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        // 'password' => 'hashed',
     ];
 
 public function dataSiswa()
@@ -54,10 +54,7 @@ public function dataSiswa()
     return $this->hasOne(DataSiswa::class);
 }
 
-    public function notification()
-    {
-        return $this->hasMany(Notification::class);
-    }
+
 
     public function contact()
     {
