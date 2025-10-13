@@ -128,7 +128,7 @@
             let kelasName = "{{ $kelas['name'] }}";
             $('#modalContent').html(loading);
             $.ajax({
-                url: "{{ route('viewSiswaKelas') }}",
+              
                 type: "GET",
                 data: { kelasName: kelasName },
                 success: function(data) {
@@ -142,6 +142,6 @@
             });
         }
 
-        const url = "{{ route('searchKelas') }}";
+     
     </script>
 @endsection

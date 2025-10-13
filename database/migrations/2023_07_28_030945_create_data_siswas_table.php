@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignid('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->foreignid('user_id')->nullable()->constrained('users')->onDelete('cascade');
            $table->string('nis')->unique();
+            $table->string('no_telp')->nullable();
             $table->bigInteger('punya_akun')->default(0);
             $table->timestamps();
         });

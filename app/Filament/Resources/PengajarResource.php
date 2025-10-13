@@ -20,12 +20,12 @@ class PengajarResource extends Resource
     protected static ?string $navigationLabel = 'Pengajar';
 
     /** 🔹 tampilkan hanya user dengan role “Pengajar” */
-  public static function getEloquentQuery(): Builder
-{
-    return parent::getEloquentQuery()
-        ->select('users.*', 'users.password as password_plaintext')
-        ->whereHas('roles', fn ($q) => $q->where('name', 'Pengajar'));
-}
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->select('users.*', 'users.password as password_plaintext')
+            ->whereHas('roles', fn($q) => $q->where('name', 'Pengajar'));
+    }
 
 
     public static function form(Form $form): Form
@@ -48,24 +48,19 @@ class PengajarResource extends Resource
                         ->label('Email')
                         ->required(),
 
-                  Forms\Components\TextInput::make('password')
-    ->password()
-    ->label('Password')
-    ->required(fn(string $context) => $context === 'create')
-    ->dehydrated(fn($state) => filled($state))
-    ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null)
-    ->helperText('Biarkan kosong jika tidak ingin mengubah password.'),
-
-
-                    Forms\Components\TextInput::make('contact.no_telp')->label('Nomor Telepon')->maxLength(15),
-                    Forms\Components\TextInput::make('contact.nuptk')->label('NUPTK'),
-                    Forms\Components\TextInput::make('contact.nik')->label('NIK'),
+                    Forms\Components\TextInput::make('password')
+                        ->password()
+                        ->label('Password')
+                        ->required(fn(string $context) => $context === 'create')
+                        ->dehydrated(fn($state) => filled($state))
+                        ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null)
+                        ->helperText('Biarkan kosong jika tidak ingin mengubah password.'),
                 ])
                 ->columns(2),
 
             /** ✳️ Relasi kelas & mapel */
             Forms\Components\Section::make('Kelas & Mapel yang Diampu')
-                ->description('Pilih kombinasi kelas-mapel yang diajar oleh pengajar ini.')
+                ->description('Pilih kombinasi kelas-mapel yang diajar oleh pengajar ini. Tambahkan NIP & No Telp di sini.')
                 ->schema([
                     Forms\Components\Repeater::make('editorAccess')
                         ->relationship()
@@ -75,65 +70,73 @@ class PengajarResource extends Resource
                                 ->options(function () {
                                     return KelasMapel::with(['kelas', 'mapel'])
                                         ->get()
-                                        ->mapWithKeys(fn ($km) => [
+                                        ->mapWithKeys(fn($km) => [
                                             $km->id => "{$km->kelas->name} — {$km->mapel->name}"
                                         ]);
                                 })
                                 ->searchable()
-                                ->required()
-                                
+                                ->required(),
 
+                            Forms\Components\TextInput::make('nip')
+                                ->label('NIP (Opsional)')
+                                ->maxLength(30),
+
+                            Forms\Components\TextInput::make('no_telp')
+                                ->label('Nomor Telepon (Opsional)')
+                                ->maxLength(15),
                         ])
                         ->addActionLabel('Tambah Kelas & Mapel')
-                        ->columns(1)
+                        ->columns(2)
                         ->defaultItems(0),
                 ]),
         ]);
     }
 
- public static function table(Table $table): Table
-{
-    return $table
-        ->columns([
-            Tables\Columns\ImageColumn::make('gambar')
-                ->label('Foto')
-                ->circular()
-                ->defaultImageUrl('/asset/icons/profile-men.svg')
-                ->width(40)
-                ->height(40),
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\ImageColumn::make('gambar')
+                    ->label('Foto')
+                    ->circular()
+                    ->defaultImageUrl('/asset/icons/profile-men.svg')
+                    ->width(40)
+                    ->height(40),
 
-            Tables\Columns\TextColumn::make('name')->label('Nama')->searchable()->sortable(),
-            Tables\Columns\TextColumn::make('contact.nuptk')->label('NUPTK')->default('-'),
-            Tables\Columns\TextColumn::make('contact.nik')->label('NIK')->default('-'),
+                Tables\Columns\TextColumn::make('name')->label('Nama')->searchable()->sortable(),
 
-            Tables\Columns\TextColumn::make('editor_access_count')
-                ->counts('editorAccess')
-                ->label('Mengajar')
-                ->formatStateUsing(fn ($state) => $state > 0 ? "{$state} Kelas" : 'Belum Ada')
-                ->sortable(),
+                Tables\Columns\TextColumn::make('nip')
+                    ->label('NIP')
+                    ->getStateUsing(fn($record) => optional($record->editorAccess->first())->nip ?? '-'),
 
-            Tables\Columns\TextColumn::make('email')->label('Email')->limit(20),
-            Tables\Columns\TextColumn::make('contact.no_telp')->label('No Telp')->default('-'),
+                Tables\Columns\TextColumn::make('editorAccessNoTelp')
+                    ->label('No. Telp')
+                    ->getStateUsing(fn($record) => optional($record->editorAccess->first())->no_telp ?? '-'),
 
-  
+                Tables\Columns\TextColumn::make('editor_access_count')
+                    ->counts('editorAccess')
+                    ->label('Mengajar')
+                    ->formatStateUsing(fn($state) => $state > 0 ? "{$state} Kelas" : 'Belum Ada')
+                    ->sortable(),
 
-        ])
-        ->actions([
-            Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make(),
-        ])
-        ->bulkActions([
-            Tables\Actions\DeleteBulkAction::make(),
-        ]);
-}
+                Tables\Columns\TextColumn::make('email')->label('Email')->limit(20),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]);
+    }
 
 
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListPengajars::route('/'),
+            'index' => Pages\ListPengajars::route('/'),
             'create' => Pages\CreatePengajar::route('/create'),
-            'edit'   => Pages\EditPengajar::route('/{record}/edit'),
+            'edit' => Pages\EditPengajar::route('/{record}/edit'),
         ];
     }
 }

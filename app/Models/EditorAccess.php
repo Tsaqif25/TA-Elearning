@@ -12,6 +12,8 @@ class EditorAccess extends Model
     protected $fillable = [
         'user_id',
         'kelas_mapel_id',
+          'no_telp',
+        'nip',
     ];
 
     // protected $guarded = [

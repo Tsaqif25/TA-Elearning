@@ -36,6 +36,11 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarWidth('260px')
             // ->viteTheme('resources')
             // ->renderHook('panels::styles.after', fn () => view('filament.custom-styles'))
+                ->resources([
+    \App\Filament\Resources\PengajarResource::class,
+    \App\Filament\Resources\SiswaResource::class,
+   
+])
 
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
@@ -68,5 +73,6 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
                 \Spatie\Permission\Middleware\RoleMiddleware::class . ':Admin',
             ]);
+            
     }
 }

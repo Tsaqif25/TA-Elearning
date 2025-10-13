@@ -56,10 +56,10 @@ public function dataSiswa()
 
 
 
-    public function contact()
-    {
-        return $this->hasOne(Contact::class);
-    }
+    // public function contact()
+    // {
+    //     return $this->hasOne(Contact::class);
+    // }
 
     public function editorAccess()
     {
@@ -104,10 +104,7 @@ public function dataSiswa()
 
 
 
-    public function komentar()
-    {
-        return $this->hasMany(Komentar::class);
-    }
+
 
 
 }

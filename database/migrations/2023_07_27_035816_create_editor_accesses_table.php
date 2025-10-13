@@ -12,6 +12,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('kelas_mapel_id')->constrained('kelas_mapels')->onDelete('cascade');
+             $table->string('no_telp')->nullable();
+            $table->string('nip')->nullable();
             $table->timestamps();
 
               $table->unique(['user_id', 'kelas_mapel_id']);

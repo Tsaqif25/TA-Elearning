@@ -13,6 +13,7 @@ class DataSiswa extends Model
         'name',
         'nis',
         'kelas_id',
+         'no_telp',
         'punya_akun',
         'user_id',
     ];
