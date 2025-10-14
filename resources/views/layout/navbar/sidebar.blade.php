@@ -7,7 +7,7 @@
     <ul class="nav nav-pills flex-column mb-auto">
 
         {{-- Admin Menu --}}
-        @if (Auth::user()->hasRole('Admin'))
+        {{-- @if (Auth::user()->hasRole('Admin'))
             <li><a href="{{ route('dashboard') }}" class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}">
                     <i class="fa-solid fa-chart-line me-2"></i>Dashboard</a></li>
 
@@ -26,7 +26,7 @@
 
             <li><a href="{{ route('activity') }}" class="nav-link {{ Request::is('activity') ? 'active' : '' }}">
                     <i class="fas fa-tasks me-2"></i>Activity</a></li>
-        @endif
+        @endif --}}
 
         {{-- Pengajar Menu --}}
         @if (Auth::user()->hasRole('Pengajar'))

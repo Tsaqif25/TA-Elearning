@@ -10,7 +10,6 @@ use App\Models\Mapel; // Mengimpor model Mapel
 use App\Models\Materi; // Mengimpor model Materi
 use App\Models\Rekomendasi; // Mengimpor model Rekomendasi
 use App\Models\Pengumuman; // Mengimpor model Pengumuman
-// use App\Models\Diskusi; // Mengimpor model Diskusi
 use App\Models\Tugas; // Mengimpor model Tugas
 use App\Models\Ujian; // Mengimpor model Ujian
 use App\Models\User; // Mengimpor model User

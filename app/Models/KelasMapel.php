@@ -48,9 +48,5 @@ class KelasMapel extends Model
         return $this->hasMany(Ujian::class);
     }
 
-    public function diskusi()
-{
-    return $this->hasMany(Diskusi::class, 'kelas_mapel_id');
-}
 
 }

@@ -1,137 +1,108 @@
 <!doctype html>
-<html lang="id">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SMK 2 Padang — E‑Learning</title>
-<!-- Font Awesome 6 (CDN) -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<html lang="en">
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    @keyframes slide {
+      from { transform: translateX(0); }
+      to { transform: translateX(-100%); }
+    }
+    .animate-slide { animation: slide 15s linear infinite; }
+    .pause-animate { animation-play-state: paused; }
+  </style>
+</head>
 
-    <style>
-      :root{
-        --brand-1:#5CD1B2; /* hijau */
-        --brand-2:#60A5FA; /* biru */
-        --text-1:#0A090B; /* hampir hitam */
-      }
-      body{ font-family: 'Poppins', sans-serif; color:var(--text-1); background-color:#f7f9fc; }
-      .btn-grad{
-        background-image: linear-gradient(90deg, var(--brand-2), var(--brand-1));
-        color:#fff; border:0; transition: filter .2s ease;
-      }
-      .btn-grad:hover{ filter:brightness(0.95); color:#fff; }
-
-      .hero-card{
-        border:0; border-radius:1rem; box-shadow:0 10px 30px rgba(16,24,40,.08);
-        min-height: 460px;
-      }
-      .hero-image{
-        width:100%; height:auto; border-radius:18px; object-fit:cover; box-shadow:0 4px 20px rgba(0,0,0,.08);
-      }
-
-      .login-card{ border:0; border-radius:1rem; box-shadow:0 10px 30px rgba(16,24,40,.08); }
-      .form-control:focus{ border-color:#86b7fe; box-shadow:0 0 0 .2rem rgba(13,110,253,.15); }
-    </style>
-  </head>
-  <body>
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top py-2">
-      <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-          <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f393.svg" alt="logo" width="28" height="28"/>
-          <span class="fw-bold">SMK 2 Padang</span>
-          <span class="text-muted ms-2 small">E‑Learning Platform</span>
-        </a>
-        <div class="ms-auto">
-          <a class="btn btn-outline-primary" href="{{ route('register') }}">Daftar Sekarang</a>
-        </div>
+<body class="text-[#0A090B]">
+  <section id="signup" class="flex flex-col lg:flex-row w-full min-h-screen">
+    <!-- 🟣 Navbar -->
+    <nav class="flex items-center justify-between px-4 sm:px-6 lg:px-[50px] py-3 lg:pt-[30px] w-full absolute top-0 z-10 bg-transparent -mt-4">
+      <div class="flex items-center">
+         <a href="/" class="flex items-center">
+  <img src="{{ asset('images/logo/logosmk2npadang.png') }}" 
+       alt="logo" 
+       class="w-24 sm:w-28 lg:w-32 object-contain relative -mt-5">
+</a>
       </div>
+
+      <!-- Desktop Menu -->
+      <div class="hidden lg:flex items-center justify-end w-full">
+        <ul class="flex items-center gap-[30px]">
+          <li><a href="#" class="font-semibold text-white">Docs</a></li>
+          <li><a href="#" class="font-semibold text-white">About</a></li>
+          <li><a href="#" class="font-semibold text-white">Help</a></li>
+          <li class="h-[52px] flex items-center">
+            <a href="{{ route('login') }}" class="font-semibold text-white p-[14px_30px] bg-[#0A090B] rounded-full text-center">Sign In</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button id="menuBtn" class="lg:hidden bg-[#0A090B] text-white px-4 py-2 rounded-full focus:outline-none text-sm font-semibold">☰</button>
     </nav>
 
-    <!-- MAIN -->
-    <main class="py-5">
-      <div class="container">
-        <div class="row g-4 align-items-stretch">
-          <!-- LEFT: Hero -->
-          <div class="col-12 col-lg-7">
-            <div class="card hero-card h-100 p-3 d-flex align-items-center justify-content-center">
-        <img src="{{ asset('asset/images/education-features (1).jpg') }}" alt="Education Features" class="hero-image">
+    <!-- 🔹 Left Side - Form Section -->
+    <div class="left-side min-h-screen flex flex-col justify-center items-center w-full lg:w-1/2 py-6 sm:py-10 lg:pt-[100px] lg:pb-[30px] px-4 sm:px-6">
+      <form method="POST" action="{{ route('authenticate') }}" class="flex flex-col gap-5 sm:gap-6 lg:gap-[25px] w-full max-w-[400px] sm:max-w-[450px] bg-white rounded-2xl mt-16 sm:mt-20 lg:mt-0 shadow-lg p-6 sm:p-8 mb-4 sm:mb-6">
+        @csrf
+        <h1 class="font-bold text-xl sm:text-2xl lg:text-3xl leading-tight text-center">Sign In</h1>
+
+        <!-- Email -->
+        <div class="flex flex-col gap-2">
+          <p class="font-semibold text-sm sm:text-base">Email Address</p>
+          <div class="flex items-center w-full h-[44px] sm:h-[48px] lg:h-[52px] px-3 sm:px-4 lg:px-[16px] py-2 sm:py-3 lg:py-[14px] rounded-full border border-[#EEEEEE] focus-within:border-2 focus-within:border-[#0A090B] transition-all">
+            <div class="mr-2 sm:mr-3 lg:mr-[14px] w-5 h-5 sm:w-5 sm:h-5 lg:w-6 lg:h-6 flex items-center justify-center overflow-hidden flex-shrink-0">
+              <img src="{{ asset('images/icons/sms.svg') }}" alt="email icon" class="w-full h-full object-contain">
             </div>
+            <input type="email" name="email" class="font-semibold placeholder:text-[#7F8190] placeholder:font-normal w-full outline-none text-sm sm:text-base" placeholder="your@email.com" required>
           </div>
-
-          <!-- RIGHT: Login Card -->
-<div class="col-12 col-lg-5">
-    <div class="card login-card h-100">
-        <div class="card-body p-4 p-lg-5">
-            <h3 class="fw-bold mb-2">Masuk ke Akun</h3>
-            <p class="text-muted mb-4">Masukkan email dan password untuk mengakses platform e-learning</p>
-
-          
-         <form action="{{ route('authenticate') }}" method="POST">
-    @csrf
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-            <input type="email" 
-                   class="form-control" 
-                   id="email" 
-                   name="email"
-                   placeholder="Masukkan email Anda" 
-                   required>
         </div>
-    </div>
 
-    <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-            <input type="password" 
-                   class="form-control" 
-                   id="password" 
-                   name="password"
-                   placeholder="Masukkan password Anda" 
-                   required>
+        <!-- Password -->
+        <div class="flex flex-col gap-2">
+          <p class="font-semibold text-sm sm:text-base">Password</p>
+          <div class="flex items-center w-full h-[44px] sm:h-[48px] lg:h-[52px] px-3 sm:px-4 lg:px-[16px] py-2 sm:py-3 lg:py-[14px] rounded-full border border-[#EEEEEE] focus-within:border-2 focus-within:border-[#0A090B] transition-all">
+            <div class="mr-2 sm:mr-3 lg:mr-[14px] w-5 h-5 sm:w-5 sm:h-5 lg:w-6 lg:h-6 flex items-center justify-center overflow-hidden flex-shrink-0">
+              <img src="{{ asset('images/icons/lock.svg') }}" alt="lock icon" class="w-full h-full object-contain">
+            </div>
+            <input type="password" name="password" class="font-semibold placeholder:text-[#7F8190] placeholder:font-normal w-full outline-none text-sm sm:text-base" placeholder="Enter password" required>
+          </div>
         </div>
-    </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="1" id="ingat">
-            <label class="form-check-label" for="ingat">Ingat saya</label>
-        </div>
-        <a class="text-muted small" href="#">Lupa password?</a>
-    </div>
-
-    <div class="d-grid mb-3">
-        <button type="submit" class="btn btn-grad py-2">
-            <i class="fa-solid fa-right-to-bracket"></i> Masuk ke Platform
+        <!-- Button -->
+        <button type="submit" class="w-full h-[44px] sm:h-[48px] lg:h-[52px] bg-[#6436F1] rounded-full font-bold text-white transition-all duration-300 hover:shadow-[0_4px_15px_0_#6436F14D] text-sm sm:text-base active:scale-95">
+          Sign In to my Account
         </button>
-    </div>
-    <div class="text-center text-muted small">
-        Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
-    </div>
-</form>
 
+        <div class="text-center text-sm sm:text-base">
+          <p class="text-[#7F8190]">Don't have an account? <a href="{{ route('register') }}" class="text-[#6436F1] font-semibold">Sign Up</a></p>
         </div>
+      </form>
     </div>
-</div>
 
+    <!-- 🟣 Right Side - Illustration Section -->
+    <div class="right-side min-h-[300px] sm:min-h-[400px] lg:min-h-screen flex flex-col w-full lg:w-[650px] shrink-0 py-8 sm:py-12 lg:pt-[82px] bg-[#6436F1] items-center justify-center text-center px-4 sm:px-6">
+      <div class="w-full max-w-[280px] sm:max-w-[320px] md:max-w-[400px] lg:max-w-[500px]">
+        <img src="{{ asset('images/thumbnail/sign-in-illustration.png') }}" class="w-full h-auto object-contain" alt="banner">
+      </div>
+
+      <div class="logos w-full overflow-hidden mt-8 sm:mt-12 lg:mt-[100px]">
+        <div class="group/slider flex flex-nowrap w-max items-center justify-center">
+          <div class="logo-container animate-slide hover:pause-animate flex gap-6 sm:gap-8 lg:gap-10 pl-6 sm:pl-8 lg:pl-10 items-center flex-nowrap">
+            <img src="{{ asset('images/logo/logo-51.svg') }}" class="w-12 sm:w-16 lg:w-20 opacity-80 hover:opacity-100 transition-opacity" alt="logo">
+            <img src="{{ asset('images/logo/logo-51-1.svg') }}" class="w-12 sm:w-16 lg:w-20 opacity-80 hover:opacity-100 transition-opacity" alt="logo">
+            <img src="{{ asset('images/logo/logo-52.svg') }}" class="w-12 sm:w-16 lg:w-20 opacity-80 hover:opacity-100 transition-opacity" alt="logo">
+            <img src="{{ asset('images/logo/logo-52-1.svg') }}" class="w-12 sm:w-16 lg:w-20 opacity-80 hover:opacity-100 transition-opacity" alt="logo">
+          </div>
         </div>
       </div>
-    </main>
-
-    <footer class="py-4 small text-center text-muted">
-      © <span id="year"></span> SMK 2 Padang — E‑Learning Platform
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
-  </body>
+    </div>
+  </section>
+</body>
 </html>

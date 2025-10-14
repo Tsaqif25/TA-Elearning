@@ -1,4 +1,4 @@
-<!doctype html>
+{{-- <!doctype html>
 <html lang="id">
   <head>
     <meta charset="utf-8" />
@@ -38,7 +38,7 @@
     <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top py-2">
       <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-          <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f393.svg" alt="logo" width="28" height="28"/>
+          <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/{{asset('/svg/1f393.svg')}}" alt="logo" width="28" height="28"/>
           <span class="fw-bold">SMK 2 Padang</span>
           <span class="text-muted ms-2 small">E-Learning Platform</span>
         </a>
@@ -148,5 +148,128 @@
     <script>
       document.getElementById('year').textContent = new Date().getFullYear();
     </script>
-  </body>
+  </body> --}}
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    @keyframes slide { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+    .animate-slide { animation: slide 15s linear infinite; }
+    .pause-animate { animation-play-state: paused; }
+  </style>
+</head>
+<body class="text-[#0A090B]">
+  <section id="signup" class="flex flex-col lg:flex-row w-full min-h-screen">
+    <!-- 🟣 Navbar -->
+    <nav class="flex items-center justify-between px-4 sm:px-6 lg:px-[50px] py-3 lg:pt-[30px] w-full absolute top-0 z-10 bg-transparent">
+      <div class="flex items-center">
+        {{-- <a href="/">
+          <img src="{{ asset('images/logo/logo.svg') }}" alt="logo" class="w-24 sm:w-28 lg:w-32">
+        </a> --}}
+         <a href="/" class="flex items-center">
+ <img src="{{ asset('images/logo/logosmk2npadang.png') }}" 
+       alt="logo" 
+       class="w-24 sm:w-28 lg:w-32 object-contain relative -mt-5">
+</a>
+
+      </div>
+      <div class="hidden lg:flex items-center justify-end w-full">
+        <ul class="flex items-center gap-[30px]">
+          <li><a href="#" class="font-semibold text-white">Docs</a></li>
+          <li><a href="#" class="font-semibold text-white">About</a></li>
+          <li><a href="#" class="font-semibold text-white">Help</a></li>
+          <li class="h-[52px] flex items-center">
+            <a href="{{ route('login') }}" class="font-semibold text-white p-[14px_30px] bg-[#0A090B] rounded-full text-center">Sign In</a>
+          </li>
+        </ul>
+      </div>
+      <button id="menuBtn" class="lg:hidden bg-[#0A090B] text-white px-4 py-2 rounded-full focus:outline-none text-sm font-semibold">☰</button>
+    </nav>
+
+    <!-- 🔹 Left Side - Register Form -->
+    <div class="left-side min-h-screen flex flex-col justify-center items-center w-full lg:w-1/2 py-6 sm:py-10 lg:pt-[100px] px-4 sm:px-6">
+      <form method="POST" action="{{ route('validate') }}" class="flex flex-col gap-5 sm:gap-6 lg:gap-[25px] w-full max-w-[400px] sm:max-w-[450px] bg-white rounded-2xl mt-16 sm:mt-20 lg:mt-0 shadow-lg p-6 sm:p-8">
+        @csrf
+        <h1 class="font-bold text-xl sm:text-2xl lg:text-3xl leading-tight text-center">Sign Up</h1>
+
+        <!-- Email -->
+        <div class="flex flex-col gap-2">
+          <p class="font-semibold text-sm sm:text-base">Email Address</p>
+          <div class="flex items-center w-full h-[44px] sm:h-[48px] lg:h-[52px] px-3 sm:px-4 lg:px-[16px] py-2 sm:py-3 lg:py-[14px] rounded-full border border-[#EEEEEE] focus-within:border-[#0A090B] transition-all">
+            <img src="{{ asset('images/icons/sms.svg') }}" alt="icon" class="w-5 h-5 sm:w-6 sm:h-6 mr-3">
+            <input type="email" name="email" placeholder="your@email.com" class="font-semibold placeholder:text-[#7F8190] w-full outline-none text-sm sm:text-base" required>
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="flex flex-col gap-2">
+          <p class="font-semibold text-sm sm:text-base">Nomor Telephone</p>
+          <div class="flex items-center w-full h-[44px] sm:h-[48px] lg:h-[52px] px-3 sm:px-4 lg:px-[16px] py-2 sm:py-3 lg:py-[14px] rounded-full border border-[#EEEEEE] focus-within:border-[#0A090B] transition-all">
+            <img src="{{ asset('images/icons/profile.svg') }}" alt="icon" class="w-5 h-5 sm:w-6 sm:h-6 mr-3">
+            <input type="text" name="noTelp" placeholder="08xxxxxxxxxx" class="font-semibold placeholder:text-[#7F8190] w-full outline-none text-sm sm:text-base" required>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="flex flex-col gap-2">
+          <p class="font-semibold text-sm sm:text-base">Password</p>
+          <div class="flex items-center w-full h-[44px] sm:h-[48px] lg:h-[52px] px-3 sm:px-4 lg:px-[16px] py-2 sm:py-3 lg:py-[14px] rounded-full border border-[#EEEEEE] focus-within:border-[#0A090B] transition-all">
+            <img src="{{ asset('images/icons/lock.svg') }}" alt="icon" class="w-5 h-5 sm:w-6 sm:h-6 mr-3">
+            <input type="password" name="password" placeholder="Enter password" class="font-semibold placeholder:text-[#7F8190] w-full outline-none text-sm sm:text-base" required>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="flex flex-col gap-2">
+          <p class="font-semibold text-sm sm:text-base">Confirm Password</p>
+          <div class="flex items-center w-full h-[44px] sm:h-[48px] lg:h-[52px] px-3 sm:px-4 lg:px-[16px] py-2 sm:py-3 lg:py-[14px] rounded-full border border-[#EEEEEE] focus-within:border-[#0A090B] transition-all">
+            <img src="{{ asset('images/icons/lock.svg') }}" alt="icon" class="w-5 h-5 sm:w-6 sm:h-6 mr-3">
+            <input type="password" name="confirm-password" placeholder="Confirm password" class="font-semibold placeholder:text-[#7F8190] w-full outline-none text-sm sm:text-base" required>
+          </div>
+        </div>
+
+        <!-- NIS -->
+        <div class="flex flex-col gap-2">
+          <p class="font-semibold text-sm sm:text-base">Nomor Induk Siswa (NIS)</p>
+          <div class="flex items-center w-full h-[44px] sm:h-[48px] lg:h-[52px] px-3 sm:px-4 lg:px-[16px] py-2 sm:py-3 lg:py-[14px] rounded-full border border-[#EEEEEE] focus-within:border-[#0A090B] transition-all">
+            <img src="{{ asset('images/icons/sms.svg') }}" alt="icon" class="w-5 h-5 sm:w-6 sm:h-6 mr-3">
+            <input type="text" name="nis" placeholder="Masukkan NIS Anda" class="font-semibold placeholder:text-[#7F8190] w-full outline-none text-sm sm:text-base" required>
+          </div>
+        </div>
+
+        <!-- Button -->
+        <button type="submit" class="w-full h-[44px] sm:h-[48px] lg:h-[52px] bg-[#6436F1] rounded-full font-bold text-white transition-all duration-300 hover:shadow-[0_4px_15px_0_#6436F14D] text-sm sm:text-base active:scale-95">Create My Account</button>
+
+        <div class="text-center text-sm sm:text-base">
+          <p class="text-[#7F8190]">Sudah punya akun? <a href="{{ route('login') }}" class="text-[#6436F1] font-semibold">Masuk di Sini</a></p>
+        </div>
+      </form>
+    </div>
+
+    <!-- 🟣 Right Side - Illustration Section -->
+    <div class="right-side min-h-[300px] sm:min-h-[400px] lg:min-h-screen flex flex-col w-full lg:w-[650px] shrink-0 py-8 sm:py-12 lg:pt-[82px] bg-[#6436F1] items-center justify-center text-center px-4 sm:px-6">
+      <div class="w-full max-w-[280px] sm:max-w-[320px] md:max-w-[400px] lg:max-w-[500px]">
+        <img src="{{ asset('images/thumbnail/sign-in-illustration.png') }}" class="w-full h-auto object-contain" alt="banner">
+      </div>
+      <div class="logos w-full overflow-hidden mt-8 sm:mt-12 lg:mt-[100px]">
+        <div class="group/slider flex flex-nowrap w-max items-center justify-center">
+          <div class="logo-container animate-slide hover:pause-animate flex gap-6 sm:gap-8 lg:gap-10 pl-6 sm:pl-8 lg:pl-10 items-center flex-nowrap">
+            <img src="{{ asset('images/logo/logo-51.svg') }}" class="w-12 sm:w-16 lg:w-20 opacity-80 hover:opacity-100 transition-opacity" alt="logo">
+            <img src="{{ asset('images/logo/logo-51-1.svg') }}" class="w-12 sm:w-16 lg:w-20 opacity-80 hover:opacity-100 transition-opacity" alt="logo">
+            <img src="{{ asset('images/logo/logo-52.svg') }}" class="w-12 sm:w-16 lg:w-20 opacity-80 hover:opacity-100 transition-opacity" alt="logo">
+            <img src="{{ asset('images/logo/logo-52-1.svg') }}" class="w-12 sm:w-16 lg:w-20 opacity-80 hover:opacity-100 transition-opacity" alt="logo">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
 </html>
