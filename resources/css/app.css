@@ -1,5 +1,5 @@
 
-:root {
+/* :root {
   --brand-1:#5CD1B2; 
   --brand-2:#60A5FA; 
   --text-1:#0A090B; 
@@ -11,4 +11,4 @@ body { font-family: 'Poppins', sans-serif; background-color: #f7f9fc; }
 .content { flex: 1; padding: 20px; }
 .btn-grad { background-image: linear-gradient(90deg, var(--brand-2), var(--brand-1)); color:#fff; border:0; }
 .btn-grad:hover { filter: brightness(0.95); color:#fff; }
-.topbar { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 10px 20px; }
+.topbar { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 10px 20px; } */

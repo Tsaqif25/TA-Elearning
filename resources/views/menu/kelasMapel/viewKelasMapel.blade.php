@@ -1,4 +1,5 @@
 @extends('layout.template.mainTemplate')
+
 @section('container')
 
     {{-- Navigasi Breadcrumb --}}
