@@ -1,35 +1,39 @@
 <?php
 
+use index;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Tugas\FileController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MapelController;
 use App\Http\Controllers\UjianController;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\Materi\MateriController;
 use App\Http\Controllers\SurveyController;
-// use App\Http\Controllers\Diskusi\DiskusiController;
 use App\Http\Controllers\ProfileController;
+// use App\Http\Controllers\Diskusi\DiskusiController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\PengajarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataSiswaController;
 use App\Http\Controllers\KelasMapelController;
-use App\Http\Controllers\Materi\MateriFileController;
 use App\Http\Controllers\PengumumanController;
+use App\Http\Controllers\Tugas\FileController;
 use App\Http\Controllers\LoginRegistController;
 use App\Http\Controllers\RekomendasiController;
+use App\Http\Controllers\Tugas\TugasController;
 use App\Http\Controllers\AdminRegisterController;
+use App\Http\Controllers\Materi\MateriController;
 use App\Http\Controllers\StudentAnswerController;
 use App\Http\Controllers\Tugas\TugasFileController;
-use App\Http\Controllers\Tugas\TugasController;
+use App\Http\Controllers\Materi\MateriFileController;
 use App\Http\Controllers\Tugas\TugasSubmitController;
 use App\Http\Controllers\Ujian\UjianStudentController ;
 use App\Http\Controllers\Ujian\SoalManagementController;
 use App\Http\Controllers\Ujian\UjianEvaluationController;
-use App\Http\Controllers\Ujian\UjianManagementController ;
 
+use App\Http\Controllers\Ujian\UjianManagementController ;
+use App\Http\Controllers\Dashboard\Admin\DashboardController as AdminDashboard;
+use App\Http\Controllers\Dashboard\Siswa\DashboardController as SiswaDashboard;
+use App\Http\Controllers\Dashboard\Pengajar\DashboardController as PengajarDashboard;
 
 
 Route::get('/', function () {
@@ -58,6 +62,46 @@ Route::middleware('auth')->controller(DashboardController::class)->group(functio
 });
 
 
+
+Route::middleware('auth')->group(function () {
+    // AUTO redirect ke dashboard sesuai role
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+
+        if ($user->hasRole('Admin')) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->hasRole('Pengajar')) {
+            return redirect()->route('pengajar.dashboard');
+        } elseif ($user->hasRole('Siswa')) {
+            return redirect()->route('siswa.dashboard');
+        }
+
+        return redirect()->route('login')->with('error', 'Role tidak ditemukan');
+    })->name('dashboard.redirect');
+
+    // ============================
+    // 🧑‍⚖️ ADMIN DASHBOARD
+    // ============================
+    Route::middleware('role:Admin')->group(function () {
+        Route::get('/dashboard/admin', [AdminDashboard::class, 'index'])->name('admin.dashboard');
+    });
+
+    // ============================
+    // 👨‍🏫 PENGAJAR DASHBOARD
+    // ============================
+    Route::middleware('role:Pengajar')->group(function () {
+        Route::get('/dashboard/pengajar', [ index::class, 'index'])->name('pengajar.dashboard');
+    });
+
+    // ============================
+    // 👨‍🎓 SISWA DASHBOARD (HOME)
+    // ============================
+    Route::middleware('role:Siswa')->group(function () {
+        Route::get('/home', [SiswaDashboard::class, 'index'])->name('siswa.dashboard');
+    });
+});
+
+//////////////////////////////////////////////////////////////////////////////
 // KelasMapel
 Route::middleware('auth')->controller(KelasMapelController::class)->group(function () {
     // Umum (semua user login bisa akses)
