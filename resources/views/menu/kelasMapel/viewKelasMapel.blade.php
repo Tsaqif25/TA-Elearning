@@ -34,548 +34,208 @@
         </div>
     @endif
 
-    {{-- Informasi Mata Pelajaran --}}
-    <div class="bg-body-secondary rounded-4 mb-4">
-        <div class="container col-xxl-8 px-4 py-5 ">
-            <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-                <div class="col-10 col-sm-8 col-lg-6">
-                    @if ($mapel['gambar'] != null)
-                        <img src="{{ asset('storage/file/img-upload/' . $mapel['gambar']) }}"
-                            class="d-block mx-lg-auto img-fluid w-100 rounded-3" alt="Bootstrap Themes" loading="lazy">
-                    @else
-                        <img src="{{ url('/asset/img/work.png') }}" class="d-block mx-lg-auto img-fluid h-50 w-50 "
-                            alt="" loading="lazy">
-                    @endif
-                </div>
-                <div class="col-lg-6">
-                    <h1 class=" fw-bold text-body-emphasis lh-1 mb-3">{{ $mapel['name'] }}</h1>
-                    <span class="small">
-                        @if ($editor)
-                            with
-                            {{-- <a href="{{ route('viewProfilePengajar', ['pengajar' => $editor->id]) }}">
-                            {{ $editor->name }}
-                        </a> --}}
-                        @else
-                            (belum ada pengajar)
-                        @endif
-                    </span>
-                    <p class="lead">{{ $mapel['deskripsi'] }}</p>
-                </div>
-            </div>
-        </div>
+    
+
+<!-- Template Kelas Mapel Page (Materi / Tugas / Quiz) dengan Laravel Blade dan Tailwind -->
+<div class="flex flex-col w-full p-6">
+  <!-- Header Kelas -->
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-[#0A090B]">Kelas 10 IPA 1</h1>
+      <p class="text-[#7F8190] text-sm">👥 32 Siswa</p>
+    </div>
+    <a href="#" class="flex items-center gap-2 px-4 py-2 border rounded-full text-sm font-semibold text-[#0A090B] border-[#EEEEEE]">
+      <i class="fa-regular fa-user"></i> Lihat Siswa
+    </a>
+  </div>
+
+  <!-- Mini Navbar -->
+  <div class="flex gap-3 bg-[#F9FAFB] p-2 rounded-full mb-8 w-fit">
+    <button class="tab-link px-6 py-2 rounded-full font-semibold bg-white shadow text-[#0A090B]" data-target="#materi">Materi</button>
+    <button class="tab-link px-6 py-2 rounded-full font-semibold text-[#7F8190] hover:bg-white" data-target="#tugas">Tugas</button>
+    <button class="tab-link px-6 py-2 rounded-full font-semibold text-[#7F8190] hover:bg-white" data-target="#quiz">Quiz</button>
+  </div>
+
+  <!-- Section Materi -->
+  <div id="materi" class="tab-content">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold text-[#0A090B]">Materi Pembelajaran</h2>
+      <button class="bg-[#2B82FE] text-white px-4 py-2 rounded-lg font-semibold text-sm">+ Tambah Materi</button>
     </div>
 
-    {{-- Section Tugas, Materi --}}
-    <div class="row ps-4 pe-4 mb-4" id="materi">
-        <div class=" col-lg-12 col-md-12">
-            <h3 class=" fw-bold text-primary"><i class="fa-solid fa-bullhorn"></i> Pengumuman
-                @if (Auth::user()->hasRole('Pengajar'))
-                    <a href="{{ route('viewCreatePengumuman', $kelas['id']) }}?mapel={{ $mapel['id'] }}">
-                        Tambah Pengumuman
-                    </a>
-                @endif
-            </h3>
-            <div class="p-4 bg-white rounded-3">
-                {{-- Tabel Pengumuman --}}
-                <div class="table-responsive col-12">
-                    @if (count($pengumuman) > 0)
-                        <table id="table" class="table table-striped table-hover table-lg p-3">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Nama Pengumuman</th>
-                                    @if (Auth::user()->hasRole('Pengajar'))
-                                        <th scope="col">Tanggal</th>
-                                    @endif
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                @foreach ($pengumuman as $key)
-                                    @if ($key->isHidden != 1 || Auth::user()->hasRole('Pengajar'))
-                                        <tr class=" @if ($key->isHidden == 1) opacity-50 @endif">
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>
-                                                {{ $key->name }}
-                                                @if ($key->isHidden == 1)
-                                                    <i class="fa-solid fa-eye-slash fa-bounce text-danger"></i>
-                                                @endif
-                                            </td>
-                                            @if (Auth::user()->hasRole('Pengajar'))
-                                                <td>
-                                                    {{ $key->created_at->format('d F Y H:i') }}
-                                                </td>
-                                            @endif
-                                            @if (Auth::user()->hasRole('Pengajar'))
-                                                <td>
-                                                    <a href="{{ route('viewPengumuman', ['pengumuman' => $key->id, 'mapel' => $mapel['id']]) }}"
-                                                        class="badge bg-info p-2 mb-1 animate-btn-small">
-                                                        <i class="fa-regular fa-eye fa-xl"></i>
-                                                    </a>
-                                                    <a href="{{ route('viewUpdatePengumuman', ['pengumuman' => $key->id, 'mapel' => $mapel['id']]) }}"
-                                                        class="badge bg-secondary p-2 mb-1 animate-btn-small">
-                                                        <i class="fa-solid fa-pen-to-square fa-xl"></i>
-                                                    </a>
-                                                    <a href="#table" class="badge bg-secondary p-2 animate-btn-small">
-                                                        <i class="fa-solid fa-xl fa-trash" data-bs-toggle="modal"
-                                                            data-bs-target="#modalHapusPengumuman"
-                                                            onclick="changeValuePengumuman({{ $key->id }})"></i>
-                                                    </a>
-                                                </td>
-                                            @else
-                                                <td>
-                                                    <a
-                                                        href="{{ route('viewPengumuman', ['pengumuman' => $key->id, 'mapel' => $mapel['id']]) }}">
-                                                        <button type="button" class="btn btn-primary"><i
-                                                                class="fa-regular fa-eye fa-xl"></i>
-                                                            View</button>
-                                                    </a>
-                                                </td>
-                                            @endif
-                                        </tr>
-                                    @endif
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <div class="text-center">
-                            <img src="{{ url('/asset/img/not-found.png') }}" alt="" class="img-fluid w-50"
-                                style="filter: saturate(0);" srcset="">
-                            <br>
-                            <Strong>Belum ada Pengumuman</Strong>
-                        </div>
-                    @endif
-                </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div class="border border-[#EEEEEE] rounded-xl p-5 bg-white">
+        <div class="flex justify-between items-start mb-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-[#E9F1FF] flex items-center justify-center rounded-full">
+              <i class="fa-solid fa-book text-[#2B82FE]"></i>
             </div>
+            <h3 class="font-semibold">Persamaan Kuadrat</h3>
+          </div>
+          <span class="text-xs bg-[#F3F4F6] px-2 py-1 rounded-md font-medium">PDF</span>
         </div>
-        <div class="col-lg-12 col-md-12 mt-4">
-            <h3 class="fw-bold text-primary">
-                <i class="fa-solid fa-book"></i> Materi
-                @if (Auth::user()->hasRole('Pengajar'))
-                    <a href="{{ route('materi.create', $kelasMapel->id) }}" class="btn btn-outline-primary">
-                        + Tambah
-                    </a>
-                @endif
-            </h3>
+        <p class="text-sm text-[#7F8190] mb-2"><i class="fa-regular fa-calendar"></i> 10/10/2025</p>
+        <p class="text-sm text-[#7F8190] mb-3"><i class="fa-regular fa-eye"></i> 28 views</p>
+        <div class="flex gap-2">
+          <button class="px-4 py-2 bg-[#F3F4F6] rounded-lg font-semibold text-sm">Edit</button>
+          <button class="px-4 py-2 bg-[#2B82FE] text-white rounded-lg font-semibold text-sm">Lihat</button>
+        </div>
+      </div>
 
-            <div class="p-4 bg-white rounded-3">
-                <div class="row">
-                    <div class="table-responsive col-lg-6 col-12 p-3" style="max-height: 300px; overflow-y:auto;">
-                        @if ($materi->count() > 0)
-                            <table class="table table-striped table-hover table-lg p-3">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Nama Materi</th>
-                                        @if (Auth::user()->hasRole('Pengajar'))
-                                            <th>Tanggal</th>
-                                        @endif
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($materi as $key)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $key->name }}</td>
-
-                                            @if (Auth::user()->hasRole('Pengajar'))
-                                                <td>{{ $key->created_at->format('d F Y H:i') }}</td>
-                                                <td>
-                                                    {{-- View --}}
-                                                    <a href="{{ route('materi.show', $key->id) }}"
-                                                        class="badge bg-info p-2 mb-1">
-                                                        <i class="fa-regular fa-eye"></i>
-                                                    </a>
-                                                    {{-- Edit --}}
-                                                    <a href="{{ route('materi.edit', $key->id) }}"
-                                                        class="badge bg-secondary p-2 mb-1">
-                                                        <i class="fa-solid fa-pen-to-square"></i>
-                                                    </a>
-                                                    {{-- Delete --}}
-                                                    <form action="{{ route('materi.destroy', $key->id) }}" method="POST"
-                                                        class="d-inline"
-                                                        onsubmit="return confirm('Yakin ingin menghapus materi ini?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="badge bg-danger p-2 border-0">
-                                                            <i class="fa-solid fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </td>
-                                            @else
-                                                <td>
-                                                    <a href="{{ route('materi.show', $key->id) }}" class="btn btn-primary">
-                                                        <i class="fa-regular fa-eye"></i> View
-                                                    </a>
-                                                </td>
-                                            @endif
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @else
-                            <div class="text-center">
-                                <img src="{{ url('/asset/img/not-found.png') }}" alt="" class="img-fluid w-50"
-                                    style="filter: saturate(0);">
-                                <br>
-                                <strong>Belum ada Materi</strong>
-                            </div>
-                        @endif
-                    </div>
-
-                    <div class="col-lg-6 col-12 p-4">
-                        <div class="border border-primary rounded-2 h-100 p-3">
-                            <h6 class="text-primary fw-bold text-center">Materi</h6>
-                            <p>
-                                Materi berfungsi sebagai akses materi pembelajaran, referensi untuk belajar mandiri,
-                                pemantauan kemajuan, dan sumber referensi bagi pengguna dalam memahami materi.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+      <div class="border border-[#EEEEEE] rounded-xl p-5 bg-white">
+        <div class="flex justify-between items-start mb-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-[#E9F1FF] flex items-center justify-center rounded-full">
+              <i class="fa-solid fa-book text-[#2B82FE]"></i>
             </div>
+            <h3 class="font-semibold">Fungsi Trigonometri</h3>
+          </div>
+          <span class="text-xs bg-[#F3F4F6] px-2 py-1 rounded-md font-medium">Video</span>
         </div>
+        <p class="text-sm text-[#7F8190] mb-2"><i class="fa-regular fa-calendar"></i> 08/10/2025</p>
+        <p class="text-sm text-[#7F8190] mb-3"><i class="fa-regular fa-eye"></i> 32 views</p>
+        <div class="flex gap-2">
+          <button class="px-4 py-2 bg-[#F3F4F6] rounded-lg font-semibold text-sm">Edit</button>
+          <button class="px-4 py-2 bg-[#2B82FE] text-white rounded-lg font-semibold text-sm">Lihat</button>
+        </div>
+      </div>
 
+      <div class="border border-[#EEEEEE] rounded-xl p-5 bg-white">
+        <div class="flex justify-between items-start mb-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-[#E9F1FF] flex items-center justify-center rounded-full">
+              <i class="fa-solid fa-book text-[#2B82FE]"></i>
+            </div>
+            <h3 class="font-semibold">Logaritma</h3>
+          </div>
+          <span class="text-xs bg-[#F3F4F6] px-2 py-1 rounded-md font-medium">PDF</span>
+        </div>
+        <p class="text-sm text-[#7F8190] mb-2"><i class="fa-regular fa-calendar"></i> 05/10/2025</p>
+        <p class="text-sm text-[#7F8190] mb-3"><i class="fa-regular fa-eye"></i> 30 views</p>
+        <div class="flex gap-2">
+          <button class="px-4 py-2 bg-[#F3F4F6] rounded-lg font-semibold text-sm">Edit</button>
+          <button class="px-4 py-2 bg-[#2B82FE] text-white rounded-lg font-semibold text-sm">Lihat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Tugas -->
+  <div id="tugas" class="tab-content hidden">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold text-[#0A090B]">Tugas</h2>
+      <button class="bg-[#2B82FE] text-white px-4 py-2 rounded-lg font-semibold text-sm">+ Buat Tugas</button>
     </div>
 
-    {{-- <div class="col-lg-12 col-md-12 mt-4">
-        <h3 class="fw-bold text-primary"><i class="fa-solid fa-comments"></i> Diskusi
-            @if (Auth::user()->hasRole('Pengajar'))
-                <a href="{{ route('viewCreateDiskusi', $kelasMapel->id) }}">
-                    <button type="button" class="btn btn-outline-primary">+ Tambah Diskusi</button>
-                </a>
-            @endif
-        </h3> --}}
-        {{-- <div class="p-4 bg-white rounded-3">
-            <div class="row">
-                {{-- Tabel Diskusi --}}
-                {{-- <div class="table-responsive col-lg-6 col-12 p-3" style="max-height: 300px; overflow-y:auto;">
-                    @if ($diskusi->count() > 0)
-                        <table id="table" class="table table-striped table-hover table-lg p-3">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nama Diskusi</th>
-                                    @if (Auth::user()->hasRole('Pengajar'))
-                                        <th>Tanggal</th>
-                                    @endif
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($diskusi as $key)
-                                    @if ($key->isHidden != 1 || Auth::user()->hasRole('Pengajar'))
-                                        <tr class="@if ($key->isHidden == 1) opacity-50 @endif">
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>
-                                                {{ $key->name }}
-                                                @if ($key->isHidden == 1)
-                                                    <i class="fa-solid fa-eye-slash fa-bounce text-danger"></i>
-                                                @endif
-                                            </td>
-                                            @if (Auth::user()->hasRole('Pengajar'))
-                                                <td>{{ $key->created_at->format('d F Y H:i') }}</td>
-                                            @endif
-
-                                            <td>
-                                                @if (Auth::user()->hasRole('Pengajar'))
-                                                    {{-- viewDiskusi hanya butuh diskusi --}}
-                                                    {{-- <a href="{{ route('viewDiskusi', $key->id) }}"
-                                                        class="badge bg-info p-2 mb-1 animate-btn-small">
-                                                        <i class="fa-regular fa-eye fa-xl"></i>
-                                                    </a> --}} 
-
-                                                    {{-- viewUpdateDiskusi hanya butuh diskusi --}}
-                                                    {{-- <a href="{{ route('viewUpdateDiskusi', $key->id) }}"
-                                                        class="badge bg-secondary p-2 mb-1 animate-btn-small">
-                                                        <i class="fa-solid fa-pen-to-square fa-xl"></i>
-                                                    </a> --}}
-
-                                                    {{-- Hapus pakai modal --}}
-                                                    {{-- <form action="{{ route('destroyDiskusi', $key->id) }}" method="POST"
-                                                        class="d-inline"
-                                                        onsubmit="return confirm('Yakin ingin menghapus diskusi ini?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="badge bg-danger p-2 border-0">
-                                                            <i class="fa-solid fa-trash"></i>
-                                                        </button>
-                                                    </form> --}}
-                                                {{-- @else
-                                                    <a href="{{ route('viewDiskusi', $key->id) }}">
-                                                        <button type="button" class="btn btn-primary">
-                                                            <i class="fa-regular fa-eye fa-xl"></i> View
-                                                        </button>
-                                                    </a>
-                                                @endif --}}
-                                            {{-- </td>
-                                        </tr>
-                                    @endif
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <div class="text-center">
-                            <img src="{{ url('/asset/img/not-found.png') }}" alt="" class="img-fluid w-50"
-                                style="filter: saturate(0);">
-                            <br>
-                            <strong>Belum ada Diskusi</strong>
-                        </div>
-                    @endif
-                </div> --}}
-
-                {{-- Tabel Kanan --}}
-                {{-- <div class="p-4 col-lg-6 col-12">
-                    <div class="border border-primary rounded-2 h-100 p-3">
-                        <h6 class="text-primary fw-bold text-center">Diskusi</h6>
-                        <p>
-                            Diskusi berfungsi sebagai platform interaksi antara pengguna untuk berbagi pengetahuan,
-                            pengalaman, dan pandangan. Melalui diskusi, peserta dapat saling bertukar ide, memecahkan
-                            masalah bersama, dan memperdalam pemahaman tentang materi. Diskusi juga membantu dalam
-                            mengembangkan kemampuan berpikir kritis dan komunikasi, serta membangun komunitas
-                            pembelajaran yang saling mendukung.
-                        </p>
-                    </div>
-                </div>
-            </div>
+    <div class="space-y-4">
+      <div class="border border-[#EEEEEE] rounded-xl p-5 bg-white flex justify-between items-start">
+        <div>
+          <h3 class="font-semibold">Latihan Persamaan Kuadrat <span class="text-xs bg-[#2B82FE] text-white px-2 py-1 rounded-md">Aktif</span></h3>
+          <p class="text-sm text-[#7F8190] mt-1"><i class="fa-regular fa-calendar"></i> Deadline: 20/10/2025</p>
+          <div class="flex gap-2 mt-3">
+            <button class="px-4 py-2 bg-[#F3F4F6] rounded-lg font-semibold text-sm">Lihat Pengumpulan</button>
+            <button class="px-4 py-2 bg-[#F3F4F6] rounded-lg font-semibold text-sm">Edit</button>
+          </div>
         </div>
-    </div> --}} 
-
-
-    {{-- Section  tUGAS --}}
-    <div class="col-lg-12 col-md-12 mt-4">
-        <h3 class="fw-bold text-primary">
-            <i class="fa-solid fa-pen"></i> Tugas
-            @if (Auth::user()->hasRole('Pengajar'))
-                <a href="{{ route('viewCreateTugas', ['kelas' => $kelas->id, 'mapel' => $mapel->id]) }}">
-                    <button type="button" class="btn btn-outline-primary">+ Tambah</button>
-                </a>
-            @endif
-        </h3>
-        <div class="p-4 bg-white rounded-3">
-            <div class="row">
-                {{-- Kolom kiri: tabel tugas --}}
-                <div class="table-responsive col-lg-6 col-12 p-3">
-                    @if ($tugas->count() > 0)
-                        <table class="table table-striped table-hover table-lg">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nama Tugas</th>
-                                    <th>Deadline</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($tugas as $key)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>
-                                            {{ $key->name }}
-                                            @if ($key->isHidden == 1)
-                                                <i class="fa-solid fa-lock text-danger"></i>
-                                            @endif
-                                        </td>
-                                        <td>{{ \Carbon\Carbon::parse($key->due)->format('d M Y H:i') }}</td>
-                                        <td>
-                                            {{-- View --}}
-                                            <a href="{{ route('viewTugas', [
-                                                'tugas' => $key->id,
-                                                'kelasMapelId' => $kelasMapel->id,
-                                                'mapelId' => $mapel->id,
-                                            ]) }}"
-                                                class="badge bg-info p-2 mb-1 animate-btn-small">
-                                                <i class="fa-regular fa-eye"></i>
-                                            </a>
-
-                                            @if (Auth::user()->hasRole('Pengajar'))
-                                                {{-- Edit --}}
-                                                <a href="{{ route('viewUpdateTugas', $key->id) }}"
-                                                    class="badge bg-secondary p-2 mb-1 animate-btn-small">
-                                                    <i class="fa-solid fa-pen-to-square"></i>
-                                                </a>
-
-                                                {{-- Hapus (onclick confirm) --}}
-                                                <form action="{{ route('tugas.destroy', $key->id) }}" method="POST"
-                                                    class="d-inline"
-                                                    onsubmit="return confirm('Yakin mau hapus tugas ini?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="badge bg-danger border-0 p-2 mb-1 animate-btn-small">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <div class="text-center">
-                            <img src="{{ url('/asset/img/not-found.png') }}" alt="not found" class="img-fluid w-50"
-                                style="filter: saturate(0);">
-                            <br>
-                            <strong>Belum ada Tugas</strong>
-                        </div>
-                    @endif
-                </div>
-
-                {{-- Kolom kanan: penjelasan --}}
-                <div class="p-4 col-lg-6 col-12">
-                    <div class="border border-primary rounded-2 h-100 p-3">
-                        <h6 class="text-primary fw-bold text-center">Tugas</h6>
-                        <p>
-                            Tugas digunakan untuk menguji pemahaman siswa, memberi latihan,
-                            serta menilai hasil belajar. Fitur ini memudahkan guru memberi
-                            instruksi dan siswa mengunggah hasil kerja dengan rapi.
-                        </p>
-                    </div>
-                </div>
-            </div>
+        <div class="text-right">
+          <p class="text-lg font-semibold">20/32</p>
+          <p class="text-sm text-[#7F8190]">Sudah mengumpulkan</p>
         </div>
+      </div>
+
+      <div class="border border-[#EEEEEE] rounded-xl p-5 bg-white flex justify-between items-start">
+        <div>
+          <h3 class="font-semibold">Tugas Trigonometri <span class="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-md">Selesai</span></h3>
+          <p class="text-sm text-[#7F8190] mt-1"><i class="fa-regular fa-calendar"></i> Deadline: 18/10/2025</p>
+          <div class="flex gap-2 mt-3">
+            <button class="px-4 py-2 bg-[#F3F4F6] rounded-lg font-semibold text-sm">Lihat Pengumpulan</button>
+            <button class="px-4 py-2 bg-[#F3F4F6] rounded-lg font-semibold text-sm">Edit</button>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="text-lg font-semibold">32/32</p>
+          <p class="text-sm text-[#7F8190]">Sudah mengumpulkan</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Quiz -->
+  <div id="quiz" class="tab-content hidden">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold text-[#0A090B]">Quiz & Ujian</h2>
+      <button class="bg-[#2B82FE] text-white px-4 py-2 rounded-lg font-semibold text-sm">+ Buat Quiz</button>
     </div>
 
-
-
-    {{-- Section Ujian --}}
-    <div class="mb-4 ps-4 pe-4">
-        <h3 class="text-primary fw-bold">
-            <i class="fa-solid fa-newspaper"></i> Ujian
-            @if (Auth::user()->hasRole('Pengajar'))
-                <a href="{{ route('ujian.add', ['kelas' => $kelasId, 'mapel' => $mapel->id]) }}">
-                    <button type="button" class="btn btn-outline-primary">+ Tambah</button>
-                </a>
-            @endif
-        </h3>
-
-        <div class="p-4 bg-white rounded-3">
-            <div class="table-responsive col-12">
-                @if ($ujian->count() > 0)
-                    <table id="table" class="table table-hover table-striped table-lg">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nama Ujian</th>
-                                <th>Time</th>
-                                <th>Tipe Soal</th>
-                                <th>Jumlah Soal</th>
-                                <th>Due Date</th>
-                                @if (Auth::user()->hasRole('Pengajar'))
-                                    <th>Tanggal</th>
-                                @endif
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($ujian as $key)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $key->name }}</td>
-                                    <td>{{ $key->time }} Menit</td>
-                                    <td><span class="badge p-2 bg-dark">Pilihan Ganda</span></td>
-                                    <td>{{ $key->soalUjianMultiple->count() }}</td>
-                                    <td>
-                                        @php
-                                            $dueDate = \Carbon\Carbon::parse($key->due);
-                                            $now = \Carbon\Carbon::now();
-                                            $daysUntilDue = $dueDate->diffInDays($now);
-                                        @endphp
-                                        @if ($dueDate->isPast())
-                                            <span class="badge bg-secondary">Selesai</span>
-                                        @else
-                                            @if ($daysUntilDue == 0)
-                                                <span class="badge bg-warning">Hari ini deadline</span>
-                                            @else
-                                                <span class="badge bg-primary">{{ $daysUntilDue }} hari lagi</span>
-                                            @endif
-                                        @endif
-                                    </td>
-
-                                    @if (Auth::user()->hasRole('Pengajar'))
-                                        <td>{{ $key->created_at->format('d F Y H:i') }}</td>
-                                        <td>
-                                            {{-- Kelola soal --}}
-                                            <a href="{{ route('ujian.soal.manage', $key->id) }}"
-                                                class="badge bg-info p-2 mb-1 animate-btn-small">
-                                                <i class="fa-regular fa-eye fa-xl"></i> Soal
-                                            </a>
-
-                                            {{-- Edit ujian --}}
-                                            {{-- <a href="{{ route('viewUpdateUjian', $key->id) }}"
-                                           class="badge bg-secondary p-2 mb-1 animate-btn-small">
-                                            <i class="fa-solid fa-pen-to-square fa-xl"></i>
-                                        </a> --}}
-
-                                            {{-- Hapus ujian --}}
-                                            <a href="#table" class="badge bg-danger p-2 animate-btn-small"
-                                                data-bs-toggle="modal" data-bs-target="#modalHapusUjian"
-                                                onclick="changeValueUjian({{ $key->id }}, '{{ $key->tipe }}')">
-                                                <i class="fa-solid fa-xl fa-trash"></i>
-                                            </a>
-
-                                            {{-- Export nilai --}}
-                                            <a
-                                                href="{{ route('exportNilaiUjian', ['ujian' => $key->id, 'kelasMapel' => $kelasMapel->id]) }}">
-                                                <button type="button" class="btn btn-outline-success">
-                                                    <i class="fa-solid fa-file-export"></i> Export
-                                                </button>
-                                            </a>
-                                        </td>
-                                    @else
-                                        <td>
-                                            @php
-                                                // Cek apakah user sudah ada jawaban di salah satu soal ujian
-                                                $sudahJawab = false;
-                                                foreach ($key->soalUjianMultiple as $soal) {
-                                                    if ($soal->userJawaban->count() > 0) {
-                                                        $sudahJawab = true;
-                                                        break;
-                                                    }
-                                                }
-                                            @endphp
-
-                                            @if ($sudahJawab)
-                                                <a href="{{ route('ujian.learning.rapport', $key->id) }}">
-                                                    <button type="button" class="btn btn-success">
-                                                        Lihat Hasil
-                                                    </button>
-                                                </a>
-                                          
-                                        @else
-                                            {{-- Belum pernah jawab → tampilkan tombol Kerjakan --}}
-                                            <a
-                                                href="{{ route('ujian.access', [
-                                                    'id' => $key->id,
-                                                    'kelasId' => $kelas->id,
-                                                    'mapelId' => $mapel->id,
-                                                ]) }}">
-                                                <button type="button" class="btn btn-primary">
-                                                    <i class="fa-regular fa-eye fa-xl"></i> Kerjakan
-                                                </button>
-                                            </a>
-                                    @endif
-                                    </td>
-                            @endif
-                            </tr>
-                @endforeach
-                </tbody>
-                </table>
-            @else
-                <div class="text-center">
-                    <img src="{{ url('/asset/img/not-found.png') }}" alt="" class="img-fluid w-25"
-                        style="filter: saturate(0);">
-                    <br>
-                    <strong>Belum ada Ujian</strong>
-                </div>
-                @endif
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="border border-[#EEEEEE] rounded-xl p-5 bg-white">
+        <div class="flex justify-between items-start mb-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-[#E9F1FF] flex items-center justify-center rounded-full">
+              <i class="fa-solid fa-file-lines text-[#2B82FE]"></i>
             </div>
+            <h3 class="font-semibold">Quiz Persamaan Kuadrat</h3>
+          </div>
+          <span class="text-xs bg-[#E9F1FF] text-[#2B82FE] px-2 py-1 rounded-md font-medium">Terjadwal</span>
         </div>
-    </div>
+        <p class="text-sm text-[#7F8190]"><i class="fa-regular fa-calendar"></i> 22/10/2025</p>
+        <p class="text-sm text-[#7F8190]"><i class="fa-regular fa-clock"></i> 60 menit</p>
+        <p class="text-sm text-[#7F8190]"><i class="fa-regular fa-user"></i> 30 siswa</p>
+        <div class="flex gap-2 mt-3">
+          <button class="px-4 py-2 bg-[#F3F4F6] rounded-lg font-semibold text-sm">Edit</button>
+          <button class="px-4 py-2 bg-[#2B82FE] text-white rounded-lg font-semibold text-sm">Detail</button>
+        </div>
+      </div>
 
+      <div class="border border-[#EEEEEE] rounded-xl p-5 bg-white">
+        <div class="flex justify-between items-start mb-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-[#E9F1FF] flex items-center justify-center rounded-full">
+              <i class="fa-solid fa-file-lines text-[#2B82FE]"></i>
+            </div>
+            <h3 class="font-semibold">Ulangan Harian 1</h3>
+          </div>
+          <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-md font-medium">Selesai</span>
+        </div>
+        <p class="text-sm text-[#7F8190]"><i class="fa-regular fa-calendar"></i> 15/10/2025</p>
+        <p class="text-sm text-[#7F8190]"><i class="fa-regular fa-clock"></i> 90 menit</p>
+        <p class="text-sm text-[#7F8190]"><i class="fa-regular fa-user"></i> 32 siswa</p>
+        <div class="flex gap-2 mt-3">
+          <button class="px-4 py-2 bg-[#F3F4F6] rounded-lg font-semibold text-sm">Edit</button>
+          <button class="px-4 py-2 bg-green-500 text-white rounded-lg font-semibold text-sm">Lihat Hasil</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.tab-link');
+  const contents = document.querySelectorAll('.tab-content');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(btn => btn.classList.remove('bg-white', 'shadow', 'text-[#0A090B]'));
+      tabs.forEach(btn => btn.classList.add('text-[#7F8190]'));
+      tab.classList.add('bg-white', 'shadow', 'text-[#0A090B]');
+      contents.forEach(content => content.classList.add('hidden'));
+      document.querySelector(tab.getAttribute('data-target')).classList.remove('hidden');
+    });
+  });
+</script>
+
+<script>
+  const tabs = document.querySelectorAll('.tab-link');
+  const contents = document.querySelectorAll('.tab-content');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(btn => btn.classList.remove('bg-white', 'shadow', 'text-[#0A090B]'));
+      tabs.forEach(btn => btn.classList.add('text-[#7F8190]'));
+      tab.classList.add('bg-white', 'shadow', 'text-[#0A090B]');
+      contents.forEach(content => content.classList.add('hidden'));
+      document.querySelector(tab.getAttribute('data-target')).classList.remove('hidden');
+    });
+  });
+</script>
 
     <div class="modal fade" id="modalHapusMateri" tabindex="-1" aria-labelledby="modalHapusMateriLabel"
         aria-hidden="true">
@@ -601,29 +261,7 @@
     </div>
 
 
-    {{-- <div class="modal fade" id="modalHapusDiskusi" tabindex="-1" aria-labelledby="modalHapusDiskusiLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalHapusDiskusiLabel">Konfirmasi Hapus</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Apakah Anda yakin ingin menghapus diskusi ini?
-                </div> --}}
-                {{-- <div class="modal-footer">
-                      <form action="{{ route('destroyDiskusi') }}" method="POST">
-                        @csrf
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <input type="hidden" name="hapusId" id="diskusiId" value="">
-                        <input type="hidden" name="kelasMapelId" id="kelasMapelDiskusi" value="">
-                        <button type="submit" class="btn btn-danger">Hapus</button>
-                    </form>
-                </div> --}}
-            {{-- </div>
-        </div>
-    </div> --}}
+   
     <div class="modal fade" id="modalHapusPengumuman" tabindex="-1" aria-labelledby="modalHapusPengumumanLabel"
         aria-hidden="true">
         <div class="modal-dialog">

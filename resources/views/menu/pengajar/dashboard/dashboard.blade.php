@@ -21,7 +21,7 @@
               <h2 class="text-2xl font-bold mt-1">{{ $jumlahSiswa}}</h2>
             </div>
             <div class="bg-[#2B82FE] w-12 h-12 rounded-xl flex items-center justify-center">
-              <img src="assets/images/icons/book.svg" alt="kelas" class="w-6 h-6">
+              <img src="{{ asset('images/icons/book-open.svg') }}" alt="kelas" class="w-6 h-6">
             </div>
           </div>
 
@@ -32,7 +32,7 @@
               <h2 class="text-2xl font-bold mt-1">{{ $jumlahMapel }}</h2>
             </div>
             <div class="bg-[#22C55E] w-12 h-12 rounded-xl flex items-center justify-center">
-              <img src="assets/images/icons/document.svg" alt="materi" class="w-6 h-6">
+              <img src="{{ asset('images/icons/document.svg') }}" alt="materi" class="w-6 h-6">
             </div>
           </div>
 
@@ -43,7 +43,8 @@
               <h2 class="text-2xl font-bold mt-1">{{ $jumlahKelas }}</h2>
             </div>
             <div class="bg-[#F97316] w-12 h-12 rounded-xl flex items-center justify-center">
-              <img src="assets/images/icons/clipboard.svg" alt="tugas" class="w-6 h-6">
+              <img src=" {{ asset('images/icons/clipboard.svg') }}" alt="tugas" class="w-6 h-6">
+             
             </div>
           </div>
         </div>
@@ -61,7 +62,7 @@
   class="block p-6 border border-[#EEEEEE] rounded-xl hover:shadow-md hover:scale-[1.02] transition">
 
   <div class="bg-[#2B82FE] w-12 h-12 rounded-xl flex items-center justify-center mb-4">
-    <img src="{{ asset('assets/images/icons/book.svg') }}" alt="kelas" class="w-6 h-6">
+    <img src="{{ asset('images/icons/book-open.svg') }}" alt="kelas" class="w-6 h-6">
   </div>
 
   <h3 class="font-semibold text-[#0A090B] text-lg">
@@ -70,7 +71,7 @@
   <p class="text-[#7F8190]">
     {{ $item['mapel_nama'] ?? '-' }}
   </p>
-  <p class="text-[#7F8190] text-sm mt-2">2024/2025</p>
+  {{-- <p class="text-[#7F8190] text-sm mt-2">2024/2025</p> --}}
 </a>
 
     @empty
