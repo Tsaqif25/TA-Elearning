@@ -1,5 +1,5 @@
 <aside id="sidebar"
-  class="fixed lg:static inset-y-0 left-0 w-[270px] bg-[#FBFBFB] border-r border-[#EEEEEE] flex flex-col pt-[15px] pb-[30px] px-[25px] transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-50">
+  class="fixed lg:static inset-y-0 left-0 w-[270px] bg-[#FBFBFB] border-r-2 border-black  flex flex-col pt-[15px] pb-[30px] px-[25px] transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-50">
       
       <div class="w-full flex flex-col gap-[30px]">
     

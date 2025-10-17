@@ -167,35 +167,27 @@ Route::middleware('auth')->controller(PengumumanController::class)->group(functi
     });
 });
 
-
-
-
-
 // =========================
 // 📌 TugasController (utama)
 // =========================
  Route::middleware('auth')->controller(TugasController::class)->group(function () {
      // Semua user login
      Route::get('/tugas/{tugas}', 'viewTugas')->name('viewTugas');
-   
-
    //   Khusus Pengajar
-     Route::middleware('role:Pengajar')->group(function () {
-         Route::get('/tugas/add/{kelas}/{mapel}', 'viewCreateTugas')->name('viewCreateTugas');
-         Route::get('/tugas/{tugas}/edit', 'viewUpdateTugas')->name('viewUpdateTugas');
-         Route::put('/tugas/{tugas}', 'updateTugas')->name('updateTugas');
-         Route::post('/tugas/update-nilai/{tugas}', 'siswaUpdateNilai')->name('siswaUpdateNilai');
-         Route::delete('/tugas/{tugas}', 'destroyTugas')->name('tugas.destroy');
-         Route::post('/store-tugas', 'createTugas')->name('createTugas');
-     });
+   Route::middleware('role:Pengajar')->group(function () {
+    Route::get('/tugas/kelas-mapel/{kelasMapel}/create', 'viewCreateTugas')->name('viewCreateTugas');
+    Route::post('/tugas/kelas-mapel/{kelasMapel}', 'createTugas')->name('createTugas');
+    Route::get('/tugas/{tugas}/edit', 'viewUpdateTugas')->name('viewUpdateTugas');
+    Route::put('/tugas/{tugas}', 'updateTugas')->name('updateTugas');
+    Route::post('/tugas/update-nilai/{tugas}', 'siswaUpdateNilai')->name('siswaUpdateNilai');
+    Route::delete('/tugas/{tugas}', 'destroyTugas')->name('tugas.destroy');
+});
 
 //    Khusus Admin
     Route::middleware('role:Admin')->group(function () {
         Route::get('/tugasAdmin', 'viewTugasAdmin')->name('viewTugasAdmin');
     });
 });
-
-
 // // ============================
 // // 📌 TugasFileController (soal)
 // // ============================

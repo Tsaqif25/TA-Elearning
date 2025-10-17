@@ -1,180 +1,115 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
-    {{-- Navigasi Breadcrumb --}}
-    <div class="col-12 ps-4 pe-4 mb-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb bg-white">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                @if (!Auth::user()->hasRole('Admin'))
-                    <li class="breadcrumb-item">
-                        <a
-                            href="{{ route('viewKelasMapel', [
-                                'mapel' => $kelasMapel->mapel->id,
-                                'kelas' => $kelasMapel->kelas->id,
-                            ]) }}">
-                            {{ $kelasMapel->mapel->name }}
-                        </a>
-                    </li>
-                @endif
-                <li class="breadcrumb-item active" aria-current="page">Materi</li>
-            </ol>
+<div class="flex flex-col lg:flex-row gap-6">
 
-        </nav>
-    </div>
-
-    {{-- Judul Halaman --}}
-    <div class="ps-4 pe-4 mt-4 pt-4">
-        <h2 class="display-6 fw-bold">
-            @if (Auth::user()->hasRole('Admin'))
-                <a href="{{ route('activity') }}">
-                    <button type="button" class="btn btn-outline-secondary rounded-circle">
-                        <i class="fa-solid fa-arrow-left"></i>
-                    </button>
-                </a> Materi
-            @else
-                <a
-                    href="{{ route('viewKelasMapel', [
-                        'mapel' => $kelasMapel->mapel->id,
-                        'kelas' => $kelasMapel->kelas->id,
-                    ]) }}">
-                    <button type="button" class="btn btn-outline-secondary rounded-circle">
-                        <i class="fa-solid fa-arrow-left"></i>
-                    </button>
+    {{-- Kiri: Konten Utama --}}
+    <div class="flex-1 space-y-6">
+        {{-- Header --}}
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('viewKelasMapel', [
+                    'mapel' => $materi->kelasMapel->mapel->id,
+                    'kelas' => $materi->kelasMapel->kelas->id
+                ]) }}" 
+                   class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition">
+                    <i class="fa-solid fa-arrow-left text-gray-700"></i>
                 </a>
-            @endif
-        </h2>
-    </div>
-
-    {{-- Baris utama --}}
-    <div class="col-12 ps-4 pe-4 mb-4">
-        <div class="row">
-            {{-- Bagian Kiri --}}
-            <div class="col-xl-9 col-lg-12 col-md-12">
-                <div class="row">
-                    {{-- Tampilan Materi --}}
-                    <div class="col-12 mb-4">
-                        <div class="p-4 bg-white rounded-4">
-                            <div class="h-100 p-4">
-                                <h2 class="fw-bold text-primary">
-                                    {{ $materi->name }}
-                                    @if ($materi->isHidden == 1)
-                                        <i class="fa-solid fa-lock fa-bounce text-danger"></i>
-                                    @endif
-                                </h2>
-                                <hr>
-                                <p>{!! $materi->content !!}</p>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">{{ $materi->name }}</h1>
+                    <p class="text-sm text-gray-500">Diunggah {{ $materi->created_at->translatedFormat('d F Y') }}</p>
                 </div>
             </div>
+        </div>
+   {{-- Deskripsi Materi --}}
+        <div class="bg-white border-2 border-black rounded-2xl shadow-sm p-6">
+            <h2 class="text-lg font-semibold mb-4">Deskripsi</h2>
+            <div class="whitespace-pre-line text-gray-700 leading-relaxed">
+                {{($materi->content)}}
+            </div>
+        </div>
+        {{-- File Materi --}}
+<div class="bg-white border-2 border-black rounded-2xl shadow-sm p-6">
+    <h2 class="text-lg font-semibold mb-4">File Materi</h2>
 
-            {{-- Bagian Kanan --}}
-            <div class="col-xl-3 col-lg-12 col-md-12">
-                {{-- Info Pengajar --}}
-                <div class="mb-4 p-4 bg-white rounded-4">
-                    <div class="h-100 p-4">
-                        <h4 class="fw-bold mb-2">Pengajar</h4>
-                        <hr>
-                        <div class="row">
-                            <div class="col-lg-4 d-none d-lg-none d-xl-block">
-                                @if ($editor && $editor->gambar == null)
-                                    <img src="/asset/icons/profile-women.svg" class="rounded-circle img-fluid"
-                                        alt="">
-                                @elseif ($editor)
-                                    <img src="{{ asset('storage/file/img-upload/' . $editor->gambar) }}" alt="placeholder"
-                                        class="rounded-circle img-fluid">
-                                @endif
-                            </div>
-                            <div class="col-lg-8">
-                                @if ($editor)
-                                    {{-- <a href="{{ route('viewProfilePengajar', ['pengajar' => $editor->id]) }}">
-                                        {{ $editor->name }}
-                                    </a> --}}
-                                @else
-                                    <span class="text-muted">Tidak ada pengajar</span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    @forelse ($materi->files as $file)
+        <div class="flex items-center justify-between p-3 border-1 border-black rounded-xl mb-2 hover:bg-gray-50 transition">
+            <div class="flex items-center gap-3">
+                {{-- Icon --}}
+                <i class="fa-solid fa-file text-gray-500 text-lg"></i>
 
-          
-                {{-- Daftar File --}}
-                <div class="mb-4 p-4 bg-white rounded-4">
-                    <div class="h-100 p-4">
-                        <h4 class="fw-bold mb-2">Files</h4>
-                        <hr>
-                        @if ($materi->files->count() > 0)
-                            <ul class="list-group">
-                                @foreach ($materi->files as $key)
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>
-                                            @if (Str::endsWith($key->file, ['.jpg', '.jpeg', '.png', '.gif']))
-                                                <i class="fa-solid fa-image"></i>
-                                            @elseif (Str::endsWith($key->file, ['.mp4', '.avi', '.mov']))
-                                                <i class="fa-solid fa-video"></i>
-                                            @elseif (Str::endsWith($key->file, ['.pdf']))
-                                                <i class="fa-solid fa-file-pdf"></i>
-                                            @elseif (Str::endsWith($key->file, ['.doc', '.docx']))
-                                                <i class="fa-solid fa-file-word"></i>
-                                            @elseif (Str::endsWith($key->file, ['.ppt', '.pptx']))
-                                                <i class="fa-solid fa-file-powerpoint"></i>
-                                            @elseif (Str::endsWith($key->file, ['.xls', '.xlsx']))
-                                                <i class="fa-solid fa-file-excel"></i>
-                                            @elseif (Str::endsWith($key->file, ['.txt']))
-                                                <i class="fa-solid fa-file-alt"></i>
-                                            @elseif (Str::endsWith($key->file, ['.mp3']))
-                                                <i class="fa-solid fa-music"></i>
-                                            @else
-                                                <i class="fa-solid fa-file"></i>
-                                            @endif
+                {{-- Nama File Asli --}}
+                <a href="{{ asset('storage/' . $file->file) }}" 
+                   target="_blank"
+                   class="text-sm text-gray-800 hover:underline break-all">
+                    {{ basename($file->file) }}
+                </a>
+            </div>
 
-                                            {{-- tampilkan nama file asli --}}
-                                            <a href="{{ asset('storage/' . urlencode($key->file)) }}" target="_blank">
-                                                {{ basename($key->file) }}
-                                            </a>
-                                          
-                                            <a href="{{ route('getFile', ['namaFile' => $key->file]) }}">
-                                                Download
-                                            </a>
-
-                                        </span>
-
-                                        {{-- Tombol hapus opsional --}}
-                                        {{-- <form action="{{ route('materi.destroy', $materi->id) }}" method="POST" --}}
-                                        @if (Auth::user()->hasRole('Pengajar'))
-                                        <form action="{{ route('materi.destroy', $materi->id) }}" method="POST"
-                                            onsubmit="return confirm('Yakin hapus file ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <input type="hidden" name="file_id" value="{{ $key->id }}">
-                                            <button type="submit" class="btn btn-danger btn-sm">X</button>
-                                        </form>
-                                        @endif
+            {{-- Tombol Download --}}
+            <a href="{{ route('getFile', ['namaFile' => $file->file]) }}" 
+               class="px-3 py-2 text-sm rounded-lg border-2 border-black text-gray-700 hover:bg-gray-100 font-medium transition flex items-center gap-2">
+                <i class="fa-solid fa-download"></i> Download
+            </a>
+        </div>
+    @empty
+        <p class="text-gray-500 text-sm">Belum ada file materi diunggah.</p>
+    @endforelse
+</div>
 
 
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <span class="small">(Tidak ada file untuk materi ini)</span>
-                        @endif
-                    </div>
-                </div>
 
+        {{-- Video Pembelajaran --}}
+        @if($materi->youtube_link)
+            <div class="bg-white border border-black rounded-2xl shadow-sm p-6">
+                <h2 class="text-lg font-semibold mb-4">Video Pembelajaran</h2>
+                @php
+                    preg_match('/(?:youtube\.com\/.*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $materi->youtube_link, $match);
+                    $videoId = $match[1] ?? null;
+                @endphp
+
+                @if ($videoId)
+                    <iframe width="100%" height="400"
+                        class="rounded-2xl"
+                        src="https://www.youtube.com/embed/{{ $videoId }}" 
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                @else
+                    <p class="text-sm text-gray-500">Link YouTube tidak valid.</p>
+                @endif
+            </div>
+        @endif
+    </div>
+    {{-- Kanan: Informasi Materi --}}
+    <div class="w-full lg:w-80 space-y-6">
+        <div class="bg-white  border-2 border-black rounded-2xl shadow-sm p-6">
+            <h3 class="text-sm font-semibold text-gray-600 mb-3 uppercase">Informasi Materi</h3>
+            <ul class="text-sm text-gray-700 space-y-2">
+                <li><span class="font-medium">Total File:</span> {{ $materi->files->count() }} File</li>
+              
+            </ul>
+
+            <div class="mt-4">
+                <h4 class="text-sm font-semibold text-gray-600 mb-2">Deskripsi Singkat</h4>
+                <p class="text-sm text-gray-600">{{ Str::limit($materi->content, 100) }}</p>
+            </div>
+        </div>
+
+        {{-- Tombol Aksi --}}
+        <div class="bg-white  border-2 border-black rounded-2xl shadow-sm p-6">
+            <h3 class="text-sm font-semibold text-gray-600 mb-3 uppercase">Aksi</h3>
+            <div class="flex flex-col gap-3">
+                <a href="{{ route('viewKelasMapel', [
+                    'mapel' => $materi->kelasMapel->mapel->id,
+                    'kelas' => $materi->kelasMapel->kelas->id
+                ]) }}" 
+                   class="w-full text-center py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">
+                    ← Kembali ke Kelas
+                </a>
             </div>
         </div>
     </div>
-
-    {{-- Script untuk mengatur gambar agar responsif --}}
-    <script>
-        var img = document.querySelectorAll('img');
-        img.forEach(function(element) {
-            element.classList.add('img-fluid');
-        });
-    </script>
-
-  
+</div>
 @endsection

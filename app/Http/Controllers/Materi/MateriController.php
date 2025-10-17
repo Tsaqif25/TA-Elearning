@@ -14,8 +14,7 @@ class MateriController extends Controller
 {
     public function create(KelasMapel $kelasMapel)
     {
-        //   $this->authorize('access', $kelasMapel);
-        // Load relasi kelas dan mapel
+    
         $kelasMapel->load(['kelas', 'mapel']);
         // Ambil assigned kelas 
         $assignedKelas = DashboardController::getAssignedClass();

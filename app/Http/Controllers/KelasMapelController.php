@@ -24,22 +24,16 @@ class KelasMapelController extends Controller // Mendeklarasikan kelas controlle
      * @param  string  $token
      * @return \Illuminate\View\View
      */
- public function viewKelasMapel($mapel, $kelas)
+ public function viewKelasMapel(Mapel $mapel,Kelas $kelas)
  
 {
     
-    // Ambil dari parameter URL (angka ID), bukan dari $request dan tanpa decrypt
-    $mapel = Mapel::findOrFail($mapel);
-    $kelas = Kelas::findOrFail($kelas);
-
-    $kelasMapel = KelasMapel::where('mapel_id', $mapel->id)
+ $kelasMapel = KelasMapel::where('mapel_id', $mapel->id)
         ->where('kelas_id', $kelas->id)
         ->firstOrFail();
 
     // Load resources terkait
     $materi      = Materi::where('kelas_mapel_id', $kelasMapel->id)->get();
-    $pengumuman  = Pengumuman::where('kelas_mapel_id', $kelasMapel->id)->get();
-    // $diskusi     = Diskusi::where('kelas_mapel_id', $kelasMapel->id)->get();
     $tugas       = Tugas::where('kelas_mapel_id', $kelasMapel->id)->get();
     $ujian       = Ujian::where('kelas_mapel_id', $kelasMapel->id)->get();
 
@@ -62,8 +56,6 @@ class KelasMapelController extends Controller // Mendeklarasikan kelas controlle
     return view('menu.kelasMapel.viewKelasMapel', [
         'editor'        => $editor,
         'assignedKelas' => $assignedKelas,
-        // 'diskusi'       => $diskusi,
-        'pengumuman'    => $pengumuman,
         'roles'         => $roles,
         'title'         => 'Dashboard',
         'kelasMapel'    => $kelasMapel,
@@ -81,8 +73,6 @@ class KelasMapelController extends Controller // Mendeklarasikan kelas controlle
         // Ambil semua materi dan pengumuman
         $materi = Materi::all(); // Mengambil semua data materi
         $pengumuman = Pengumuman::all(); // Mengambil semua data pengumuman
-        // $rekomendasi = Rekomendasi::all(); // Mengambil semua data rekomendasi
-        // $diskusi = Diskusi::all(); // Mengambil semua data diskusi
         $tugas = Tugas::all(); // Mengambil semua data tugas
         $ujian = Ujian::all(); // Mengambil semua data ujian
         $roles = DashboardController::getRolesName(); // Mendapatkan peran pengguna
@@ -133,17 +123,4 @@ class KelasMapelController extends Controller // Mendeklarasikan kelas controlle
         return view('menu.mapelKelas.viewKelasMapel', ['assignedKelas' => $assignedKelas, 'roles' => $roles, 'title' => 'Dashboard']);
     }
 
-    
-
-    public function exportNilaiTugas(Request $request)
-    {
-        // Mengunduh data nilai tugas dalam format Excel
-        return Excel::download(new NilaiTugasExport($request->tugasId, $request->kelasMapelId), 'export-kelas.xls');
-    }
-
-    public function exportNilaiUjian(Request $request)
-    {
-        // Mengunduh data nilai ujian dalam format Excel
-        return Excel::download(new NilaiUjianExport($request->ujianId, $request->kelasMapelId), 'export-kelas.xls');
-    }
 }

@@ -14,9 +14,7 @@ class MateriFile extends Model
         'file',
     ];
 
-    // protected $guarded = [
-    //     'id'
-    // ];
+
     public function materi()
     {
         return $this->belongsTo(Materi::class, 'materi_id');

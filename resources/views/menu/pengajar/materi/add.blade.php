@@ -2,72 +2,101 @@
 
 @section('container')
 
-{{-- Navigasi Breadcrumb --}}
-<div class="col-12 ps-4 pe-4 mb-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb bg-white">
-            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item">
-                <a href="{{ route('viewKelasMapel', ['mapel' => $kelasMapel->mapel->id, 'kelas' => $kelasMapel->kelas->id]) }}">
-                    {{ $kelasMapel->mapel->name }}
-                </a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">Tambah Materi</li>
-        </ol>
-    </nav>
+{{-- Header --}}
+    <div class="flex items-center mb-6">
+   
+
+        <a href="{{ route('viewKelasMapel', [
+                'mapel' => $kelasMapel->mapel->id,
+                'kelas' => $kelasMapel->kelas->id
+            ]) }}" 
+            class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition">
+                <i class="fa-solid fa-arrow-left text-gray-700"></i>
+            </a>
+
+        <div class="ml-3">
+            <h1 class="text-2xl font-bold text-gray-900">Tambah Materi</h1>
+            <p class="text-sm text-gray-500">Upload materi pembelajaran untuk siswa</p>
+        </div>
+    </div>
+
+    {{-- Form Container --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {{-- Kolom kiri: Form --}}
+        <div class="col-span-2 bg-white border-2 border-black  rounded-2xl shadow-sm p-6">
+            <form id="formMateri" action="{{ route('materi.store', $kelasMapel->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                @csrf
+                {{-- Judul Materi --}}
+               <div>
+    <label for="name" class="block text-sm font-semibold text-gray-800 mb-2">
+        Judul Materi <span class="text-red-500">*</span>
+    </label>
+    <input type="text" id="name" name="name"
+        class="w-full px-5 py-3 rounded-2xl border-1 border-black bg-gray-50 
+               text-gray-800 placeholder-gray-400 
+               focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
+               focus:bg-white shadow-sm transition-all duration-200"
+        placeholder="Masukkan judul materi..." value="{{ old('name') }}" required>
+    @error('name')
+        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+    @enderror
 </div>
 
-{{-- Judul Halaman --}}
-<div class="ps-4 pe-4 mt-4 pt-4">
-    <h2 class="display-6 fw-bold">
-        <a href="{{ route('viewKelasMapel', ['mapel' => $kelasMapel->mapel->id, 'kelas' => $kelasMapel->kelas->id]) }}">
-            <button type="button" class="btn btn-outline-secondary rounded-circle">
-                <i class="fa-solid fa-arrow-left"></i>
-            </button> Tambah
-        </a>
-    </h2>
+{{-- Deskripsi / Konten Materi --}}
+<div class="mt-5">
+    <label for="content" class="block text-sm font-semibold text-gray-800 mb-2">
+        Deskripsi <span class="text-red-500">*</span>
+    </label>
+    <textarea id="content" name="content" rows="6"
+        class="w-full px-5 py-3 rounded-2xl border-1 border-black bg-gray-50 
+               text-gray-800 placeholder-gray-400 
+               focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
+               focus:bg-white shadow-sm transition-all duration-200 resize-none"
+        placeholder="Jelaskan tentang materi ini...">{{ old('content') }}</textarea>
 </div>
 
-{{-- Formulir Tambah Materi --}}
-<div class="">
-    <div class="row p-4">
-        <h4 class="fw-bold text-primary"><i class="fa-solid fa-pen"></i> Data Materi</h4>
-        <div class="col-12 col-lg-12 bg-white rounded-2">
-            <div class="mt-4">
-                <div class="p-4">
-                    <form id="formMateri" action="{{ route('materi.store', $kelasMapel->id) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Judul Materi</label>
-                            <input type="text" class="form-control" id="name" name="name"
-                                placeholder="Inputkan judul materi..." value="{{ old('name') }}" required>
-                            @error('name')
-                                <div class="text-danger small">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        {{-- Konten Materi --}}
-                        <div class="mb-3">
-                            <label for="content" class="form-label">
-                                Konten <span class="small text-info">(Opsional)</span>
-                            </label>
-                            <textarea id="tinymce" name="content">{{ old('content') }}</textarea>
-                        </div>
-                        
-                        {{-- Upload File --}}
-                        <div class="mb-3">
-                            <label for="uploadFile" class="form-label">
-                                Upload <span class="small text-info">(Opsional)</span>
-                            </label>
-                            <div id="my-dropzone" class="dropzone"></div>
-                        </div>
-                        
-                        {{-- Tombol Submit --}}
-                        <div class="">
-                            <button type="submit" class="btn-lg btn btn-primary w-100" id="btnSimpan">
-                                Simpan dan Lanjutkan
-                            </button>
-                        </div>
+                {{-- Upload File (Dropzone) --}}
+                <div>
+                    <label class="block text-sm font-semibold text-gray-800 mb-1">
+                        Upload File <span class="text-red-500">*</span>
+                    </label>
+                   
+                    <div id="my-dropzone" class="dropzone rounded-2xl  border-1 border-black bg-gray-50 p-8 text-center"></div>
+                </div>
+
+                {{-- Tombol Submit --}}
+                <div class="flex justify-end gap-3 pt-4">
+                   
+                    <a href="{{ route('viewKelasMapel', [
+                'mapel' => $kelasMapel->mapel->id,
+                'kelas' => $kelasMapel->kelas->id
+            ]) }}" 
+            class="px-6 py-3 rounded-xl border-1 border-black text-gray-700 font-medium hover:bg-gray-100 transition"">
+                Batal
+            </a>
+                    <button type="submit" id="btnSimpan" 
+                        class="px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-upload"></i> Upload Materi
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {{-- Kolom kanan: Preview + Catatan --}}
+        <div class="space-y-5">
+        
+            {{-- Catatan --}}
+            <div class="bg-white border-2 border-black rounded-2xl shadow-sm p-5">
+                <h3 class="text-sm font-semibold text-gray-700 mb-2">CATATAN</h3>
+                <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
+                    <li>Pastikan file dapat diakses dengan baik</li>
+                    <li>Gunakan judul yang jelas dan deskriptif</li>
+                    <li>Periksa kualitas file sebelum upload</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+                       
                     </form>
                 </div>
             </div>
@@ -75,57 +104,68 @@
     </div>
 </div>
 
-<script src="https://cdn.tiny.cloud/1/1dcn6y89gj7jtaawstjd7qt5nddl47py62pg67ihnxq6vyoa/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
 
-{{-- Inisialisasi TinyMCE --}}
-<script>
-tinymce.init({
-    selector: '#tinymce',
-    height: 400,
-    menubar: false,
-    plugins: [
-        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-        'insertdatetime', 'media', 'table', 'help', 'wordcount'
-    ],
-    toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist | link image | removeformat',
-    content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; }',
-});
-</script>
+<!-- CDN: jQuery, Dropzone, Dropzone CSS, Toastify CSS & JS -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-{{-- Inisialisasi Dropzone --}}
 <script>
 Dropzone.autoDiscover = false;
 
 let savedMateriId = null;
 
 const myDropzone = new Dropzone("#my-dropzone", {
-    url: "#", // akan diubah setelah materi tersimpan
+    url: "#", // akan diganti setelah form materi disimpan
     paramName: "file",
     maxFilesize: 10, // MB
     acceptedFiles: ".jpg,.jpeg,.png,.gif,.mp4,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.mp3,.avi,.mov",
     addRemoveLinks: true,
-    timeout: 60000,
+    timeout: 5000,
     dictDefaultMessage: "Seret file ke sini atau klik untuk mengunggah",
     autoProcessQueue: false,
     parallelUploads: 100,
     headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
 });
 
-// 🔹 Redirect otomatis setelah semua file selesai diupload
+// ✅ Redirect hanya kalau file berhasil semua diupload (tampilkan toast dulu lalu redirect)
 myDropzone.on("queuecomplete", function () {
-    window.location.href = "{{ route('viewKelasMapel', [
-        'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id
-    ]) }}";
+    Toastify({
+        text: "Semua file berhasil diunggah — mengalihkan...",
+        duration: 900,
+        close: false,
+        gravity: "top",
+        position: "right",
+        style: { background: "#16a34a" } // hijau
+    }).showToast();
+
+    setTimeout(function () {
+        window.location.href = "{{ route('viewKelasMapel', [
+            'mapel' => $kelasMapel->mapel->id,
+            'kelas' => $kelasMapel->kelas->id
+        ]) }}";
+    }, 900);
 });
 
-// 🔹 Ajax submit form materi
+// ✅ Proses submit form hanya jika ada file
 $(document).ready(function () {
     $('#formMateri').submit(function (e) {
         e.preventDefault();
+
+        if (myDropzone.getQueuedFiles().length === 0) {
+            // **Ganti alert dengan toast (peringatan kecil)**
+            Toastify({
+                text: "Silakan unggah minimal satu file sebelum menyimpan materi.",
+                duration: 2500,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: { background: "#f59e0b" } // kuning/orange
+            }).showToast();
+            return; // hentikan proses
+        }
 
         let formData = new FormData(this);
 
@@ -139,23 +179,36 @@ $(document).ready(function () {
                 console.log(response);
                 savedMateriId = response.materi_id;
 
-                if (myDropzone.getQueuedFiles().length === 0) {
-                    // Tidak ada file → langsung redirect
-                    window.location.href = "{{ route('viewKelasMapel', [
-                        'mapel' => $kelasMapel->mapel->id,
-                        'kelas' => $kelasMapel->kelas->id
-                    ]) }}";
-                } else {
-                    // Ada file → ganti URL ke MateriFileController
-                    myDropzone.options.url = "/materi/" + savedMateriId + "/upload-file";
-                    myDropzone.processQueue();
-                }
+                // **Tampilkan toast sukses kecil saat form berhasil disimpan (sebelum upload file)**
+                Toastify({
+                    text: "Data materi tersimpan. Mulai mengunggah file…",
+                    duration: 2000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    style: { background: "#16a34a" } // hijau
+                }).showToast();
+
+                // Setelah form tersimpan → lanjut upload file
+                myDropzone.options.url = "/materi/" + savedMateriId + "/upload-file";
+                myDropzone.processQueue();
             },
-            error: function () {
-                alert("Terjadi kesalahan saat menyimpan materi.");
+            error: function (xhr, status, error) {
+                // **Ganti alert error dengan toast merah**
+                Toastify({
+                    text: "Terjadi kesalahan saat menyimpan materi.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    style: { background: "#dc2626" } // merah
+                }).showToast();
             }
         });
     });
 });
 </script>
+
+
+
 @endsection

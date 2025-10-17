@@ -430,7 +430,7 @@
                         <hr>
                         <ul class="list-group">
                             @foreach ($tugasAll as $key)
-                                @if ($key->isHidden != 1 || Auth()->User()->roles_id == 2)
+                               @if (Auth::user()->hasRole('Pengajar'))
                                     @if ($tugas['id'] != $key->id)
                                         <a href="{{ route('viewTugas', [
                                             'tugas' => $key->id,

@@ -1,218 +1,162 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
-    {{-- Cek peran pengguna --}}
-    
 
-    {{-- Navigasi Breadcrumb --}}
- <div class="col-12 ps-4 pe-4 mb-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb bg-white">
-            <li class="breadcrumb-item">
-                <a href="{{ route('dashboard') }}">Dashboard</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{{ route('viewKelasMapel', ['mapel' => $mapel->id, 'kelas' => $kelasId]) }}">
-                    {{ $mapel->name }}
+{{-- Header --}}
+<div class="flex items-center mb-6">
+    <a href="{{ route('viewKelasMapel', [
+        'mapel' => $kelasMapel->mapel->id,
+        'kelas' => $kelasMapel->kelas->id
+    ]) }}" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition">
+        <i class="fa-solid fa-arrow-left text-gray-700"></i>
+    </a>
+
+    <div class="ml-3">
+        <h1 class="text-2xl font-bold text-gray-900">Tambah Tugas</h1>
+        <p class="text-sm text-gray-500">Buat dan unggah tugas untuk siswa</p>
+    </div>
+</div>
+
+{{-- Form Container --}}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    {{-- Kolom kiri: Form --}}
+    <div class="col-span-2 bg-white border border-gray-200 rounded-2xl shadow-sm p-6">
+        <form id="formTugas" action="{{ route('createTugas', $kelasMapel->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+            @csrf
+
+            {{-- Judul Tugas --}}
+            <div>
+                <label for="name" class="block text-sm font-semibold text-gray-800 mb-2">
+                    Judul Tugas <span class="text-red-500">*</span>
+                </label>
+                <input type="text" id="name" name="name"
+                    class="w-full px-5 py-3 rounded-2xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white shadow-sm transition-all duration-200"
+                    placeholder="Masukkan judul tugas..." value="{{ old('name') }}" required>
+                @error('name')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Deskripsi / Konten Tugas --}}
+            <div>
+                <label for="content" class="block text-sm font-semibold text-gray-800 mb-2">
+                    Deskripsi / Konten <span class="text-red-500">*</span>
+                </label>
+                <textarea id="content" name="content" rows="6"
+                    class="w-full px-5 py-3 rounded-2xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white shadow-sm transition-all duration-200 resize-none"
+                    placeholder="Tuliskan instruksi atau penjelasan tugas...">{{ old('content') }}</textarea>
+                @error('content')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Tanggal Jatuh Tempo --}}
+            <div>
+                <label for="due" class="block text-sm font-semibold text-gray-800 mb-2">
+                    Tanggal Jatuh Tempo <span class="text-red-500">*</span>
+                </label>
+                <input type="datetime-local" id="due" name="due"
+                    class="w-full px-5 py-3 rounded-2xl border border-gray-300 bg-gray-50 text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white shadow-sm transition-all duration-200"
+                    required value="{{ old('due') }}">
+                @error('due')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Upload File (Dropzone) --}}
+            <div>
+                <label class="block text-sm font-semibold text-gray-800 mb-1">
+                    Upload File <span class="text-red-500">*</span>
+                </label>
+                <div id="my-dropzone" class="dropzone rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center"></div>
+            </div>
+
+            {{-- Tombol Submit --}}
+            <div class="flex justify-end gap-3 pt-4">
+                <a href="{{ route('viewKelasMapel', [
+                    'mapel' => $kelasMapel->mapel->id,
+                    'kelas' => $kelasMapel->kelas->id
+                ]) }}" class="px-6 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition">
+                    Batal
                 </a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">Tambah Tugas</li>
-        </ol>
-    </nav>
-</div>
+                <button type="submit" id="btnSimpan" class="px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Simpan Tugas
+                </button>
+            </div>
+        </form>
+    </div>
 
-{{-- Judul Halaman --}}
-<div class="ps-4 pe-4 mt-4 pt-4">
-    <h2 class="display-6 fw-bold">
-        <a href="{{ route('viewKelasMapel', ['mapel' => $mapel->id, 'kelas' => $kelasId]) }}">
-            <button type="button" class="btn btn-outline-secondary rounded-circle">
-                <i class="fa-solid fa-arrow-left"></i>
-            </button>
-        </a>
-        Tambah Tugas
-    </h2>
-</div>
-
-{{-- Formulir Tambah Tugas --}}
-<div class="row p-4">
-    <h4 class="fw-bold text-primary"><i class="fa-solid fa-pen"></i> Data Tugas</h4>
-    <div class="col-12 bg-white rounded-2 mt-4">
-        <div class="p-4">
-            <form action="{{ route('createTugas') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-
-                {{-- Status Open / Close --}}
-                <div class="mb-3 row">
-                    <div class="col-8 col-lg-4">
-                        <label for="opened" class="form-label d-block">Aktif 
-                            <span class="small">(apakah sudah bisa diakses?)</span>
-                        </label>
-                    </div>
-                    <div class="col-4 col-lg form-check form-switch">
-                        <input class="form-check-input" name="opened" type="checkbox" role="switch" id="opened" checked>
-                    </div>
-                </div>
-
-                {{-- Nama Tugas --}}
-                <div class="mb-3">
-                    <label for="name" class="form-label">Judul Tugas</label>
-                    <input type="hidden" name="kelasId" value="{{ $kelasId }}" readonly>
-                    <input type="hidden" name="mapelId" value="{{ $mapel->id }}" readonly>
-                    <input type="text" class="form-control" id="name" name="name"
-                           placeholder="Inputkan judul Tugas..." value="{{ old('name') }}" required>
-                    @error('name')
-                        <div class="text-danger small">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                {{-- Due Date Picker --}}
-                <div class="mb-3">
-                    <label for="due" class="form-label">Tanggal Jatuh Tempo</label>
-                    <div class="input-group" id="dueWrapper" data-td-target-input="nearest" data-td-target-toggle="nearest">
-                        <input id="due" name="due" type="text" class="form-control" data-td-target="#dueWrapper"
-                               autocomplete="off" placeholder="Pilih tanggal jatuh tempo..." required value="{{ old('due') }}">
-                        <span class="input-group-text" data-td-target="#dueWrapper" data-td-toggle="datetimepicker">
-                            <i class="fa-solid fa-calendar"></i>
-                        </span>
-                    </div>
-                </div>
-
-                {{-- Konten Tugas --}}
-                <div class="mb-3">
-                    <label for="content" class="form-label">Konten 
-                        <span class="small text-info">(Opsional)</span>
-                    </label>
-                    <textarea id="tinymce" name="content">{{ old('content') }}</textarea>
-                </div>
-
-                {{-- Upload File --}}
-                <div class="mb-3">
-                    <label for="uploadFile" class="form-label">Upload 
-                        <span class="small text-info">(Opsional)</span>
-                    </label>
-                    <div id="my-dropzone" class="dropzone"></div>
-                </div>
-
-                {{-- Tombol Submit --}}
-                <div>
-                    <button type="submit" class="btn btn-primary w-100 btn-lg" id="btnSimpan">
-                        Simpan dan Lanjutkan
-                    </button>
-                </div>
-            </form>
+    {{-- Kolom kanan: Catatan --}}
+    <div class="space-y-5">
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5">
+            <h3 class="text-sm font-semibold text-gray-700 mb-2">CATATAN</h3>
+            <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
+                <li>Pastikan file sudah siap sebelum diunggah</li>
+                <li>Judul dan deskripsi tugas harus jelas dan relevan</li>
+                <li>Tentukan tenggat waktu yang realistis</li>
+            </ul>
         </div>
     </div>
 </div>
 
-
-{{-- Load CSS dan JS Library --}}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.19/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
+{{-- Dropzone Scripts --}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" />
-
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.19/dist/js/tempus-dominus.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.19/dist/locales/id.js" crossorigin="anonymous"></script>
-
-<script src="https://cdn.tiny.cloud/1/1dcn6y89gj7jtaawstjd7qt5nddl47py62pg67ihnxq6vyoa/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
-<script src="{{ url('/asset/js/rich-text-editor.js') }}"></script>
 
 <script>
-    $(document).ready(function() {
-        // Inisialisasi TempusDominus DateTime Picker
-        new tempusDominus.TempusDominus(document.getElementById('dueWrapper'), {
-            localization: {
-                locale: 'id',
-                format: 'yyyy-MM-dd HH:mm'
+Dropzone.autoDiscover = false;
+
+let savedTugasId = null;
+
+const myDropzone = new Dropzone("#my-dropzone", {
+    url: "#", // akan diupdate setelah tugas tersimpan
+    paramName: "file",
+    maxFilesize: 10, // MB
+    acceptedFiles: ".jpg,.jpeg,.png,.gif,.mp4,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.mp3,.avi,.mov",
+    addRemoveLinks: true,
+    timeout: 60000,
+    dictDefaultMessage: "Seret file ke sini atau klik untuk mengunggah",
+    autoProcessQueue: false,
+    parallelUploads: 100,
+    headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
+});
+
+myDropzone.on("queuecomplete", function () {
+    window.location.href = "{{ route('viewKelasMapel', [
+        'mapel' => $kelasMapel->mapel->id,
+        'kelas' => $kelasMapel->kelas->id
+    ]) }}";
+});
+
+$(document).ready(function () {
+    $('#formTugas').submit(function (e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                savedTugasId = response.tugas_id;
+
+                if (myDropzone.getQueuedFiles().length === 0) {
+                    window.location.href = "{{ route('viewKelasMapel', [
+                        'mapel' => $kelasMapel->mapel->id,
+                        'kelas' => $kelasMapel->kelas->id
+                    ]) }}";
+                } else {
+                    myDropzone.options.url = "/tugas/" + savedTugasId + "/upload-file";
+                    myDropzone.processQueue();
+                }
             },
-            display: {
-                components: {
-                    useTwentyfourHour: true
-                }
-            }
-        });
-
-        // Menangkap submit form
-        $('form').submit(function(e) {
-            e.preventDefault(); // Mencegah form melakukan submit default
-
-            // Mengambil data form
-            var formData = new FormData(this);
-
-            // Menggunakan AJAX untuk mengirim data ke server
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('action'),
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    // Berhasil, lakukan sesuatu dengan respons dari server jika diperlukan
-                    console.log(response);
-                    uploadFiles();
-                },
-                error: function(error) {
-                    // Terjadi kesalahan, tangani kesalahan jika diperlukan
-                    console.log(error);
-                    // Di sini Anda dapat menambahkan logika lain atau menampilkan pesan kesalahan kepada pengguna.
-                }
-            });
-        });
-    });
-</script>
-
-<script>
-    Dropzone.autoDiscover = false;
-
-    
-    // 🔹 Validasi TinyMCE
-    function validateTinyMCE() {
-        var content = tinymce.get("tinymce").getContent();
-        if (!content.trim()) {
-            alert("Konten tidak boleh kosong.");
-            return false;
-        }
-        return true;
-    }
-
-    // 🔹 Inisialisasi Dropzone (pola clean)
-    const myDropzone = new Dropzone("#my-dropzone", {
-        url: "{{ route('tugas.file.upload', ['action' => 'tambah']) }}",
-        paramName: "file",
-        maxFilesize: 10, // MB
-        acceptedFiles: ".jpg,.jpeg,.png,.gif,.mp4,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.mp3,.avi,.mov",
-        addRemoveLinks: true,
-        timeout: 60000,
-        dictDefaultMessage: "Seret file ke sini atau klik untuk mengunggah",
-        autoProcessQueue: false,
-        parallelUploads: 100,
-        headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
-    });
-
-    // 🔹 Kalau semua file selesai diupload → redirect
-    myDropzone.on("queuecomplete", function () {
-        window.location.href = "{{ route('viewKelasMapel', ['mapel' => $mapel->id, 'kelas' => $kelasId]) }}";
-    });
-
-    // 🔹 Handle form submit
-    $(document).ready(function() {
-        $("form").on("submit", function(e) {
-            e.preventDefault();
-
-            // Validasi TinyMCE
-            if (!validateTinyMCE()) {
-                return false;
-            }
-
-            // Cek apakah ada file yang di-queue
-            if (myDropzone.getQueuedFiles().length === 0) {
-                // Tidak ada file → langsung redirect
-                window.location.href = "{{ route('viewKelasMapel', ['mapel' => $mapel->id, 'kelas' => $kelasId]) }}";
-            } else {
-                // Ada file → proses upload
-                myDropzone.processQueue();
+            error: function () {
+                alert("Terjadi kesalahan saat menyimpan tugas.");
             }
         });
     });
+});
 </script>
 @endsection

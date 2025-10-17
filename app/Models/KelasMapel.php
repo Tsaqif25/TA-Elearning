@@ -18,11 +18,14 @@ class KelasMapel extends Model
     //     'id',
     // ];
 
-    public function editorAccess()
-    {
-        return $this->hasMany(EditorAccess::class);
-    }
-
+    // public function editorAccess()
+    // {
+    //     return $this->hasMany(EditorAccess::class);
+    // }
+public function editorAccess()
+{
+    return $this->hasOne(EditorAccess::class);  
+}
     public function kelas()
     {
         return $this->belongsTo(Kelas::class);

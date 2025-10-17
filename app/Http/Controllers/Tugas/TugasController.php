@@ -117,12 +117,10 @@ public function siswaUpdateNilai(Request $request, Tugas $tugas)
     return back()->with('success', 'Nilai berhasil diperbarui');
 }
 
-public function viewCreateTugas(Kelas $kelas, Mapel $mapel)
+public function viewCreateTugas(KelasMapel $kelasMapel )
 {
 // Cari kelasMapel
-$kelasMapel = KelasMapel::where('kelas_id', $kelas->id)
-                        ->where('mapel_id', $mapel->id)
-                        ->firstOrFail();
+ $kelasMapel->load(['kelas', 'mapel']);
 
 
 
@@ -130,14 +128,12 @@ $kelasMapel = KelasMapel::where('kelas_id', $kelas->id)
 $assignedKelas = DashboardController::getAssignedClass();
 // $roles         = DashboardController::getRolesName();
 $title         = 'Tambah Tugas';
-$kelasId       = $kelas->id;
+// $kelasId       = $kelas->id;
 
 return view('menu.pengajar.tugas.add', compact(
     'assignedKelas',
     'title',
-    // 'roles',
-    'kelasId',
-    'mapel'
+    'kelasMapel'
 ));
 }
 
@@ -168,32 +164,32 @@ return view('menu.pengajar.tugas.edit', compact(
 /**
  * Simpan tugas baru
  */
-public function createTugas(Request $request)
+public function createTugas(Request $request, KelasMapel $kelasMapel)
 {
+   
     $request->validate([
-        'kelasId' => 'required',
-        'mapelId' => 'required',
         'name'    => 'required|string|max:255',
-        'content' => 'required',
-        'due'     => 'required|date_format:Y-m-d H:i',
+        'content' => 'required|string',
+        'due'     => 'required|date_format:Y-m-d\TH:i',
     ]);
 
-    $kelasMapel = KelasMapel::where('mapel_id', $request->mapelId)
-                            ->where('kelas_id', $request->kelasId)
-                            ->firstOrFail();
+ 
+    $due = Carbon::createFromFormat('Y-m-d\TH:i', $request->due);
 
-    $tugas = Tugas::create([
+    //  Simpan data tugas
+    Tugas::create([
         'kelas_mapel_id' => $kelasMapel->id,
         'name'           => $request->name,
         'content'        => $request->input('content'),
-        'due'            => Carbon::createFromFormat('Y-m-d H:i', $request->due),
+        // 'due'            => $due,
         'isHidden'       => $request->has('opened') ? 0 : 1,
     ]);
+    
 
-    // return response()->json(['message' => 'Tugas berhasil dibuat', 'tugas_id' => $tugas->id], 200);
-        return redirect()->route('viewKelasMapel', [
+    // Redirect kembali ke halaman kelas-mapel
+    return redirect()->route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel_id,
-        'kelas' => $kelasMapel->kelas_id
+        'kelas' => $kelasMapel->kelas_id,
     ])->with('success', 'Tugas berhasil ditambahkan!');
 }
 

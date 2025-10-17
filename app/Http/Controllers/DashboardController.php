@@ -2,353 +2,243 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\DataSiswa;
-use App\Models\Kelas;
-use App\Models\Mapel;
-use App\Models\Materi;
-use App\Models\Tugas;
-use App\Models\Ujian;
-use App\Models\EditorAccess;
-use App\Models\KelasMapel;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
+use App\Models\{User, DataSiswa, Kelas, Mapel, Materi, Tugas, Ujian, KelasMapel, EditorAccess};
+use Illuminate\Http\{Request, RedirectResponse};
 use Illuminate\View\View;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-   
-public function viewDashboard(): View|RedirectResponse
-{
-$user = Auth::user();
-
-
-if (! $user) {
-return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu');
-}
-
-if ($user->hasRole('Admin')) {
-return $this->adminDashboard();
-} elseif ($user->hasRole('Pengajar')) {
-return $this->pengajarDashboard();
-} elseif ($user->hasRole('Siswa')) {
-return redirect()->route('home');
-}
-// Jika tidak ada role, redirect ke login
-return redirect()->route('login')->with('error', 'Role tidak ditemukan');
-}
-
-
-/**
-* Dashboard untuk Admin
-*
-* @return View
-*/
-private function adminDashboard(): View
-{
-try {
-$data = [
-'totalSiswa' => DataSiswa::count(),
-'totalUserSiswa' => User::role('Siswa')->count(),
-'totalPengajar' => User::role('Pengajar')->count(),
-'totalKelas' => Kelas::count(),
-'totalMapel' => Mapel::count(),
-'totalMateri' => Materi::count(),
-'totalTugas' => Tugas::count(),
-'totalUjian' => Ujian::count(),
-];
-
-
-return view('menu.admin.dashboard.dashboard', [
-'materi' => Materi::all(),
-'title' => 'Dashboard Admin',
-'roles' => 'Admin',
-'data' => $data
-]);
-} catch (\Exception $e) {
-return back()->with('error', 'Terjadi kesalahan dalam memuat dashboard admin: ' . $e->getMessage());
-}
-}
-
     /**
-     * Dashboard untuk Pengajar
+     * Route utama dashboard berdasarkan role
      */
- private function pengajarDashboard()
-{
-    try {
-        // 1️⃣ Ambil user login
+    public function viewDashboard(): View|RedirectResponse
+    {
         $user = Auth::user();
 
-        // 2️⃣ Ambil semua akses kelas_mapel milik guru ini + relasinya
-        $akses = EditorAccess::where('user_id', $user->id)
-            ->with(['kelasMapel.kelas', 'kelasMapel.mapel'])
-            ->get();
+        if (!$user) {
+            return $this->redirectWithError('login', 'Anda harus login terlebih dahulu');
+        }
 
-        // 3️⃣ Ambil id kelas dan id mapel unik
-        $kelasIds = $akses->pluck('kelasMapel.kelas.id')->filter()->unique();
-        $mapelIds = $akses->pluck('kelasMapel.mapel.id')->filter()->unique();
-
-        // 4️⃣ Hitung total
-        $jumlahKelas = $kelasIds->count();
-        $jumlahMapel = $mapelIds->count();
-        $jumlahSiswa = DataSiswa::whereIn('kelas_id', $kelasIds)->count();
-
-        // 5️⃣ Ambil daftar kelas dan mapel untuk ditampilkan di card
-       $kelasDanMapel = $akses->map(function ($item) {
-    return [
-        'kelas_id' => optional($item->kelasMapel->kelas)->id,
-        'kelas_nama' => optional($item->kelasMapel->kelas)->name,
-        'mapel_id' => optional($item->kelasMapel->mapel)->id,
-        'mapel_nama' => optional($item->kelasMapel->mapel)->name,
-    ];
-});
-
-          $assignedKelas = $this->getAssignedClass();
-
-        // 6️⃣ Kirim ke tampilan
-        return view('menu.pengajar.dashboard.dashboard', [
-            'user' => $user,
-            'jumlahKelas' => $jumlahKelas,
-            'jumlahMapel' => $jumlahMapel,
-            'jumlahSiswa' => $jumlahSiswa,
-            'assignedKelas' => $assignedKelas,
-            'kelasDanMapel' => $kelasDanMapel,
-            'title' => 'Dashboard Pengajar',
-        ]);
-
-    } catch (\Throwable $e) {
-        return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        return match(true) {
+            $user->hasRole('Admin') => $this->adminDashboard(),
+            $user->hasRole('Pengajar') => $this->pengajarDashboard(),
+            $user->hasRole('Siswa') => redirect()->route('home'),
+            default => $this->redirectWithError('login', 'Role tidak ditemukan')
+        };
     }
-}
 
     /**
-     * Menampilkan halaman home untuk siswa
+     * Dashboard Admin - menampilkan statistik global
      */
-    public function viewHome()
+    private function adminDashboard(): View
+    {
+        $stats = [
+            'totalSiswa' => DataSiswa::count(),
+            'totalUserSiswa' => User::role('Siswa')->count(),
+            'totalPengajar' => User::role('Pengajar')->count(),
+            'totalKelas' => Kelas::count(),
+            'totalMapel' => Mapel::count(),
+            'totalMateri' => Materi::count(),
+            'totalTugas' => Tugas::count(),
+            'totalUjian' => Ujian::count(),
+        ];
+
+        return view('menu.admin.dashboard.dashboard', [
+            'materi' => Materi::all(),
+            'title' => 'Dashboard Admin',
+            'roles' => 'Admin',
+            'data' => $stats
+        ]);
+    }
+
+    /**
+     * Dashboard Pengajar - menampilkan kelas & mapel yang diajar
+     */
+    private function pengajarDashboard(): View
     {
         $user = Auth::user();
         
-        if (!$user) {
-            return redirect()->route('login');
-        }
+        $kelasMapel = EditorAccess::where('user_id', $user->id)
+            ->with(['kelasMapel.kelas', 'kelasMapel.mapel'])
+            ->get();
 
-        if (!$user->hasRole('Siswa')) {
-            return redirect()->route('dashboard');
-        }
+        $kelasIds = $kelasMapel->pluck('kelasMapel.kelas.id')->filter()->unique();
+        $mapelIds = $kelasMapel->pluck('kelasMapel.mapel.id')->filter()->unique();
 
-        try {
-            $kelas = null;
-            if ($user->kelas_id) {
-                $kelas = Kelas::find($user->kelas_id);
-            }
-
-            if (!$kelas) {
-                return view('menu.siswa.home.home', [
-                    'title' => 'Home',
-                    'roles' => 'Siswa',
-                    'user' => $user,
-                    'kelas' => null,
-                    'mapelKelas' => [],
-                    'assignedKelas' => []
-                ])->with('warning', 'Anda belum terdaftar di kelas manapun');
-            }
-
-            $kelasMapel = KelasMapel::where('kelas_id', $kelas->id)->get();
-            $mapelCollection = [];
-
-            foreach ($kelasMapel as $km) {
-                $mapel = Mapel::find($km->mapel_id);
-                if (!$mapel) continue;
-
-                $editorAccess = EditorAccess::where('kelas_mapel_id', $km->id)->first();
-                
-                $pengajarNama = '-';
-                $pengajarId = null;
-
-                if ($editorAccess) {
-                    $pengajar = User::find($editorAccess->user_id);
-                    if ($pengajar) {
-                        $pengajarNama = $pengajar->name;
-                        $pengajarId = $pengajar->id;
-                    }
-                }
-
-                $mapelCollection[] = [
-                    'mapel_name' => $mapel->name,
-                    'mapel_id' => $mapel->id,
-                    'deskripsi' => $mapel->deskripsi ?? '',
-                    'gambar' => $mapel->gambar ?? '',
-                    'pengajar_id' => $pengajarId,
-                    'pengajar_name' => $pengajarNama,
-                ];
-            }
-
-            $assignedKelas = $this->getAssignedClass();
-
-            return view('menu.siswa.home.home', [
-                'assignedKelas' => $assignedKelas,
-                'title' => 'Home',
-                'roles' => 'Siswa',
-                'user' => $user,
-                'kelas' => $kelas,
-                'mapelKelas' => $mapelCollection
-            ]);
-        } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan dalam memuat halaman home: ' . $e->getMessage());
-        }
+        return view('menu.pengajar.dashboard.dashboard', [
+            'user' => $user,
+            'jumlahKelas' => $kelasIds->count(),
+            'jumlahMapel' => $mapelIds->count(),
+            'jumlahSiswa' => DataSiswa::whereIn('kelas_id', $kelasIds)->count(),
+            'assignedKelas' => self::getAssignedClass(),
+            'kelasDanMapel' => $this->formatKelasMapelData($kelasMapel),
+            'title' => 'Dashboard Pengajar',
+        ]);
     }
 
     /**
-     * Helper method untuk mencari key mapel dalam array
+     * Home untuk Siswa - menampilkan mapel di kelasnya
      */
-    private function findMapelKey($mapelKelas, $mapelID)
-    {
-        foreach ($mapelKelas as $key => $item) {
-            if (isset($item['mapel_id']) && $item['mapel_id'] == $mapelID) {
-                return $key;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Mendapatkan nama role pengguna menggunakan Spatie
-     */
-    public static function getRolesName()
+    public function viewHome(): View|RedirectResponse
     {
         $user = Auth::user();
-        if (!$user) {
-            return 'Guest';
+
+        if (!$user || !$user->hasRole('Siswa')) {
+            return redirect()->route($user ? 'dashboard' : 'login');
         }
 
-        $role = $user->roles->first();
-        return $role ? $role->name : 'No Role';
-    }
-
-    /**
-     * Cek apakah user memiliki role tertentu
-     */
-    public static function hasRole($roleName)
-    {
-        $user = Auth::user();
-        return $user ? $user->hasRole($roleName) : false;
-    }
-
-    /**
-     * Mendapatkan kelas yang ditugaskan berdasarkan role
-     */
-    public static function getAssignedClass()
-    {
-        $user = Auth::user();
-        if (!$user) {
-            return [];
-        }
-        try {
-            if ($user->hasRole('Admin')) {
-                return null;
-            } elseif ($user->hasRole('Pengajar')) {
-                return self::getPengajarAssignedClass($user);
-            } elseif ($user->hasRole('Siswa')) {
-                return self::getSiswaAssignedClass($user);
-            }
-
-            return [];
-        } catch (\Exception $e) {
-            Log::error('Error in getAssignedClass: ' . $e->getMessage());
-            return [];
-        }
-    }
-
-    /**
-     * Mendapatkan kelas untuk pengajar
-     */
-    private static function getPengajarAssignedClass($user)
-    {
-        $editorAccess = EditorAccess::where('user_id', $user->id)->get();
-        $mapelKelas = [];
-
-        foreach ($editorAccess as $access) {
-            $kelasMapel = KelasMapel::find($access->kelas_mapel_id);
-            if (!$kelasMapel) continue;
-
-            $mapelID = $kelasMapel->mapel_id;
-            $kelasID = $kelasMapel->kelas_id;
-
-            $mapel = Mapel::find($mapelID);
-            $kelas = Kelas::find($kelasID);
-
-            if (!$mapel || !$kelas) continue;
-
-            // Cari apakah mapel sudah ada
-            $found = false;
-            foreach ($mapelKelas as $key => $item) {
-                if (isset($item['mapel_id']) && $item['mapel_id'] == $mapelID) {
-                    $mapelKelas[$key]['kelas'][] = $kelas;
-                    $found = true;
-                    break;
-                }
-            }
-
-            if (!$found) {
-                $mapelKelas[] = [
-                    'mapel_id' => $mapelID,
-                    'mapel' => $mapel,
-                    'kelas' => [$kelas],
-                ];
-            }
-        }
-
-        return $mapelKelas;
-    }
-
-    /**
-     * Mendapatkan kelas untuk siswa
-     */
-    private static function getSiswaAssignedClass($user)
-    {
         if (!$user->kelas_id) {
-            return [];
+            return $this->viewSiswaWithoutKelas($user);
         }
 
-        $kelasMapelList = KelasMapel::where('kelas_id', $user->kelas_id)->get();
-        $mapelKelas = [];
+        $kelas = Kelas::find($user->kelas_id);
+        $mapelKelas = $this->getMapelWithPengajar($kelas);
 
-        foreach ($kelasMapelList as $km) {
-            $mapel = Mapel::find($km->mapel_id);
-            $kelas = Kelas::find($km->kelas_id);
+        return view('menu.siswa.home.home', [
+            'assignedKelas' => self::getAssignedClass(),
+            'title' => 'Home',
+            'roles' => 'Siswa',
+            'user' => $user,
+            'kelas' => $kelas,
+            'mapelKelas' => $mapelKelas
+        ]);
+    }
 
-            if ($mapel && $kelas) {
-                $mapelKelas[] = [
-                    'mapel_id' => $km->mapel_id,
-                    'mapel' => $mapel,
-                    'kelas' => [$kelas],
-                ];
-            }
-        }
+    // ========== HELPER METHODS ==========
 
-        return $mapelKelas;
+    /**
+     * Format data kelas-mapel untuk pengajar
+     */
+    private function formatKelasMapelData($kelasMapel): array
+    {
+        return $kelasMapel->map(fn($item) => [
+            'kelas_id' => $item->kelasMapel->kelas?->id,
+            'kelas_nama' => $item->kelasMapel->kelas?->name,
+            'mapel_id' => $item->kelasMapel->mapel?->id,
+            'mapel_nama' => $item->kelasMapel->mapel?->name,
+        ])->toArray();
     }
 
     /**
-     * Mendapatkan kelas yang ditugaskan khusus untuk siswa (method terpisah)
+     * Ambil mapel beserta pengajarnya untuk siswa
      */
-    public static function getAssignedClassSiswa()
+    private function getMapelWithPengajar(Kelas $kelas): array
+    {
+        return KelasMapel::where('kelas_id', $kelas->id)
+            ->with(['mapel', 'editorAccess.user'])
+            ->get()
+            ->map(function($km) {
+                $pengajar = $km->editorAccess?->user;
+                
+                return [
+                    'mapel_id' => $km->mapel->id,
+                    'mapel_name' => $km->mapel->name,
+                    'deskripsi' => $km->mapel->deskripsi ?? '',
+                    'gambar' => $km->mapel->gambar ?? '',
+                    'pengajar_id' => $pengajar?->id,
+                    'pengajar_name' => $pengajar?->name ?? '-',
+                ];
+            })
+            ->toArray();
+    }
+
+    /**
+     * View untuk siswa yang belum punya kelas
+     */
+    private function viewSiswaWithoutKelas($user): View
+    {
+        return view('menu.siswa.home.home', [
+            'title' => 'Home',
+            'roles' => 'Siswa',
+            'user' => $user,
+            'kelas' => null,
+            'mapelKelas' => [],
+            'assignedKelas' => []
+        ])->with('warning', 'Anda belum terdaftar di kelas manapun');
+    }
+
+    /**
+     * Redirect dengan pesan error
+     */
+    private function redirectWithError(string $route, string $message): RedirectResponse
+    {
+        return redirect()->route($route)->with('error', $message);
+    }
+
+    // ========== STATIC UTILITIES ==========
+
+    public static function getRolesName(): string
+    {
+        return Auth::user()?->roles->first()?->name ?? 'Guest';
+    }
+
+    public static function hasRole(string $roleName): bool
+    {
+        return Auth::user()?->hasRole($roleName) ?? false;
+    }
+
+    /**
+     * Mendapatkan assigned class berdasarkan role user
+     */
+    public static function getAssignedClass(): ?array
     {
         $user = Auth::user();
-        if (!$user) {
-            return [];
+        if (!$user) return [];
+
+        return match(true) {
+            $user->hasRole('Admin') => null,
+            $user->hasRole('Pengajar') => self::getPengajarKelas($user),
+            $user->hasRole('Siswa') => self::getSiswaKelas($user),
+            default => []
+        };
+    }
+
+    /**
+     * Ambil kelas yang diajar oleh pengajar (dikelompokkan per mapel)
+     */
+    private static function getPengajarKelas(User $user): array
+    {
+        $akses = EditorAccess::with(['kelasMapel.kelas', 'kelasMapel.mapel'])
+            ->where('user_id', $user->id)
+            ->get();
+
+        $grouped = [];
+
+        foreach ($akses as $a) {
+            if (!$a->kelasMapel?->mapel || !$a->kelasMapel?->kelas) continue;
+
+            $mapelId = $a->kelasMapel->mapel->id;
+
+            if (!isset($grouped[$mapelId])) {
+                $grouped[$mapelId] = [
+                    'mapel_id' => $mapelId,
+                    'mapel' => $a->kelasMapel->mapel,
+                    'kelas' => []
+                ];
+            }
+
+            $grouped[$mapelId]['kelas'][] = $a->kelasMapel->kelas;
         }
 
-        if ($user->hasRole('Admin')) {
-            return null;
-        } elseif ($user->hasRole('Pengajar')) {
-            return self::getPengajarAssignedClass($user);
-        } elseif ($user->hasRole('Siswa')) {
-            return null; // Siswa tidak perlu assigned class di context ini
-        }
+        return array_values($grouped);
+    }
 
-        return [];
+    /**
+     * Ambil kelas & mapel untuk siswa
+     */
+    private static function getSiswaKelas(User $user): array
+    {
+        if (!$user->kelas_id) return [];
+
+        return KelasMapel::with(['mapel', 'kelas'])
+            ->where('kelas_id', $user->kelas_id)
+            ->get()
+            ->map(fn($km) => [
+                'mapel_id' => $km->mapel->id,
+                'mapel' => $km->mapel,
+                'kelas' => [$km->kelas],
+            ])
+            ->toArray();
     }
 }

@@ -8,7 +8,7 @@
         <h2 class="fw-bold mb-3">Daftar Ujian</h2>
 
         <div class="mb-3">
-            <a href="{{ route('viewCreateUjian', ['kelas' => $kelasId, 'mapel' => $mapelId]) }}" class="btn btn-primary">
+            <a href="{{ route('ujian.add', ['kelas' => $kelasId, 'mapel' => $mapelId]) }}" class="btn btn-primary">
                 ➕ Tambah Ujian
             </a>
         </div>

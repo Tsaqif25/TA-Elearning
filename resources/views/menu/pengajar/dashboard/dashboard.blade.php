@@ -15,7 +15,7 @@
         <!-- Statistik -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Kelas -->
-          <div class="flex items-center justify-between bg-white border border-[#EEEEEE] rounded-xl p-6 shadow-sm">
+          <div class="flex items-center justify-between bg-white rounded-xl p-6 shadow-sm   border-2 border-black">
             <div>
               <p class="text-[#7F8190] text-sm font-medium">Total Siswa</p>
               <h2 class="text-2xl font-bold mt-1">{{ $jumlahSiswa}}</h2>
@@ -26,7 +26,7 @@
           </div>
 
           <!-- Materi -->
-          <div class="flex items-center justify-between bg-white border border-[#EEEEEE] rounded-xl p-6 shadow-sm">
+          <div class="flex items-center justify-between  border-2 border-black rounded-xl p-6 shadow-sm">
             <div>
               <p class="text-[#7F8190] text-sm font-medium">Total Mapel</p>
               <h2 class="text-2xl font-bold mt-1">{{ $jumlahMapel }}</h2>
@@ -37,7 +37,7 @@
           </div>
 
           <!-- Tugas -->
-          <div class="flex items-center justify-between bg-white border border-[#EEEEEE] rounded-xl p-6 shadow-sm">
+          <div class="flex items-center justify-between  border-2 border-black rounded-xl p-6 shadow-sm">
             <div>
               <p class="text-[#7F8190] text-sm font-medium">Total Kelas</p>
               <h2 class="text-2xl font-bold mt-1">{{ $jumlahKelas }}</h2>
@@ -50,7 +50,7 @@
         </div>
 
         <!-- Kelas yang Anda Ajar -->
-<div class="bg-white border border-[#EEEEEE] rounded-xl p-6 shadow-sm">
+<div class="bg-white  border-2 border-black rounded-xl p-6 shadow-sm">
   <h2 class="text-lg font-semibold mb-6">Kelas yang Anda Ajar</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
@@ -59,7 +59,7 @@
     'mapel' => $item['mapel_id'],
     'kelas' => $item['kelas_id'],
 ]) }}"
-  class="block p-6 border border-[#EEEEEE] rounded-xl hover:shadow-md hover:scale-[1.02] transition">
+  class="block p-6  border-2 border-black rounded-xl hover:shadow-md hover:scale-[1.02] transition">
 
   <div class="bg-[#2B82FE] w-12 h-12 rounded-xl flex items-center justify-center mb-4">
     <img src="{{ asset('images/icons/book-open.svg') }}" alt="kelas" class="w-6 h-6">

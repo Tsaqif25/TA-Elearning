@@ -13,7 +13,6 @@ protected $fillable = [
     'kelas_mapel_id',
     'name',
     'content',
-    // 'isHidden',
 ];
 
 // protected $guarded = [

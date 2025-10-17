@@ -3,179 +3,164 @@
 @section('container')
  
     {{-- Navigasi Breadcrumb --}}
-    <div class="col-12 ps-4 pe-4 mb-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb bg-white">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item">
-                    <a href="{{ route('viewKelasMapel', [
-                            'mapel' => $kelasMapel->mapel->id,
-                            'kelas' => $kelasMapel->kelas->id,
-                        ]) }}">
-                        {{ $kelasMapel->mapel->name }}
-                    </a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">Update Tugas</li>
-            </ol>
-        </nav>
-    </div>
+{{-- 🔹 Breadcrumb --}}
+<div class="flex items-center text-sm text-gray-500 mb-6">
+    <a href="{{ route('dashboard') }}" class="hover:text-indigo-600 transition">Dashboard</a>
+    <span class="mx-2">/</span>
+    <a href="{{ route('viewKelasMapel', [
+        'mapel' => $kelasMapel->mapel->id,
+        'kelas' => $kelasMapel->kelas->id,
+    ]) }}" class="hover:text-indigo-600 transition">
+        {{ $kelasMapel->mapel->name }}
+    </a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700 font-semibold">Update Tugas</span>
+</div>
 
-    {{-- Judul Halaman --}}
-    <div class="ps-4 pe-4 mt-4  pt-4">
-        <h2 class="display-6 fw-bold">
-            <a href="{{ route('viewKelasMapel', [
+{{-- 🔹 Header --}}
+<div class="flex items-center mb-6">
+    <a href="{{ route('viewKelasMapel', [
+            'mapel' => $kelasMapel->mapel->id,
+            'kelas' => $kelasMapel->kelas->id,
+        ]) }}" 
+        class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition">
+        <i class="fa-solid fa-arrow-left text-gray-700"></i>
+    </a>
+    <div class="ml-3">
+        <h1 class="text-2xl font-bold text-gray-900">Update Tugas</h1>
+        <p class="text-sm text-gray-500">Edit detail tugas dan file pendukung siswa</p>
+    </div>
+</div>
+
+{{-- 🔹 Form Container --}}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    {{-- Kolom kiri: Form --}}
+    <div class="col-span-2 bg-white border border-gray-200 rounded-2xl shadow-sm p-6">
+        <form id="formTugasUpdate" action="{{ route('updateTugas', $tugas->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+            @method('PUT')
+            {{-- Judul Tugas --}}
+            <div>
+                <label for="nama" class="block text-sm font-semibold text-gray-800 mb-2">
+                    Judul Tugas <span class="text-red-500">*</span>
+                </label>
+                <input type="text" id="nama" name="name"
+                    class="w-full px-5 py-3 rounded-2xl border border-gray-300 bg-gray-50 
+                           text-gray-800 placeholder-gray-400 
+                           focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
+                           focus:bg-white shadow-sm transition-all duration-200"
+                    placeholder="Masukkan judul tugas..." value="{{ old('name', $tugas->name) }}" required>
+                @error('name')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Deadline --}}
+            <div>
+                <label for="due" class="block text-sm font-semibold text-gray-800 mb-2">
+                    Deadline <span class="text-red-500">*</span>
+                </label>
+                <input type="datetime-local" id="due" name="due"
+                    value="{{ old('due', \Carbon\Carbon::parse($tugas->due)->format('Y-m-d\TH:i')) }}"
+                    class="w-full px-5 py-3 rounded-2xl border border-gray-300 bg-gray-50 
+                           text-gray-800 placeholder-gray-400 
+                           focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
+                           focus:bg-white shadow-sm transition-all duration-200" required>
+            </div>
+
+            {{-- Konten --}}
+            <div>
+                <label for="content" class="block text-sm font-semibold text-gray-800 mb-2">
+                    Deskripsi <span class="text-gray-400 text-xs">(opsional)</span>
+                </label>
+                <textarea id="content" name="content" rows="6"
+                    class="w-full px-5 py-3 rounded-2xl border border-gray-300 bg-gray-50 
+                           text-gray-800 placeholder-gray-400 
+                           focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
+                           focus:bg-white shadow-sm transition-all duration-200 resize-none"
+                    placeholder="Tambahkan deskripsi atau petunjuk tugas...">{{ old('content', $tugas->content) }}</textarea>
+            </div>
+
+            {{-- Upload File --}}
+            <div>
+                <label class="block text-sm font-semibold text-gray-800 mb-1">
+                    Upload File Pendukung <span class="text-gray-400 text-xs">(opsional)</span>
+                </label>
+                <div id="my-dropzone" class="dropzone rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center">
+                    <p class="text-gray-500 text-sm">Tarik atau klik untuk unggah file</p>
+                </div>
+            </div>
+
+            {{-- Tombol Submit --}}
+            <div class="flex justify-end gap-3 pt-4">
+                <a href="{{ route('viewKelasMapel', [
                     'mapel' => $kelasMapel->mapel->id,
-                    'kelas' => $kelasMapel->kelas->id,
-                ]) }}">
-                {{ $kelasMapel->mapel->name }}
-                <button type="button" class="btn btn-outline-secondary rounded-circle">
-                    <i class="fa-solid fa-arrow-left"></i>
+                    'kelas' => $kelasMapel->kelas->id
+                ]) }}" 
+                class="px-6 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition">
+                    Batal
+                </a>
+
+                <button type="submit" id="btnSimpan"
+                    class="px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
                 </button>
-                Update Tugas
-            </a>
-        </h2>
+            </div>
+        </form>
     </div>
 
-    {{-- Formulir Update Tugas --}}
-    <div class="">
-        <div class="row p-4">
-            <h4 class="fw-bold text-primary"><i class="fa-solid fa-pen"></i> Data Tugas</h4>
-            <div class="col-12 col-lg-12 bg-white rounded-2">
-                <div class="mt-4">
-                    <div class="p-4">
-                        <form id="formTugasUpdate" action="{{ route('updateTugas', $tugas->id) }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            
-                            {{-- Status Open / Close --}}
-                            <div class="mb-3 row">
-                                <div class="col-8 col-lg-4">
-                                    <label for="opened" class="form-label d-block">Aktif<span class="small">(apakah sudah bisa diakses?)</span></label>
-                                </div>
-                                <div class="col-4 col-lg form-check form-switch">
-                                    <input class="form-check-input" name="opened" type="checkbox" role="switch" id="opened" @if ($tugas->isHidden == 0) checked @endif>
-                                </div>
+    {{-- Kolom kanan: File & Catatan --}}
+    <div class="space-y-5">
+        {{-- File yang sudah ada --}}
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5">
+            <h3 class="text-sm font-semibold text-gray-700 mb-3">File Tugas Saat Ini</h3>
+            @if ($tugas->TugasFile->count())
+                <ul class="divide-y divide-gray-100">
+                    @foreach ($tugas->TugasFile as $key)
+                        <li class="flex items-center justify-between py-2">
+                            <div class="flex items-center gap-2 text-sm text-gray-700">
+                                @if (Str::endsWith($key->file, ['.jpg', '.jpeg', '.png', '.gif']))
+                                    <i class="fa-solid fa-image text-indigo-500"></i>
+                                @elseif (Str::endsWith($key->file, ['.pdf']))
+                                    <i class="fa-solid fa-file-pdf text-red-500"></i>
+                                @elseif (Str::endsWith($key->file, ['.doc', '.docx']))
+                                    <i class="fa-solid fa-file-word text-blue-500"></i>
+                                @else
+                                    <i class="fa-solid fa-file text-gray-400"></i>
+                                @endif
+                                <a href="{{ route('getFileTugas', ['namaFile' => $key->file]) }}" class="hover:underline">
+                                    {{ Str::limit($key->file, 20) }}
+                                </a>
                             </div>
-                            
-                            {{-- Nama Tugas --}}
-                            <div class="mb-3">
-                                <label for="nama" class="form-label">Judul Tugas</label>
-                                <input type="hidden" name="kelasId" value="{{ encrypt($kelasId) }}" readonly>
-                                <input type="hidden" name="tugasId" value="{{ encrypt($tugas['id']) }}" readonly>
-                                <input type="hidden" name="mapelId" value="{{ $mapel['id'] }}" readonly>
-                                <input type="text" class="form-control" id="nama" name="name" placeholder="Inputkan judul tugas..." value="{{ old('name', $tugas['name']) }}" required>
-                                @error('name')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            
-                            {{-- Due Date Picker --}}
-                            <div class="mb-3">
-                                <label for="due" class="form-label">Due Date</label>
-                                <input class="form-control" id="due" name="due" placeholder="Pilih tanggal jatuh tempo..." required value="{{ old('due', \Carbon\Carbon::parse($tugas['due'])->format('Y-m-d H:i')) }}">
-                                @error('due')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            
-                            {{-- Konten tugas --}}
-                            <div class="mb-3">
-                                <label for="nama" class="form-label">Konten <span class="small text-info">(Opsional)</span></label>
-                                <textarea id="tinymce" name="content">{{ $tugas['content'] }}</textarea>
-                                @error('content')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            
-                            {{-- Dropzone --}}
-                            <div class="mb-3">
-                                <label for="uploadFile" class="form-label">Upload <span class="small text-info">(Opsional)</span></label>
-                                <div id="my-dropzone" class="dropzone"></div>
-                            </div>
-                            
-                            {{-- Tombol Submit --}}
-                            <div class="">
-                                <button type="submit" id="btnSimpan" class="btn-lg btn btn-primary w-100">Simpan dan Lanjutkan</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                            <form id="formDeleteFile" action="{{ route('tugas.file.delete') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus file ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <input type="hidden" name="idTugas" value="{{ $tugas->id }}">
+                                <input type="hidden" name="fileName" value="{{ $key->file }}">
+                                <button type="submit" class="text-red-500 hover:text-red-700 text-sm font-medium">
+                                    Hapus
+                                </button>
+                            </form>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-gray-500 text-sm">Belum ada file yang diunggah.</p>
+            @endif
+        </div>
+
+        {{-- Catatan --}}
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5">
+            <h3 class="text-sm font-semibold text-gray-700 mb-2">CATATAN</h3>
+            <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
+                <li>Pastikan data tugas diperbarui dengan benar.</li>
+                <li>File lama bisa dihapus jika tidak relevan.</li>
+                <li>Perubahan akan langsung diterapkan setelah disimpan.</li>
+            </ul>
         </div>
     </div>
-
-    {{-- Files --}}
-    <div class="row p-4">
-        <div class="col-12 col-lg-12 bg-white rounded-2">
-            <div class="mt-4">
-                <div class="p-4">
-                    <h4 class="fw-bold mb-2">Files</h4>
-                    <hr>
-                    <div class="row">
-                        @foreach ($tugas->TugasFile as $key)
-                            <div class="col-lg-4 col-sm-6 col-12 mb-2">
-                                <div class="list-group-item">
-                                    @if (Str::endsWith($key->file, ['.jpg', '.jpeg', '.png', '.gif']))
-                                        <i class="fa-solid fa-image"></i>
-                                    @elseif (Str::endsWith($key->file, ['.mp4', '.avi', '.mov']))
-                                        <i class="fa-solid fa-video"></i>
-                                    @elseif (Str::endsWith($key->file, ['.pdf']))
-                                        <i class="fa-solid fa-file-pdf"></i>
-                                    @elseif (Str::endsWith($key->file, ['.doc', '.docx']))
-                                        <i class="fa-solid fa-file-word"></i>
-                                    @elseif (Str::endsWith($key->file, ['.ppt', '.pptx']))
-                                        <i class="fa-solid fa-file-powerpoint"></i>
-                                    @elseif (Str::endsWith($key->file, ['.xls', '.xlsx']))
-                                        <i class="fa-solid fa-file-excel"></i>
-                                    @elseif (Str::endsWith($key->file, ['.txt']))
-                                        <i class="fa-solid fa-file-alt"></i>
-                                    @elseif (Str::endsWith($key->file, ['.mp3']))
-                                        <i class="fa-solid fa-music"></i>
-                                    @else
-                                        <i class="fa-solid fa-file"></i>
-                                    @endif
-                                    <a href="{{ route('getFileTugas', ['namaFile' => $key->file]) }}" class="text-decoration-none">
-                                        {{ Str::substr($key->file, 5, 10) }}
-                                    </a>
-                                    <button type="button" class="btn btn-danger btn-sm float-end" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#modalDelete" 
-                                            data-filename="{{ $key->file }}">
-                                        X
-                                    </button>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Modal --}}
-<div class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDelete" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Konfirmasi Hapus</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Apakah Anda yakin ingin menghapus file ini?
-      </div>
-   <div class="modal-footer">
-<form id="formDeleteFile" action="{{ route('tugas.file.delete') }}" method="POST">
-@csrf
-@method('DELETE')
-<input type="hidden" name="idTugas" value="{{ $tugas->id }}">
-<input type="hidden" name="fileName" id="fileNameInput">
-<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-<button type="submit" class="btn btn-danger">Hapus</button>
-</form>
 </div>
-    </div>
-  </div>
-</div>
+
 
 
 

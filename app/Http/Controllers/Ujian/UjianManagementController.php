@@ -22,9 +22,6 @@ use Illuminate\Validation\ValidationException;
 
 
 
-
-
-
 class UjianManagementController extends Controller
 {
 
@@ -44,7 +41,6 @@ class UjianManagementController extends Controller
             ->with('soalUjianMultiple')
             ->get();
             
-
         return view('menu.pengajar.ujian.manageUjian', [
             'assignedKelas' => $assignedKelas,
             'roles' => $roles,

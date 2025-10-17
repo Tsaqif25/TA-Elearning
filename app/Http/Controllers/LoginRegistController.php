@@ -69,34 +69,28 @@ class LoginRegistController extends Controller
         }
     }
 
-   public function authenticate(Request $request)
-{
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+    public function authenticate(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
-        $user = Auth::user();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            $user = Auth::user();
 
-        // 🔹 Arahkan sesuai role baru
-        if ($user->hasRole('Admin')) {
-            return redirect()->route('admin.dashboard');
-        } elseif ($user->hasRole('Pengajar')) {
-            return redirect()->route('pengajar.dashboard');
-        } elseif ($user->hasRole('Siswa')) {
-            return redirect()->route('siswa.home');
+            if ($user->hasRole('Admin') || $user->hasRole('Pengajar')) {
+                return redirect()->intended('/dashboard');
+            } elseif ($user->hasRole('Siswa')) {
+                return redirect()->intended('/home');
+            }
+
+            return redirect()->intended('/dashboard');
         }
 
-        // Kalau tidak punya role sama sekali
-        Auth::logout();
-        return redirect()->route('login')->with('login-error', 'Role pengguna tidak ditemukan.');
+        return back()->with('login-error', 'Email atau Kata Sandi salah!');
     }
-
-    return back()->with('login-error', 'Email atau Kata Sandi salah!');
-}
-
 
     public function logout(Request $request)
     {
