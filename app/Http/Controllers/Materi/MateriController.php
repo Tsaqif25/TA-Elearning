@@ -69,13 +69,14 @@ class MateriController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'content' => 'required|string',
+             'youtube_link' => 'nullable|string',
         ]);
 
         $materi->update([
             'kelas_mapel_id' => $materi->kelas_mapel_id, 
             'name' => $validated['name'],
             'content' => $validated['content'],
-            'isHidden' => $request->has('opened') ? 0 : 1, // kalau centang berarti tampil
+                 'youtube_link' => $validated['youtube_link'] ?? null,
         ]);
 
         if ($request->ajax()) {

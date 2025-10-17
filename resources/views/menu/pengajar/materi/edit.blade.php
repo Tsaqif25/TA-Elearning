@@ -59,7 +59,7 @@
                     <textarea id="youtube_link" name="youtube_link" rows="4"
                         class="w-full px-5 py-3 rounded-2xl border-1 border-black bg-gray-50 text-gray-800 placeholder-gray-400
     focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white shadow-sm transition-all duration-200 resize-none"
-                        placeholder="Contoh:\nhttps://www.youtube.com/watch?v=abc123\nhttps://youtu.be/xyz789">{{ old('youtube_link') }}</textarea>
+                        placeholder="Contoh:\nhttps://www.youtube.com/watch?v=abc123\nhttps://youtu.be/xyz789">{{ $materi->youtube_link}}</textarea>
                     @error('youtube_link')
                         <p class="text-red-500 text-sm mt-1">{{ $materi->youtube_link}}</p>
                     @enderror

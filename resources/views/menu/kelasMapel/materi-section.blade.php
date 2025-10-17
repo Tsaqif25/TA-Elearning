@@ -29,6 +29,7 @@
           {{-- 🔹 Tombol Hapus --}}
 <form action="{{ route('materi.destroy', $materis->id) }}" method="POST" onsubmit="event.preventDefault(); handleDeleteMateri(this);" class="inline">
             @method('DELETE')
+            @csrf
             <button type="submit"
                     class="text-gray-400 hover:text-red-500 transition"
                     title="Hapus Materi">
@@ -68,60 +69,56 @@
 
 </div>
 
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 function handleDeleteMateri(form) {
-// Tampilkan konfirmasi kecil menggunakan Toastify
-Toastify({
-text: "Klik lagi untuk konfirmasi hapus materi!",
-duration: 2000,
-close: true,
-gravity: "top",
-position: "right",
-style: { background: "#f59e0b" }
-}).showToast();
-
-
-// Ubah event agar klik berikutnya benar-benar hapus
-form.onsubmit = function (e) {
-e.preventDefault();
-
-
-const formData = new FormData(form);
-fetch(form.action, {
-method: 'POST',
-body: formData,
-headers: {
-'X-Requested-With': 'XMLHttpRequest',
-'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
-}
-})
-.then(response => {
-if (response.ok) {
-Toastify({
-text: "Materi berhasil dihapus!",
-duration: 1500,
-close: false,
-gravity: "top",
-position: "right",
-style: { background: "#16a34a" }
-}).showToast();
-
-
-setTimeout(() => window.location.reload(), 1500);
-} else {
-Toastify({
-text: "Gagal menghapus materi.",
-duration: 2000,
-close: true,
-gravity: "top",
-position: "right",
-style: { background: "#dc2626" }
-}).showToast();
-}
-});
-};
+  Swal.fire({
+    title: 'Yakin ingin menghapus?',
+    text: 'Data materi ini akan dihapus secara permanen!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal',
+    reverseButtons: true,
+    width: '320px',
+    padding: '1rem',
+    background: '#ffffff', // warna latar popup
+    color: '#333', // warna teks
+    customClass: {
+      popup: 'rounded-2xl shadow-lg',
+      confirmButton: 'bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg mx-1 text-sm',
+      cancelButton: 'bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4 py-2 rounded-lg mx-1 text-sm',
+      title: 'text-base font-semibold',
+      htmlContainer: 'text-sm'
+    },
+    buttonsStyling: false
+  }).then((result) => {
+    if (result.isConfirmed) {
+      form.submit();
+      Swal.fire({
+        title: 'Terhapus!',
+        text: 'Materi berhasil dihapus.',
+        icon: 'success',
+        width: '300px',
+        timer: 1500,
+        showConfirmButton: false,
+        background: '#ffffff',
+      });
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      Swal.fire({
+        title: 'Dibatalkan',
+        text: 'Materi tidak jadi dihapus.',
+        icon: 'error',
+        width: '300px',
+        timer: 1300,
+        showConfirmButton: false,
+        background: '#ffffff',
+      });
+    }
+  });
 }
 </script>
+
+
   
