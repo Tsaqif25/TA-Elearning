@@ -52,6 +52,19 @@
                         placeholder="Jelaskan tentang materi ini...">{{ old('content', $materi->content) }}</textarea>
                 </div>
 
+                        <div class="mt-5">
+                    <label for="youtube_link" class="block text-sm font-semibold text-gray-800 mb-2">
+                        Link YouTube (bisa lebih dari satu, pisahkan dengan Enter)
+                    </label>
+                    <textarea id="youtube_link" name="youtube_link" rows="4"
+                        class="w-full px-5 py-3 rounded-2xl border-1 border-black bg-gray-50 text-gray-800 placeholder-gray-400
+    focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white shadow-sm transition-all duration-200 resize-none"
+                        placeholder="Contoh:\nhttps://www.youtube.com/watch?v=abc123\nhttps://youtu.be/xyz789">{{ old('youtube_link') }}</textarea>
+                    @error('youtube_link')
+                        <p class="text-red-500 text-sm mt-1">{{ $materi->youtube_link}}</p>
+                    @enderror
+                </div>
+
                 {{-- Upload File (Dropzone) --}}
                 <div>
                     <label class="block text-sm font-semibold text-gray-800 mb-1">

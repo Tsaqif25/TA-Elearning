@@ -27,11 +27,13 @@ class MateriController extends Controller
         $validated = $request->validate([
             'name' => 'required',
             'content' => 'required',
+       'youtube_link' => 'nullable|string',
         ]);
         $materi = Materi::create([
             'kelas_mapel_id' => $kelasMapel->id,
             'name' => $validated['name'],
             'content' => $validated['content'] ?? null,
+            'youtube_link' => $validated['youtube_link'] ?? null,
         ]);
         // Return JSON untuk AJAX
         if ($request->ajax()) {

@@ -13,6 +13,7 @@ protected $fillable = [
     'kelas_mapel_id',
     'name',
     'content',
+    'youtube_link'
 ];
 
 // protected $guarded = [
