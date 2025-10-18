@@ -7,18 +7,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb bg-white">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                @if (Auth()->user()->roles_id == 1)
-                @else
-                    <li class="breadcrumb-item">
-                        <a
-                            href="{{ route('viewKelasMapel', [
-                                'mapel' => $kelasMapel->mapel->id,
-                                'kelas' => $kelasMapel->kelas->id,
-                            ]) }}">
-                            {{ $kelasMapel->mapel->name }}
-                        </a>
-                    </li>
-                @endif
+           
                 <li class="breadcrumb-item active" aria-current="page"> Tugas</li>
             </ol>
         </nav>
@@ -32,27 +21,33 @@
     @endif
 
     {{-- Judul Halaman --}}
-    <div class="ps-4 pe-4 mt-4  pt-4">
-        <h2 class="display-6 fw-bold">
-            @if (Auth()->user()->roles_id == 1)
-                <a href="{{ route('activity') }}">
-                    <button type="button" class="btn btn-outline-secondary rounded-circle">
-                        <i class="fa-solid fa-arrow-left"></i>
-                    </button>
-                </a> Tugas
-            @else
-                <a
-                    href="{{ route('viewKelasMapel', [
-                        'mapel' => $kelasMapel->mapel->id,
-                        'kelas' => $kelasMapel->kelas->id,
-                    ]) }}">
-                    {{ $kelasMapel->mapel->name }}
-                </a>
-            @endif
-        </h2>
+  <div class="flex flex-col mb-8">
+  <div class="flex items-center gap-4">
+    <a href="{{ route('viewKelasMapel', [
+        'mapel' => $kelasMapel->mapel->id,
+        'kelas' => $kelasMapel->kelas->id,
+        'tab' => 'tugas' 
+    ]) }}" 
+       class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-transparent hover:border-gray-200 shadow-sm hover:shadow-md transition">
+      <i class="fa-solid fa-arrow-left text-gray-700"></i>
+    </a>
+
+    <div>
+      <h1 class="text-2xl font-extrabold text-[#0A090B] leading-tight">
+        {{ $kelasMapel->kelas->name }}
+      </h1>
+      <p class="text-sm text-[#7F8190] font-medium">
+        {{ $kelasMapel->mapel->name }}
+      </p>
     </div>
+  </div>
 
-
+  {{-- Judul Tambah Tugas --}}
+  <div class="mt-6">
+    <h2 class="text-xl font-bold text-[#0A090B]">Lihat Tugas</h2>
+    <p class="text-sm text-[#7F8190]">Nilai Tugas siswa</p>
+  </div>
+</div>
 
     {{-- Baris utama --}}
     <div class="col-12 ps-4 pe-4 mb-4">

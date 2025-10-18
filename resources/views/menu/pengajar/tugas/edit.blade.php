@@ -3,34 +3,35 @@
 @section('container')
  
     {{-- Navigasi Breadcrumb --}}
-{{-- 🔹 Breadcrumb --}}
-<div class="flex items-center text-sm text-gray-500 mb-6">
-    <a href="{{ route('dashboard') }}" class="hover:text-indigo-600 transition">Dashboard</a>
-    <span class="mx-2">/</span>
+<div class="flex flex-col mb-8">
+  <div class="flex items-center gap-4">
     <a href="{{ route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel->id,
         'kelas' => $kelasMapel->kelas->id,
-    ]) }}" class="hover:text-indigo-600 transition">
-        {{ $kelasMapel->mapel->name }}
+        'tab' => 'tugas'
+    ]) }}" 
+       class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-transparent hover:border-gray-200 shadow-sm hover:shadow-md transition">
+      <i class="fa-solid fa-arrow-left text-gray-700"></i>
     </a>
-    <span class="mx-2">/</span>
-    <span class="text-gray-700 font-semibold">Update Tugas</span>
+
+    <div>
+      <h1 class="text-2xl font-extrabold text-[#0A090B] leading-tight">
+        {{ $kelasMapel->kelas->name }}
+      </h1>
+      <p class="text-sm text-[#7F8190] font-medium">
+        {{ $kelasMapel->mapel->name }}
+      </p>
+    </div>
+  </div>
+
+  {{-- Judul Tambah Tugas --}}
+  <div class="mt-6">
+    <h2 class="text-xl font-bold text-[#0A090B]">Update Tugas</h2>
+    <p class="text-sm text-[#7F8190]">Edit detail tugas dan file pendukung siswa</p>
+  </div>
 </div>
 
-{{-- 🔹 Header --}}
-<div class="flex items-center mb-6">
-    <a href="{{ route('viewKelasMapel', [
-            'mapel' => $kelasMapel->mapel->id,
-            'kelas' => $kelasMapel->kelas->id,
-        ]) }}" 
-        class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition">
-        <i class="fa-solid fa-arrow-left text-gray-700"></i>
-    </a>
-    <div class="ml-3">
-        <h1 class="text-2xl font-bold text-gray-900">Update Tugas</h1>
-        <p class="text-sm text-gray-500">Edit detail tugas dan file pendukung siswa</p>
-    </div>
-</div>
+
 
 {{-- 🔹 Form Container --}}
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -95,7 +96,8 @@
             <div class="flex justify-end gap-3 pt-4">
                 <a href="{{ route('viewKelasMapel', [
                     'mapel' => $kelasMapel->mapel->id,
-                    'kelas' => $kelasMapel->kelas->id
+                    'kelas' => $kelasMapel->kelas->id,
+                    'tab' => 'tugas'
                 ]) }}" 
                 class="px-6 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition">
                     Batal

@@ -41,18 +41,19 @@ $userTugas    = UserTugas::where('tugas_id', $tugas->id)
 $assignedKelas = DashboardController::getAssignedClass();
 $title        = $tugas->name;
 
-return view('menu.pengajar.tugas.view', compact(
-    'userTugas',
-    'assignedKelas',
-    'tugas',
-    'kelas',
-    'title',
-    'roles',
-    'tugasAll',
-    'mapel',
-    'kelasMapel',
-    'editorAccess'
-));
+ return view('menu.pengajar.tugas.view', [
+        'userTugas'     => $userTugas,
+        'assignedKelas' => $assignedKelas,
+        'tugas'         => $tugas,
+        'kelas'         => $kelas,
+        'title'         => $title,
+        'roles'         => $roles,
+        'tugasAll'      => $tugasAll,
+        'mapel'         => $mapel,
+        'kelasMapel'    => $kelasMapel,
+        'editorAccess'  => $editorAccess,
+        'tab'           => 'tugas', // 
+    ]);
 }
 
 
@@ -130,11 +131,13 @@ $assignedKelas = DashboardController::getAssignedClass();
 $title         = 'Tambah Tugas';
 // $kelasId       = $kelas->id;
 
-return view('menu.pengajar.tugas.add', compact(
-    'assignedKelas',
-    'title',
-    'kelasMapel'
-));
+return view('menu.pengajar.tugas.add', [
+    'assignedKelas' => $assignedKelas,
+    'title'         => $title,
+    'kelasMapel'    => $kelasMapel,
+    'tab'           => 'tugas',
+]);
+
 }
 
 
@@ -149,15 +152,16 @@ $title         = 'Update Tugas';
 $kelasId       = $kelasMapel->kelas_id;
 $mapel         = $kelasMapel->mapel;
 
-return view('menu.pengajar.tugas.edit', compact(
-    'assignedKelas',
-    'title',
-    // 'roles',
-    'tugas',
-    'kelasId',
-    'mapel',
-    'kelasMapel'
-));
+ return view('menu.pengajar.tugas.edit', [
+        'assignedKelas' => $assignedKelas,
+        'title'         => $title,
+        // 'roles'      => $roles,
+        'tugas'         => $tugas,
+        'kelasId'       => $kelasId,
+        'mapel'         => $mapel,
+        'kelasMapel'    => $kelasMapel,
+        'tab'           => 'tugas', 
+    ]);
 }
 
 
@@ -190,6 +194,7 @@ public function createTugas(Request $request, KelasMapel $kelasMapel)
     return redirect()->route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel_id,
         'kelas' => $kelasMapel->kelas_id,
+        'tab'   => 'tugas'
     ])->with('success', 'Tugas berhasil ditambahkan!');
 }
 
@@ -220,6 +225,7 @@ if ($request->ajax()) {
 return redirect()->route('viewKelasMapel', [
     'mapel' => $tugas->kelasMapel->mapel_id,
     'kelas' => $tugas->kelasMapel->kelas_id,
+     'tab'   => 'tugas'
 ])->with('success', 'Tugas berhasil diperbarui!');
 }
 
@@ -230,7 +236,8 @@ $tugas->delete();
 
 return redirect()->route('viewKelasMapel', [
     'mapel' => $kelasMapel->mapel_id,
-    'kelas' => $kelasMapel->kelas_id
+    'kelas' => $kelasMapel->kelas_id,
+     'tab'   => 'tugas'
 ])->with('success', 'Tugas berhasil dihapus!');
 }
 }

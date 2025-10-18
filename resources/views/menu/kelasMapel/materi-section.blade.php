@@ -11,61 +11,55 @@
   </div>
 
   {{-- Grid Card --}}
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="space-y-4">
   @forelse($materi as $materis)
-    <div class="bg-white border-2 border-black rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition">
-      {{-- Bagian Atas --}}
+    <div class="bg-white border-2 border-black rounded-xl p-4 flex items-center justify-between hover:shadow-sm transition">
+      
+      {{-- Kiri: Judul & Info --}}
       <div>
-        <div class="flex justify-between items-start mb-4">
-          <div class="flex items-center gap-3">
-            <div class="w-11 h-11 bg-[#EDEBFE] flex items-center justify-center rounded-full">
-              <i class="fa-solid fa-book text-[#6C63FF] text-lg"></i>
-            </div>
-            <h3 class="font-semibold text-lg text-[#0A090B] leading-tight">
-              {{ $materis->name }}
-            </h3>
-          </div>
-
-          {{-- 🔹 Tombol Hapus --}}
-<form action="{{ route('materi.destroy', $materis->id) }}" method="POST" onsubmit="event.preventDefault(); handleDeleteMateri(this);" class="inline">
-            @method('DELETE')
-            @csrf
-            <button type="submit"
-                    class="text-gray-400 hover:text-red-500 transition"
-                    title="Hapus Materi">
-              <i class="fa-solid fa-trash text-sm"></i>
-            </button>
-          </form>
-        </div>
-
-        {{-- Tanggal --}}
-        <p class="text-sm text-[#7F8190] flex items-center gap-2">
-          <i class="fa-solid fa-calendar-days text-[#6C63FF]"></i>
-          {{ $materis->created_at->format('d/m/Y') }}
+        <h3 class="font-semibold text-base text-[#0A090B] flex items-center gap-2">
+          {{ $materis->name }}
+          <span class="text-xs bg-[#6C63FF] text-white px-2 py-[2px] rounded-md font-medium">Materi</span>
+        </h3>
+        <p class="text-sm text-[#7F8190] mt-1 flex items-center gap-1">
+          <i class="fa-solid fa-calendar-days text-[#6C63FF] text-xs"></i>
+          Tanggal: {{ $materis->created_at->format('d/m/Y') }}
         </p>
       </div>
 
-      {{-- Bagian Bawah (Tombol) --}}
-      <div class="flex gap-2 mt-5">
+      {{-- Kanan: Tombol Aksi --}}
+      <div class="flex items-center gap-2">
+        {{-- Tombol Hapus --}}
+        <form action="{{ route('materi.destroy', $materis->id) }}" method="POST"
+              onsubmit="event.preventDefault(); handleDeleteUjian(this);" class="inline">
+          @csrf
+          @method('DELETE')
+          <button type="submit"
+                  class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-red-600 text-white text-xs font-semibold hover:bg-red-700 transition">
+            <i class="fa-solid fa-trash text-xs"></i> Hapus
+          </button>
+        </form>
+
+        {{-- Tombol Edit --}}
         <a href="{{ route('materi.edit', $materis->id) }}"
-          class="flex-1 text-center px-4 py-1.5 border-1 border-[#0A090B] rounded-full text-sm font-semibold text-[#0A090B] hover:bg-[#F3F3F3] transition">
-          Edit
+           class="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-700 text-xs font-semibold hover:bg-gray-100 transition">
+          <i class="fa-solid fa-pen text-xs"></i> Edit
         </a>
+
+        {{-- Tombol Lihat --}}
         <a href="{{ route('materi.show', $materis->id) }}"
-          class="flex-1 text-center px-4 py-1.5 border-1 bg-[#6C63FF] text-white rounded-full text-sm font-semibold hover:bg-[#574FFB] transition">
-          Lihat
+           class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#6C63FF] text-white text-xs font-semibold hover:bg-[#574FFB] transition">
+          <i class="fa-solid fa-eye text-xs"></i> Lihat
         </a>
       </div>
+
     </div>
   @empty
-    <div class="col-span-3">
-      <div class="bg-gray-50 border border-dashed border-gray-300 rounded-2xl py-10 text-center text-gray-500">
-        Belum ada materi di kelas ini.
-      </div>
+    <div class="bg-gray-50 border border-dashed border-gray-300 rounded-xl py-8 text-center text-gray-500">
+      Belum ada materi di kelas ini.
     </div>
   @endforelse
 </div>
-
 
 </div>
 

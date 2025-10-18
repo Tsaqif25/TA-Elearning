@@ -45,7 +45,8 @@ class MateriController extends Controller
         }
         return redirect()->route('viewKelasMapel', [
             'mapel' => $kelasMapel->mapel_id,
-            'kelas' => $kelasMapel->kelas_id
+            'kelas' => $kelasMapel->kelas_id,
+              'tab'   => 'materi'
         ])->with('success', 'Materi berhasil ditambahkan!');
     }
     public function edit(Materi $materi)
@@ -89,7 +90,8 @@ class MateriController extends Controller
 
         return redirect()->route('viewKelasMapel', [
             'mapel' => $materi->kelasMapel->mapel_id,
-            'kelas' => $materi->kelasMapel->kelas_id
+            'kelas' => $materi->kelasMapel->kelas_id,
+             'tab'   => 'materi'
         ])->with('success', 'Materi berhasil diperbarui!');
     }
 
@@ -131,7 +133,8 @@ public function show(Materi $materi)
 
     return redirect()->route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel_id,
-        'kelas' => $kelasMapel->kelas_id
+        'kelas' => $kelasMapel->kelas_id,
+        'tab'   => 'materi'
     ])->with('success', 'Materi berhasil dihapus!');
 }
 

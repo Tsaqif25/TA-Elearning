@@ -12,35 +12,49 @@ use App\Http\Controllers\DashboardController;
 
 class SoalManagementController extends Controller
 {
-    public function show($ujianId)
-    {
-    $ujian = Ujian::with('soalUjianMultiple.answer')->findOrFail($ujianId);
+  public function show($ujianId)
+{
+    // Ambil ujian + semua relasi yang dibutuhkan
+    $ujian = Ujian::with([
+        'soalUjianMultiple.answer',
+        'kelasMapel.kelas',
+        'kelasMapel.mapel'
+    ])->findOrFail($ujianId);
 
-        $roles = DashboardController::getRolesName();
-        $assignedKelas = DashboardController::getAssignedClass();
+    $roles = DashboardController::getRolesName();
+    $assignedKelas = DashboardController::getAssignedClass();
+    $kelasMapel = $ujian->kelasMapel; // ✅ ambil relasi dari ujian
 
-        return view('menu.pengajar.ujian.manageSoal', [
-            'ujian' => $ujian,
-            'roles' => $roles,
-            'assignedKelas' => $assignedKelas,
-            'title' => 'Kelola Soal'
-        ]);
-    }
+    return view('menu.pengajar.ujian.manageSoal', [
+        'ujian' => $ujian,
+        'roles' => $roles,
+        'assignedKelas' => $assignedKelas,
+        'kelasMapel' => $kelasMapel, // ✅ kirim ke view
+        'title' => 'Kelola Soal',
+    ]);
+}
 
-    public function createSoal($ujianId)
-    {
-        $ujian = Ujian::findOrFail($ujianId);
 
-        $roles = DashboardController::getRolesName();
-        $assignedKelas = DashboardController::getAssignedClass();
+public function createSoal($ujianId)
+{
+    // Ambil ujian sekaligus relasi kelasMapel, kelas, dan mapel
+    $ujian = Ujian::with('kelasMapel.kelas', 'kelasMapel.mapel')->findOrFail($ujianId);
 
-        return view('menu.pengajar.ujian.viewTambahSoal', [
-            'ujian' => $ujian,
-            'roles' => $roles,
-            'assignedKelas' => $assignedKelas,
-            'title' => 'Tambah Soal'
-        ]);
-    }
+    $roles = DashboardController::getRolesName();
+    $assignedKelas = DashboardController::getAssignedClass();
+
+    // Ambil kelasMapel dari relasi
+    $kelasMapel = $ujian->kelasMapel;
+
+    return view('menu.pengajar.ujian.viewTambahSoal', [
+        'ujian' => $ujian,
+        'roles' => $roles,
+        'assignedKelas' => $assignedKelas,
+        'kelasMapel' => $kelasMapel,
+        'title' => 'Tambah Soal'
+    ]);
+}
+
 
     public function storeSoal(Request $request, $ujianId)
     {

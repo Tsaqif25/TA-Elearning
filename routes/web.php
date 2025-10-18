@@ -76,20 +76,20 @@ Route::middleware('auth')->controller(KelasMapelController::class)->group(functi
     });
 });
 
-
-
-
     Route::middleware(['auth','role:Pengajar'])
     ->prefix('ujian')
     ->name('ujian.')
     ->group(function(){
     // CRUD Ujian
         Route::controller(UjianManagementController::class)->group(function(){
-            Route::get('manage/{kelas}/{mapel}','index')->name('manage');
-            Route::get('add/{kelas}/{mapel}','create')->name('add');
-            Route::post('store','store')->name('store');
-            Route::post('update','updateUjian')->name('update');
-            Route::delete('destroy','destroy')->name('destroy');
+
+        //  Route::get('/kelas-mapel/{kelasMapel}/manage', 'index')->name('manage');
+        Route::get('/kelas-mapel/{kelasMapel}/create', 'create')->name('create');
+        Route::post('/kelas-mapel/{kelasMapel}', 'store')->name('store');
+        Route::get('/{ujian}/edit', 'edit')->name('edit');
+        Route::put('/{ujian}', 'update')->name('update');
+        Route::delete('/{ujian}', 'destroy')->name('destroy');
+        
         });
         Route::controller(SoalManagementController::class)
         ->prefix('{ujian}/soal')

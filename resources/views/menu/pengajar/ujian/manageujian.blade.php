@@ -1,8 +1,8 @@
-@extends('layout.template.mainTemplate')
+{{-- @extends('layout.template.mainTemplate') --}}
 
 {{-- @extends('layout.template.mainTemplate') --}}
 
-@section('container')
+{{-- @section('container')
 <div class="row p-4">
     <div class="col-12 col-lg-12">
         <h2 class="fw-bold mb-3">Daftar Ujian</h2>
@@ -36,9 +36,9 @@
                                 <td>{{ \Carbon\Carbon::parse($ujian->due)->format('d M Y H:i') }}</td>
                                 <td>
                                     {{-- Kelola Soal --}}
-                                    <a href="{{ route('soal.manage', $ujian->id) }}" class="btn btn-sm btn-info">
+                                    {{-- <a href="{{ route('soal.manage', $ujian->id) }}" class="btn btn-sm btn-info">
                                         📑 Kelola Soal
-                                    </a>
+                                    </a> --}}
 
                                     {{-- Edit Ujian --}}
                                     {{-- <a href="{{ route('viewUpdateUjian', $ujian->id) }}" class="btn btn-sm btn-warning">
@@ -46,7 +46,7 @@
                                     </a> --}}
 
                                     {{-- Hapus Ujian --}}
-                                    <form action="{{ route('destroyUjian') }}" method="POST" class="d-inline">
+                                    {{-- <form action="{{ route('destroyUjian') }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('POST')
                                         <input type="hidden" name="id" value="{{ $ujian->id }}">
@@ -54,8 +54,8 @@
                                             onclick="return confirm('Yakin hapus ujian ini?')">
                                             🗑️ Hapus
                                         </button>
-                                    </form>
-                                </td>
+                                    </form> --}}
+                                {{-- </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -68,6 +68,9 @@
             @endif
         </div>
     </div>
-</div>
-@endsection
+</div> --}}
+
+
+
+{{-- @endsection --}} 
 

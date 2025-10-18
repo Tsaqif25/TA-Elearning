@@ -2,22 +2,37 @@
 
 @section('container')
 
-    {{-- Header --}}
-    <div class="flex items-center mb-6">
-
-
-        <a href="{{ route('viewKelasMapel', [
+ 
+<div class="flex flex-col mb-8">
+  <div class="flex items-center gap-4">
+    <a href="{{ route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id
-    ]) }}" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition">
-            <i class="fa-solid fa-arrow-left text-gray-700"></i>
-        </a>
+        'kelas' => $kelasMapel->kelas->id,
+        'tab' => 'materi',
+    ]) }}" 
+       class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-transparent hover:border-gray-200 shadow-sm hover:shadow-md transition">
+      <i class="fa-solid fa-arrow-left text-gray-700"></i>
+    </a>
 
-        <div class="ml-3">
-            <h1 class="text-2xl font-bold text-gray-900">Tambah Materi</h1>
-            <p class="text-sm text-gray-500">Upload materi pembelajaran untuk siswa</p>
-        </div>
+    <div>
+      <h1 class="text-2xl font-extrabold text-[#0A090B] leading-tight">
+        {{ $kelasMapel->kelas->name }}
+      </h1>
+      <p class="text-sm text-[#7F8190] font-medium">
+        {{ $kelasMapel->mapel->name }}
+      </p>
     </div>
+  </div>
+
+  {{-- Judul Tambah Materi --}}
+  <div class="mt-6">
+    <h2 class="text-xl font-bold text-[#0A090B]">Tambah Materi</h2>
+    <p class="text-sm text-[#7F8190]">Upload materi pembelajaran untuk siswa</p>
+  </div>
+</div>
+
+
+
 
     {{-- Form Container --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -61,7 +76,7 @@
                     <textarea id="youtube_link" name="youtube_link" rows="4"
                         class="w-full px-5 py-3 rounded-2xl border-1 border-black bg-gray-50 text-gray-800 placeholder-gray-400
     focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white shadow-sm transition-all duration-200 resize-none"
-                        placeholder="Contoh:\nhttps://www.youtube.com/watch?v=abc123\nhttps://youtu.be/xyz789">{{ old('youtube_link') }}</textarea>
+                        placeholder="Contoh: https://youtu.be/K7AIv3J-78g?si=CwIZwaMuWIIqB2iO">{{ old('youtube_link') }}</textarea>
                     @error('youtube_link')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -82,7 +97,8 @@
 
                     <a href="{{ route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id
+        'kelas' => $kelasMapel->kelas->id,
+        'tab' => 'materi'
     ]) }}" class="px-6 py-3 rounded-xl border-1 border-black text-gray-700 font-medium hover:bg-gray-100 transition"">
                         Batal
                     </a>
@@ -109,12 +125,7 @@
         </div>
     </div>
 
-    </form>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
+   
 
 
     <!-- CDN: jQuery, Dropzone, Dropzone CSS, Toastify CSS & JS -->
@@ -156,7 +167,8 @@
             setTimeout(function () {
                 window.location.href = "{{ route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id
+        'kelas' => $kelasMapel->kelas->id,
+        'tab' => 'materi'
     ]) }}";
             }, 900);
         });

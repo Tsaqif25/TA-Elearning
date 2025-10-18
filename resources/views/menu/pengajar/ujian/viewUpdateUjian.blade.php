@@ -1,78 +1,94 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
-<div class="row p-4">
-    <div class="col-12 col-lg-12">
 
-        @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+  <div class="flex items-center mb-6">
+
+
+        <a href="{{ route('viewKelasMapel', [
+        'mapel' => $kelasMapel->mapel->id,
+        'kelas' => $kelasMapel->kelas->id,
+        'tab' => 'quiz'
+    ]) }}" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition">
+            <i class="fa-solid fa-arrow-left text-gray-700"></i>
+        </a>
+        <div class="ml-3">
+            <h1 class="text-2xl font-bold text-gray-900">Update Quiz </h1>
+            <p class="text-sm text-gray-500">Isi Quiz untuk siswa</p>
         </div>
+    </div>
+<div class="p-4">
+    <div class="w-full">
+        {{-- Validasi Error --}}
+        @if ($errors->any())
+            <div class="mb-4 p-4 rounded-2xl border-2 border-red-200 bg-red-50">
+                <ul class="mb-0 text-sm text-red-700 list-disc pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
 
-        <form action="{{ route('updateUjian') }}" method="POST">
+        {{-- Form Edit --}}
+        <form action="{{ route('ujian.update', $ujian->id) }}" method="POST">
             @csrf
-            <input type="hidden" name="ujian_id" value="{{ $ujian->id }}">
+            @method('PUT')
 
-            <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-pen"></i> Update Ujian</h4>
-            <div class="p-4 bg-white rounded-2 shadow-sm">
+            <h4 class="font-semibold text-indigo-600 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>Edit Data Ujian</span>
+            </h4>
+
+            <div class="p-4 bg-white rounded-2xl border-2 border-black shadow-sm space-y-4">
                 {{-- Judul Ujian --}}
-                <div class="mb-3">
-                    <label class="form-label">Judul Ujian</label>
-                    <input type="text" class="form-control" name="name"
-                        value="{{ old('name', $ujian->name) }}" required>
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-800 mb-2">Judul Ujian</label>
+                    <input type="text" id="name" name="name"
+                        value="{{ old('name', $ujian->name) }}"
+                        class="w-full px-4 py-3 rounded-2xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400
+                               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                        placeholder="Inputkan judul ujian..." required>
                 </div>
 
                 {{-- Durasi --}}
-                <div class="mb-3">
-                    <label class="form-label">Durasi (menit)</label>
-                    <input type="number" class="form-control" name="time"
-                        value="{{ old('time', $ujian->time) }}" required>
+                <div>
+                    <label for="time" class="block text-sm font-medium text-gray-800 mb-2">Durasi (menit)</label>
+                    <input type="number" id="time" name="time"
+                        value="{{ old('time', $ujian->time) }}"
+                        class="w-full px-4 py-3 rounded-2xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400
+                               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                        placeholder="Masukkan durasi ujian" required>
                 </div>
 
                 {{-- Due Date --}}
-                <div class="mb-3">
-                    <label class="form-label">Tanggal Jatuh Tempo</label>
-                    <input type="datetime-local" class="form-control" name="due"
+                <div>
+                    <label for="due" class="block text-sm font-medium text-gray-800 mb-2">Tanggal Jatuh Tempo</label>
+                    <input type="datetime-local" id="due" name="due"
                         value="{{ old('due', \Carbon\Carbon::parse($ujian->due)->format('Y-m-d\TH:i')) }}"
+                        class="w-full px-4 py-3 rounded-2xl border border-gray-300 bg-gray-50 text-gray-800
+                               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
                         required>
                 </div>
             </div>
 
-            {{-- Soal --}}
-            <div class="mt-4">
-                <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-question"></i> Soal</h4>
+            {{-- Tombol Aksi --}}
+            <div class="mt-4 flex gap-3">
+                    <a href="{{ route('viewKelasMapel', [
+        'mapel' => $kelasMapel->mapel->id,
+        'kelas' => $kelasMapel->kelas->id,
+        'tab' => 'quiz'
+    ]) }}" class="px-6 py-3 rounded-xl border-1 border-black text-gray-700 font-medium hover:bg-gray-100 transition"">
+                        Batal
+                    </a>
+                <button type="submit"
+                    class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Update Ujian
+                </button>
 
-                <div class="mb-3">
-                    <label class="form-label">Pertanyaan</label>
-                    <input type="text" class="form-control" name="question"
-                        value="{{ old('question', optional($ujian->soalUjianMultiple->first())->soal) }}" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Jawaban</label>
-                    @php
-                        $answers = optional($ujian->soalUjianMultiple->first())->answers ?? collect();
-                    @endphp
-                    @for ($i = 0; $i < 4; $i++)
-                        @php $ans = $answers[$i] ?? null; @endphp
-                        <div class="d-flex align-items-center mb-2">
-                            <input type="text" class="form-control me-2" name="answers[]"
-                                   value="{{ old('answers.' . $i, $ans->jawaban ?? '') }}" placeholder="Pilihan jawaban" required>
-                            <label class="ms-2">
-                                <input type="radio" name="correct_answer" value="{{ $i }}"
-                                    @if(old('correct_answer', $ans && $ans->is_correct ? $i : -1) == $i) checked @endif> Benar
-                            </label>
-                        </div>
-                    @endfor
-                </div>
+              
             </div>
-
-            <button type="submit" class="btn btn-lg btn-primary mt-3">Update Ujian</button>
         </form>
     </div>
 </div>

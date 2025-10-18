@@ -25,100 +25,121 @@ use Illuminate\Validation\ValidationException;
 class UjianManagementController extends Controller
 {
 
-   public function index($kelasId, $mapelId)
-    {
-        $mapel = Mapel::findOrFail($mapelId);
-        $kelas = Kelas::findOrFail($kelasId);
-
-        $roles = DashboardController::getRolesName();
-        $assignedKelas = DashboardController::getAssignedClass();
-
-        $kelasMapel = KelasMapel::where('mapel_id', $mapelId)
-            ->where('kelas_id', $kelasId)
-            ->firstOrFail();
-
-        $ujians = Ujian::where('kelas_mapel_id', $kelasMapel->id)
-            ->with('soalUjianMultiple')
-            ->get();
-            
-        return view('menu.pengajar.ujian.manageUjian', [
-            'assignedKelas' => $assignedKelas,
-            'roles' => $roles,
-            'mapel' => $mapel,
-            'kelas' => $kelas,
-            'kelasMapel'=> $kelasMapel,
-            'kelasId' => $kelasId,
-            'mapelId' => $mapelId,
-            'ujians' => $ujians,
-            'title' => 'Manage Ujian'
-        ]);
-    }
-
-    // FORM TAMBAH UJIAN
-    public function create(Request $request, $kelasId, $mapelId)
-    {
-        $roles = DashboardController::getRolesName();
-        $mapel = Mapel::findOrFail($mapelId);
-        $assignedKelas = DashboardController::getAssignedClass();
-
-        return view('menu.pengajar.ujian.viewTambahUjian', [
-            'assignedKelas' => $assignedKelas,
-            'tipe'          => $request->type,
-            'title'         => 'Tambah Ujian',
-            'roles'         => $roles,
-            'kelasId'       => $kelasId,
-            'mapel'         => $mapel,
-        ]);
-    }
-
-    // SIMPAN UJIAN BARU
- public function store(Request $request)
+public function index(KelasMapel $kelasMapel)
 {
-    $validated = $request->validate([
-        'kelas_id' => 'required|exists:kelas,id',
-        'mapel_id' => 'required|exists:mapels,id',
-        'name'     => 'required|string|max:255',
-        'time'     => 'required|integer',
-        'due'      => 'required|date',
+    $kelasMapel->load(['kelas', 'mapel']);
+    $ujians = Ujian::where('kelas_mapel_id', $kelasMapel->id)->with('soalUjianMultiple')->get();
+
+    return view('menu.pengajar.ujian.manageUjian', [
+        'assignedKelas' => DashboardController::getAssignedClass(),
+        'roles' => DashboardController::getRolesName(),
+        'kelasMapel' => $kelasMapel,
+        'ujians' => $ujians,
+        'title' => 'Manage Ujian',
     ]);
-
-    DB::beginTransaction();
-    try {
-        $kelasMapel = KelasMapel::where('kelas_id', $validated['kelas_id'])
-            ->where('mapel_id', $validated['mapel_id'])
-            ->firstOrFail();
-
-        $ujian = Ujian::create([
-            'kelas_mapel_id' => $kelasMapel->id,
-            'name'           => $validated['name'],
-            'time'           => $validated['time'],
-            'due'            => $validated['due'],
-        ]);
-
-        DB::commit();
-
-        
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Ujian berhasil dibuat!',
-                'ujian_id' => $ujian->id
-            ]);
-        }
-
-        // ✅ Kalau normal, redirect ke halaman kelas-mapel
-        return redirect()->route('viewKelasMapel', [
-            'mapel' => $kelasMapel->mapel_id,
-            'kelas' => $kelasMapel->kelas_id
-        ])->with('success', 'Ujian berhasil dibuat! Silakan tambahkan soal.');
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-    }
 }
 
 
+    // FORM TAMBAH UJIAN
+  public function create(KelasMapel $kelasMapel, Request $request)
+{
+    $kelasMapel->load(['kelas', 'mapel']);
+    return view('menu.pengajar.ujian.viewTambahUjian', [
+        'assignedKelas' => DashboardController::getAssignedClass(),
+        'roles' => DashboardController::getRolesName(),
+        'kelasMapel' => $kelasMapel,
+        'title' => 'Tambah Ujian',
+        'tipe' => $request->type,
+    ]);
+}
+
+    // SIMPAN UJIAN BARU
+public function store(Request $request, KelasMapel $kelasMapel)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'time' => 'required|integer',
+        'due'  => 'required|date',
+    ]);
+
+    $ujian = Ujian::create([
+        'kelas_mapel_id' => $kelasMapel->id,
+        'name' => $validated['name'],
+        'time' => $validated['time'],
+        'due'  => $validated['due'],
+    ]);
+
+    if ($request->ajax()) {
+        return response()->json(['success' => true, 'message' => 'Ujian berhasil dibuat!', 'ujian_id' => $ujian->id]);
+    }
+
+    // return redirect()->route('viewKelasMapel', [
+    //     'mapel' => $kelasMapel->mapel_id,
+    //     'kelas' => $kelasMapel->kelas_id
+    // ])->with('success', 'Ujian berhasil ditambahkan!');
+
+     return redirect()->route('ujian.soal.manage', $ujian->id)
+    ->with('success', 'Ujian berhasil dibuat! Silakan tambahkan soal ujian.');
+}
+
+
+
+public function edit(Ujian $ujian)
+{
+    $kelasMapel = $ujian->kelasMapel; // relasi belongsTo
+    
+    return view('menu.pengajar.ujian.viewUpdateUjian', [
+        'ujian' => $ujian,
+        'assignedKelas' => DashboardController::getAssignedClass(),
+        'kelasMapel' => $kelasMapel,
+    ]);
+}
+
+
+public function update(Request $request, Ujian $ujian)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'time' => 'required|integer',
+        'due'  => 'required|date',
+    ]);
+
+    $ujian->update([
+        'name' => $validated['name'],
+        'time' => $validated['time'],
+        'due'  => $validated['due'],
+    ]);
+
+
+
+ return redirect()->route('ujian.soal.manage', $ujian->id)
+    ->with('success', 'Ujian berhasil dibuat! Silakan tambahkan soal ujian.');
+
+
+}
+
+
+
+public function destroy(Ujian $ujian)
+{
+
+     // Ambil relasi kelasMapel
+    $kelasMapel = $ujian->kelasMapel;
+
+    // $kelasMapelId = $ujian->kelas_mapel_id;
+    $ujian->delete();
+
+    return redirect()->route('viewKelasMapel', [
+            'mapel' => $kelasMapel->mapel_id,
+            'kelas' => $kelasMapel->kelas_id,
+            'tab'   => 'quiz'
+        ])->with('success', 'Materi berhasil ditambahkan!');
+}
+
+
+
+//Batas Suci
+///////////////////////////////////////////////////////////////////////////////////
 public function viewUpdateUjian($id)
 {
     $ujian = Ujian::with(['soalUjianMultiple.answers'])->findOrFail($id);
@@ -197,25 +218,25 @@ public function updateUjian(Request $request)
 
 }
 
-public function destroy(Request $request)
-{
-    $ujianId = $request->hapusId;
+// public function destroy(Request $request)
+// {
+//     $ujianId = $request->hapusId;
 
-    foreach (auth()->user()->EditorAccess as $key) {
-        if ($key->kelas_mapel_id == $request->kelasMapelId) {
+//     foreach (auth()->user()->EditorAccess as $key) {
+//         if ($key->kelas_mapel_id == $request->kelasMapelId) {
 
-            // Hapus ujian
-            Ujian::where('id', $ujianId)->delete();
+//             // Hapus ujian
+//             Ujian::where('id', $ujianId)->delete();
 
-            // Hapus soal & jawaban
-            $soalIds = SoalUjianMultiple::where('ujian_id', $ujianId)->pluck('id');
-            SoalUjianMultiple::where('ujian_id', $ujianId)->delete();
-            UserJawaban::whereIn('multiple_id', $soalIds)->delete();
+//             // Hapus soal & jawaban
+//             $soalIds = SoalUjianMultiple::where('ujian_id', $ujianId)->pluck('id');
+//             SoalUjianMultiple::where('ujian_id', $ujianId)->delete();
+//             UserJawaban::whereIn('multiple_id', $soalIds)->delete();
 
-            return redirect()->back()->with('success', 'Ujian Berhasil dihapus');
-        }
-    }
-}
+//             return redirect()->back()->with('success', 'Ujian Berhasil dihapus');
+//         }
+//     }
+// }
 }
 
 

@@ -26,6 +26,7 @@ class TugasSubmitController extends Controller
        return redirect()->route('viewKelasMapel', [
 'mapel' => $tugas->kelasMapel->mapel_id,
 'kelas' => $tugas->kelasMapel->kelas_id,
+'tab' => 'tugas'
 ])->with('success', 'Tugas berhasil disubmit!');
     }
 

@@ -18,7 +18,7 @@
   <div class="flex justify-between items-center mb-8">
     <div>
       <h1 class="text-3xl font-extrabold text-[#0A090B]">{{ $kelas->name }}</h1>
-      <p class="text-[#7F8190] text-sm">👥 32 Siswa</p>
+      <p class="text-[#7F8190] text-sm">{{ $mapel->name}}</p>
     </div>
     <a href="#" 
       class="flex items-center gap-2 px-5 py-2 border border-[#0A090B] rounded-full text-sm font-semibold text-[#0A090B] hover:bg-[#0A090B] hover:text-white transition">
@@ -40,72 +40,100 @@
 </div>
 
 
-<script>
-  const tabs = document.querySelectorAll('.tab-link');
-  const contents = document.querySelectorAll('.tab-content');
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      // Reset semua tab
+
+  <script>
+  (function() {
+    // --- Tab handling (single source of truth) ---
+    const tabs = document.querySelectorAll('.tab-link');
+    const contents = document.querySelectorAll('.tab-content');
+
+    function activateTab(targetId) {
+      if (!targetId) return;
+      // Reset semua tab (tampilan)
       tabs.forEach(btn => {
-        btn.classList.remove('bg-[#6C63FF]', 'text-white', 'shadow-sm');
-        btn.classList.add('text-[#7F8190]', 'hover:bg-[#E9E9E9]');
+        const match = btn.getAttribute('data-target') === `#${targetId}`;
+        if (match) {
+          btn.classList.add('bg-[#6C63FF]', 'text-white', 'shadow-sm');
+          btn.classList.remove('text-[#7F8190]');
+        } else {
+          btn.classList.remove('bg-[#6C63FF]', 'text-white', 'shadow-sm');
+          btn.classList.add('text-[#7F8190]');
+        }
       });
 
-      // Aktifkan tab yang diklik
-      tab.classList.add('bg-[#6C63FF]', 'text-white', 'shadow-sm');
-      tab.classList.remove('text-[#7F8190]', 'hover:bg-[#E9E9E9]');
-
-      // Sembunyikan semua konten lalu tampilkan konten aktif
+      // Sembunyikan semua konten lalu tampilkan konten aktif (jika ada)
       contents.forEach(content => content.classList.add('hidden'));
-      document.querySelector(tab.getAttribute('data-target')).classList.remove('hidden');
+      const activeContent = document.querySelector(`#${targetId}`);
+      if (activeContent) activeContent.classList.remove('hidden');
+    }
+
+    // Klik tab -> aktivasi + update URL tanpa reload
+    tabs.forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = tab.getAttribute('data-target').substring(1);
+        activateTab(targetId);
+
+        // Update query param 'tab' di URL (tanpa reload)
+        try {
+          const url = new URL(window.location);
+          url.searchParams.set('tab', targetId);
+          window.history.replaceState({}, '', url);
+        } catch (err) {
+          // fallback jika environment tidak mendukung URL()
+          console.warn('Unable to update URL:', err);
+        }
+      });
     });
-  });
+
+    // Saat halaman dimuat: baca param ?tab=... atau default 'materi'
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const activeTab = urlParams.get('tab') || 'materi';
+      activateTab(activeTab);
+    });
+
+    // --- Utility functions for modals/forms (single definitions) ---
+    window.changeValueMateri = function(itemId) {
+      console.log('changeValueMateri', itemId);
+      const materiId = document.getElementById('materiId');
+      const kelasMapelMateri = document.getElementById('kelasMapelMateri');
+      if (materiId) materiId.value = itemId;
+      if (kelasMapelMateri) kelasMapelMateri.value = "{{ $kelasMapel->id ?? '' }}";
+    };
+
+    window.changeValuePengumuman = function(itemId) {
+      console.log('changeValuePengumuman', itemId);
+      const pengumumanId = document.getElementById('pengumumanId');
+      const kelasMapelPengumuman = document.getElementById('kelasMapelPengumuman');
+      if (pengumumanId) pengumumanId.value = itemId;
+      if (kelasMapelPengumuman) kelasMapelPengumuman.value = "{{ $kelasMapel->id ?? '' }}";
+    };
+
+    // single definition for changeValueTugas
+    window.changeValueTugas = function(itemId) {
+      console.log('changeValueTugas', itemId);
+      const tugasId = document.getElementById('tugasId');
+      const kelasMapelTugas = document.getElementById('kelasMapelTugas');
+      if (tugasId) tugasId.value = itemId;
+      if (kelasMapelTugas) kelasMapelTugas.value = "{{ $kelasMapel->id ?? '' }}";
+    };
+
+    window.changeValueUjian = function(itemId, tipe) {
+      console.log('changeValueUjian', itemId, tipe);
+      const ujianId = document.getElementById('ujianId');
+      const tipeId = document.getElementById('tipe');
+      const kelasMapelUjian = document.getElementById('kelasMapelUjian');
+      if (ujianId) ujianId.value = itemId;
+      if (tipeId) tipeId.value = tipe;
+      if (kelasMapelUjian) kelasMapelUjian.value = "{{ $kelasMapel->id ?? '' }}";
+    };
+  })();
 </script>
 
 
-
-    <script>
-        function changeValueTugas(id) {
-            document.getElementById('idTugas').value = id;
-        }
-
-        function changeValueMateri(itemId) {
-            console.log(itemId);
-            const materiId = document.getElementById('materiId');
-            const kelasMapelMateri = document.getElementById('kelasMapelMateri');
-            materiId.setAttribute('value', itemId);
-            kelasMapelMateri.setAttribute('value', "{{ $kelasMapel->id ?? '' }}");
-        }
-
-
-        function changeValuePengumuman(itemId) {
-            console.log(itemId);
-            const pengumumanId = document.getElementById('pengumumanId');
-            const kelasMapelPengumuman = document.getElementById('kelasMapelPengumuman');
-            pengumumanId.setAttribute('value', itemId);
-            kelasMapelPengumuman.setAttribute('value', "{{ $kelasMapel->id ?? '' }}");
-        }
-
-        function changeValueTugas(itemId) {
-            console.log(itemId);
-            const tugasId = document.getElementById('tugasId');
-            const kelasMapelTugas = document.getElementById('kelasMapelTugas');
-            tugasId.setAttribute('value', itemId);
-            kelasMapelTugas.setAttribute('value', "{{ $kelasMapel->id ?? '' }}");
-        }
-
-        function changeValueUjian(itemId, tipe) {
-            console.log(itemId);
-            console.log(tipe);
-            const ujianId = document.getElementById('ujianId');
-            const tipeId = document.getElementById('tipe');
-            const kelasMapelUjian = document.getElementById('kelasMapelUjian');
-            ujianId.setAttribute('value', itemId);
-            tipeId.setAttribute('value', tipe);
-            kelasMapelUjian.setAttribute('value', "{{ $kelasMapel->id ?? '' }}");
-        }
-    </script>
+    
 @endsection
 
 {{-- Script JavaScript --}}

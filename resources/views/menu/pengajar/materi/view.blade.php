@@ -8,12 +8,13 @@
             {{-- Header --}}
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <a href="{{ route('viewKelasMapel', [
-        'mapel' => $materi->kelasMapel->mapel->id,
-        'kelas' => $materi->kelasMapel->kelas->id
-    ]) }}" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition">
-                        <i class="fa-solid fa-arrow-left text-gray-700"></i>
-                    </a>
+    <a href="{{ route('viewKelasMapel', [
+        'mapel' => $kelasMapel->mapel->id,
+        'kelas' => $kelasMapel->kelas->id
+    ]) }}" 
+       class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-transparent hover:border-gray-200 shadow-sm hover:shadow-md transition">
+      <i class="fa-solid fa-arrow-left text-gray-700"></i>
+    </a>
                     <div>
                         <h1 class="text-2xl font-bold text-gray-900">{{ $materi->name }}</h1>
                         <p class="text-sm text-gray-500">Diunggah {{ $materi->created_at->translatedFormat('d F Y') }}</p>
@@ -57,47 +58,45 @@
             </div>
 
 
-@if ($materi->youtube_link)
-<div class="bg-white border border-black rounded-2xl shadow-sm p-6">
-    <h2 class="text-lg font-semibold mb-4">Video Pembelajaran</h2>
+            @if ($materi->youtube_link)
+                <div class="bg-white border border-black rounded-2xl shadow-sm p-6">
+                    <h2 class="text-lg font-semibold mb-4">Video Pembelajaran</h2>
 
-    @php
-        // Pisahkan setiap baris menjadi link terpisah
-        $links = preg_split("/(\r\n|\r|\n)/", trim($materi->youtube_link));
-        $links = array_filter($links);
-    @endphp
+                    @php
+                        // Pisahkan setiap baris menjadi link terpisah
+                        $links = preg_split("/(\r\n|\r|\n)/", trim($materi->youtube_link));
+                        $links = array_filter($links);
+                    @endphp
 
-    @foreach ($links as $link)
-        @php
-            $link = trim($link);
+                    @foreach ($links as $link)
+                        @php
+                            $link = trim($link);
 
-            // Bersihkan parameter tambahan seperti ?si=xxxxx atau &t=123s
-            $cleanLink = preg_replace('/\?.*/', '', $link);
+                            // Bersihkan parameter tambahan seperti ?si=xxxxx atau &t=123s
+                            $cleanLink = preg_replace('/\?.*/', '', $link);
 
-            // Konversi berbagai format link ke bentuk embed standar
-            if (str_contains($cleanLink, 'youtu.be/')) {
-                $embedLink = str_replace('youtu.be/', 'www.youtube.com/embed/', $cleanLink);
-            } elseif (str_contains($cleanLink, 'watch?v=')) {
-                $embedLink = str_replace('watch?v=', 'embed/', $cleanLink);
-            } else {
-                $embedLink = $cleanLink;
-            }
-        @endphp
+                            // Konversi berbagai format link ke bentuk embed standar
+                            if (str_contains($cleanLink, 'youtu.be/')) {
+                                $embedLink = str_replace('youtu.be/', 'www.youtube.com/embed/', $cleanLink);
+                            } elseif (str_contains($cleanLink, 'watch?v=')) {
+                                $embedLink = str_replace('watch?v=', 'embed/', $cleanLink);
+                            } else {
+                                $embedLink = $cleanLink;
+                            }
+                        @endphp
 
-        <div class="mb-5">
-            <iframe width="100%" height="400" class="rounded-2xl"
-                src="{{ $embedLink }}"
-                title="YouTube video player"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-        </div>
-    @endforeach
-</div>
-@endif
+                        <div class="mb-5">
+                            <iframe width="100%" height="400" class="rounded-2xl" src="{{ $embedLink }}"
+                                title="YouTube video player" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
 
 
-            
+
 
 
         </div>
@@ -123,8 +122,7 @@
                     <a href="{{ route('viewKelasMapel', [
         'mapel' => $materi->kelasMapel->mapel->id,
         'kelas' => $materi->kelasMapel->kelas->id
-    ]) }}"
-                        class="w-full text-center py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">
+    ]) }}" class="w-full text-center py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">
                         ← Kembali ke Kelas
                     </a>
                 </div>

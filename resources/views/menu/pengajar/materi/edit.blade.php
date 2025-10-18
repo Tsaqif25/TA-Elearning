@@ -3,19 +3,35 @@
 @section('container')
 
     {{-- Header --}}
-    <div class="flex items-center mb-6">
-        <a href="{{ route('viewKelasMapel', [
+
+
+    <div class="flex flex-col mb-8">
+  <div class="flex items-center gap-4">
+    <a href="{{ route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel->id,
         'kelas' => $kelasMapel->kelas->id
-    ]) }}" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition">
-            <i class="fa-solid fa-arrow-left text-gray-700"></i>
-        </a>
+        'tab' => 'materi'
+    ]) }}" 
+       class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-transparent hover:border-gray-200 shadow-sm hover:shadow-md transition">
+      <i class="fa-solid fa-arrow-left text-gray-700"></i>
+    </a>
 
-        <div class="ml-3">
-            <h1 class="text-2xl font-bold text-gray-900">Edit Materi</h1>
-            <p class="text-sm text-gray-500">Perbarui materi pembelajaran untuk siswa</p>
-        </div>
+    <div>
+      <h1 class="text-2xl font-extrabold text-[#0A090B] leading-tight">
+        {{ $kelasMapel->kelas->name }}
+      </h1>
+      <p class="text-sm text-[#7F8190] font-medium">
+        {{ $kelasMapel->mapel->name }}
+      </p>
     </div>
+  </div>
+
+  {{-- Judul Tambah Materi --}}
+  <div class="mt-6">
+    <h2 class="text-xl font-bold text-[#0A090B]">Edit Materi</h2>
+    <p class="text-sm text-[#7F8190]">Perbarui materi pembelajaran untuk siswa</p>
+  </div>
+</div>
 
     {{-- Form Container --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -59,7 +75,7 @@
                     <textarea id="youtube_link" name="youtube_link" rows="4"
                         class="w-full px-5 py-3 rounded-2xl border-1 border-black bg-gray-50 text-gray-800 placeholder-gray-400
     focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white shadow-sm transition-all duration-200 resize-none"
-                        placeholder="Contoh:\nhttps://www.youtube.com/watch?v=abc123\nhttps://youtu.be/xyz789">{{ $materi->youtube_link}}</textarea>
+                        placeholder="Contoh: https://youtu.be/K7AIv3J-78g?si=CwIZwaMuWIIqB2iO">{{ $materi->youtube_link}}</textarea>
                     @error('youtube_link')
                         <p class="text-red-500 text-sm mt-1">{{ $materi->youtube_link}}</p>
                     @enderror
@@ -79,7 +95,8 @@
                 <div class="flex justify-end gap-3 pt-4">
                     <a href="{{ route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id
+        'kelas' => $kelasMapel->kelas->id,
+        'tab' => 'materi'
     ]) }}"
                         class="px-6 py-3 rounded-xl border-1 border-black  text-gray-700 font-medium hover:bg-gray-100 transition">
                         Batal
@@ -109,49 +126,51 @@
                 <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
                     <i class="fa-solid fa-folder-open text-indigo-600"></i> File Lama
                 </h3>
-                <div class="divide-y divide-gray-100">
-                    @forelse ($materi->files as $file)
-                        <div class="flex justify-between items-center py-2">
-                            <div class="flex items-center gap-3 text-sm text-gray-700">
-                                @php
-                                    $icon = 'fa-file';
-                                    if (Str::endsWith($file->file, ['.jpg', '.jpeg', '.png', '.gif']))
-                                        $icon = 'fa-image';
-                                    elseif (Str::endsWith($file->file, ['.mp4', '.avi', '.mov']))
-                                        $icon = 'fa-video';
-                                    elseif (Str::endsWith($file->file, ['.pdf']))
-                                        $icon = 'fa-file-pdf';
-                                    elseif (Str::endsWith($file->file, ['.doc', '.docx']))
-                                        $icon = 'fa-file-word';
-                                    elseif (Str::endsWith($file->file, ['.ppt', '.pptx']))
-                                        $icon = 'fa-file-powerpoint';
-                                    elseif (Str::endsWith($file->file, ['.xls', '.xlsx']))
-                                        $icon = 'fa-file-excel';
-                                    elseif (Str::endsWith($file->file, ['.txt']))
-                                        $icon = 'fa-file-alt';
-                                    elseif (Str::endsWith($file->file, ['.mp3']))
-                                        $icon = 'fa-music';
-                                @endphp
-                                <i class="fa-solid {{ $icon }} text-indigo-600"></i>
-                                <a href="{{ route('getFile', $file->file) }}" target="_blank" class="hover:underline">
-                                    {{ Str::limit($file->file, 25) }}
-                                </a>
-                            </div>
-                            <form action="{{ route('materi.destroyFile', $materi->id) }}" method="POST"
-                                onsubmit="event.preventDefault(); handleDelete(this);">
-                                @csrf
-                                @method('DELETE')
-                                <input type="hidden" name="file_id" value="{{ $file->id }}">
-                                <button type="submit"
-                                    class="text-red-500 hover:text-red-700 text-xs font-medium flex items-center gap-1">
-                                    <i class="fa-solid fa-trash"></i> Hapus
-                                </button>
-                            </form>
-                        </div>
-                    @empty
-                        <p class="text-gray-500 text-sm italic">Belum ada file yang diunggah.</p>
-                    @endforelse
-                </div>
+              <div class="divide-y divide-gray-100">
+  @forelse ($materi->files as $file)
+    <div class="flex items-center justify-between py-3">
+      <div class="flex items-center gap-3 min-w-0">
+        @php
+          $icon = 'fa-file';
+          if (Str::endsWith($file->file, ['.jpg', '.jpeg', '.png', '.gif'])) $icon = 'fa-image';
+          elseif (Str::endsWith($file->file, ['.mp4', '.avi', '.mov'])) $icon = 'fa-video';
+          elseif (Str::endsWith($file->file, ['.pdf'])) $icon = 'fa-file-pdf';
+          elseif (Str::endsWith($file->file, ['.doc', '.docx'])) $icon = 'fa-file-word';
+          elseif (Str::endsWith($file->file, ['.ppt', '.pptx'])) $icon = 'fa-file-powerpoint';
+          elseif (Str::endsWith($file->file, ['.xls', '.xlsx'])) $icon = 'fa-file-excel';
+          elseif (Str::endsWith($file->file, ['.txt'])) $icon = 'fa-file-alt';
+          elseif (Str::endsWith($file->file, ['.mp3'])) $icon = 'fa-music';
+        @endphp
+
+        <i class="fa-solid {{ $icon }} text-indigo-600 text-lg flex-shrink-0"></i>
+
+        {{-- Link + nama file: take remaining space, truncate if long --}}
+        <a href="{{ route('getFile', $file->file) }}"
+           target="_blank"
+           class="text-sm text-gray-700 truncate hover:underline min-w-0">
+          {{ Str::limit($file->file, 60) }}
+        </a>
+      </div>
+
+      {{-- Tombol Hapus: tetap di kanan, tidak mendorong keluar --}}
+      <form action="{{ route('materi.destroyFile', $materi->id) }}" method="POST"
+            onsubmit="event.preventDefault(); handleDeleteMateri(this);"
+            class="ml-4 flex-shrink-0">
+        @csrf
+        @method('DELETE')
+        <input type="hidden" name="file_id" value="{{ $file->id }}">
+        <button type="submit"
+                class="inline-flex items-center gap-2 text-red-500 hover:text-red-700 text-xs font-medium">
+          <i class="fa-solid fa-trash"></i>
+          <span>Hapus</span>
+        </button>
+      </form>
+    </div>
+  @empty
+    <p class="text-gray-500 text-sm italic py-2">Belum ada file yang diunggah.</p>
+  @endforelse
+</div>
+
             </div>
         </div>
     </div>
@@ -159,63 +178,61 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+function handleDeleteMateri(form) {
+  Swal.fire({
+    title: 'Yakin ingin menghapus?',
+    text: 'Data materi ini akan dihapus secara permanen!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal',
+    reverseButtons: true,
+    width: '320px',
+    padding: '1rem',
+    background: '#ffffff', // warna latar popup
+    color: '#333', // warna teks
+    customClass: {
+      popup: 'rounded-2xl shadow-lg',
+      confirmButton: 'bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg mx-1 text-sm',
+      cancelButton: 'bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4 py-2 rounded-lg mx-1 text-sm',
+      title: 'text-base font-semibold',
+      htmlContainer: 'text-sm'
+    },
+    buttonsStyling: false
+  }).then((result) => {
+    if (result.isConfirmed) {
+      form.submit();
+      Swal.fire({
+        title: 'Terhapus!',
+        text: 'Materi berhasil dihapus.',
+        icon: 'success',
+        width: '300px',
+        timer: 1500,
+        showConfirmButton: false,
+        background: '#ffffff',
+      });
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      Swal.fire({
+        title: 'Dibatalkan',
+        text: 'Materi tidak jadi dihapus.',
+        icon: 'error',
+        width: '300px',
+        timer: 1300,
+        showConfirmButton: false,
+        background: '#ffffff',
+      });
+    }
+  });
+}
+</script>
 
     <script>
 
-        function handleDelete(form) {
-            // Tampilkan konfirmasi Toastify gaya kecil
-            Toastify({
-                text: "Klik lagi untuk konfirmasi hapus!",
-                duration: 2000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                style: { background: "#f59e0b" }
-            }).showToast();
 
-
-            // Ganti onsubmit sementara untuk aksi konfirmasi berikutnya
-            form.onsubmit = function (e) {
-                e.preventDefault();
-
-
-                const formData = new FormData(form);
-                fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
-                    }
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            Toastify({
-                                text: "File berhasil dihapus!",
-                                duration: 1500,
-                                close: false,
-                                gravity: "top",
-                                position: "right",
-                                style: { background: "#16a34a" }
-                            }).showToast();
-
-
-                            setTimeout(() => window.location.reload(), 1500);
-                        } else {
-                            Toastify({
-                                text: "Gagal menghapus file.",
-                                duration: 2000,
-                                close: true,
-                                gravity: "top",
-                                position: "right",
-                                style: { background: "#dc2626" }
-                            }).showToast();
-                        }
-                    });
-            };
-        }
         Dropzone.autoDiscover = false;
 
         const myDropzone = new Dropzone("#my-dropzone", {
@@ -244,7 +261,8 @@
             setTimeout(function () {
                 window.location.href = "{{ route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id
+        'kelas' => $kelasMapel->kelas->id,
+        'tab' => 'materi'
     ]) }}";
             }, 1000);
         });
@@ -278,7 +296,8 @@
                             setTimeout(function () {
                                 window.location.href = "{{ route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id
+        'kelas' => $kelasMapel->kelas->id,
+        'tab' => 'materi'
     ]) }}";
                             }, 1500);
                         } else {
