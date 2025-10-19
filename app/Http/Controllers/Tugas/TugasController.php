@@ -22,63 +22,39 @@ use Illuminate\Support\Facades\DB; // Menggunakan DB dari Illuminate\Support\Fac
 class TugasController extends Controller
 {
 
-public function viewTugas(Tugas $tugas)
+   public function viewTugas(Tugas $tugas)
 {
-// ✅ Muat relasi yang diperlukan
-$tugas->load(['files', 'kelasMapel.kelas.users.userTugas.userTugasFile', 'kelasMapel.mapel']);
-
-
 $kelasMapel = $tugas->kelasMapel;
-$kelas = $kelasMapel->kelas;
-$mapel = $kelasMapel->mapel;
 
+if (!$kelasMapel) {
+    abort(404, 'Kelas Mapel tidak ditemukan untuk tugas ini');
+}
 
-$roles = DashboardController::getRolesName();
-$editorAccess = $kelasMapel->editorAccess;
-
-
-// Semua tugas dalam kelasMapel
-$tugasAll = Tugas::with('files')->where('kelas_mapel_id', $kelasMapel->id)->get();
-
-
-// Data user tugas untuk user yang login
-$userTugas = UserTugas::where('tugas_id', $tugas->id)
-->where('user_id', auth()->id())
-->first();
-
-
-// Kelas yang diampu
+$mapel        = $kelasMapel->mapel;
+$kelas        = $kelasMapel->kelas;
+$roles        = DashboardController::getRolesName();
+$editorAccess = $kelasMapel->editorAccess()->first();
+$tugasAll     = Tugas::where('kelas_mapel_id', $kelasMapel->id)->get();
+$userTugas    = UserTugas::where('tugas_id', $tugas->id)
+                            ->where('user_id', auth()->id())
+                            ->first();
 $assignedKelas = DashboardController::getAssignedClass();
-
-
-// Debug untuk memastikan siswa ter-load dan ada userTugas-nya
-$debugInfo = [
-'total_siswa' => $kelas->users->count(),
-'nama_siswa' => $kelas->users->pluck('name'),
-'user_tugas' => $kelas->users->mapWithKeys(function ($s) use ($tugas) {
-$ut = $s->userTugas->where('tugas_id', $tugas->id)->first();
-return [$s->name => $ut ? 'ada' : 'kosong'];
-}),
-];
-
-
-$title = $tugas->name;
-
+$title        = $tugas->name;
 
 return view('menu.pengajar.tugas.view', compact(
-'userTugas',
-'assignedKelas',
-'tugas',
-'kelas',
-'title',
-'roles',
-'tugasAll',
-'mapel',
-'kelasMapel',
-'editorAccess',
-'debugInfo'
+    'userTugas',
+    'assignedKelas',
+    'tugas',
+    'kelas',
+    'title',
+    'roles',
+    'tugasAll',
+    'mapel',
+    'kelasMapel',
+    'editorAccess'
 ));
 }
+
 
 
 

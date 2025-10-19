@@ -41,18 +41,25 @@
                 <i class="fa-solid fa-trash text-xs"></i> Hapus
               </button>
             </form>
-
+            
             <a href="{{ route('viewUpdateTugas', $tugass->id) }}"
                class="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-700 text-xs font-semibold hover:bg-gray-100 transition">
               <i class="fa-solid fa-pen text-xs"></i> Edit
             </a>
           @endif
-
-          {{-- Semua user bisa Lihat --}}
+               @if (Auth::user()->hasRole('Pengajar'))
           <a href="{{ route('viewTugas', $tugass->id) }}"
              class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#6C63FF] text-white text-xs font-semibold hover:bg-[#574FFB] transition">
             <i class="fa-solid fa-eye text-xs"></i> Lihat
           </a>
+             @endif
+          {{-- Semua user bisa Lihat --}}
+           @if (Auth::user()->hasRole('Siswa'))
+          <a href="{{ route('lihatTugas', $tugass->id) }}"
+             class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#6C63FF] text-white text-xs font-semibold hover:bg-[#574FFB] transition">
+            <i class="fa-solid fa-eye text-xs"></i> Lihat
+          </a>
+             @endif
         </div>
       </div>
     @empty

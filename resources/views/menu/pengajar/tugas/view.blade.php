@@ -389,7 +389,7 @@
                                     </div>
                                 </form>
                             @endif
-                  \
+                  
 
                 </div>
             </div>
@@ -639,9 +639,6 @@
             });
         </script>
     @endif
-
-
-
     @endif
     @endif
 @endsection

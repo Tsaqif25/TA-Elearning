@@ -212,6 +212,7 @@ Route::middleware(['auth', 'role:Pengajar'])
  Route::middleware('auth')
      ->controller(TugasSubmitController::class)
      ->group(function () {
+          Route::get('/lihat-tugas/{tugas}','viewTugasSiswa')->name('lihatTugas');
           Route::post('/submit-tugas/{tugas}', 'submitTugas')->name('submitTugas');
          Route::post('/submit-tugas-file', 'submitFileTugas')->name('submitFileTugas');
          Route::delete('/destroy-tugas-submit-file', 'destroyFileSubmit')->name('destroyFileSubmit');
