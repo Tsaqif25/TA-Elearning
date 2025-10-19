@@ -137,9 +137,6 @@ Route::middleware('auth')->controller(MateriController::class)
         Route::get('/{materi}', 'show')->name('show');
     });
 
-
-
-
  Route::middleware(['auth', 'role:Pengajar'])
     ->prefix('materi')
     ->name('materi.')
@@ -191,13 +188,21 @@ Route::middleware('auth')->controller(PengumumanController::class)->group(functi
 // // ============================
 // // 📌 TugasFileController (soal)
 // // ============================
+// Route::middleware(['auth', 'role:Pengajar'])
+//     ->prefix('tugas/file')
+//     ->name('tugas.file.')
+//     ->controller(TugasFileController::class)
+//     ->group(function () {
+//         Route::post('upload', 'store')->name('uploadFile');         
+//         Route::delete('delete', 'destroy')->name('deleteFile');      
+//     });
 Route::middleware(['auth', 'role:Pengajar'])
-    ->prefix('tugas/file')
-    ->name('tugas.file.')
+    ->prefix('tugas')
+    ->name('tugas.')
     ->controller(TugasFileController::class)
     ->group(function () {
-        Route::post('upload', 'store')->name('upload');         
-        Route::delete('delete', 'destroy')->name('delete');      
+        Route::post('{tugas}/upload-file', 'store')->name('uploadFile');
+        Route::delete('{tugas}/delete-file', 'destroy')->name('deleteFile');
     });
 
 

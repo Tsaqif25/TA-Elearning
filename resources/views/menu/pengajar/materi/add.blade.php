@@ -1,8 +1,6 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
-
- 
 <div class="flex flex-col mb-8">
   <div class="flex items-center gap-4">
     <a href="{{ route('viewKelasMapel', [
@@ -30,10 +28,6 @@
     <p class="text-sm text-[#7F8190]">Upload materi pembelajaran untuk siswa</p>
   </div>
 </div>
-
-
-
-
     {{-- Form Container --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {{-- Kolom kiri: Form --}}
@@ -124,9 +118,6 @@
             </div>
         </div>
     </div>
-
-   
-
 
     <!-- CDN: jQuery, Dropzone, Dropzone CSS, Toastify CSS & JS -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -232,7 +223,4 @@
             });
         });
     </script>
-
-
-
 @endsection

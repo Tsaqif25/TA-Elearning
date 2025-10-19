@@ -7,7 +7,7 @@
   {{-- KIRI: Kelas dan Mapel --}}
   <div class="flex items-center gap-5">
   
-    <a href="{{ route('ujian.soal.manage', ['ujian' => $ujian->id]) }}" 
+   <a href="{{ route('ujian.soal.manage', $ujian->id) }}"
    class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 border hover:bg-gray-100 hover:shadow transition">
   <i class="fa-solid fa-arrow-left text-gray-700 text-lg"></i>
 </a>

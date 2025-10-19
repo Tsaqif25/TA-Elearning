@@ -24,220 +24,207 @@ class TugasController extends Controller
 
 public function viewTugas(Tugas $tugas)
 {
-$kelasMapel = $tugas->kelasMapel;
+    $tugas->load('files');
 
-if (!$kelasMapel) {
-    abort(404, 'Kelas Mapel tidak ditemukan untuk tugas ini');
-}
-
-$mapel        = $kelasMapel->mapel;
-$kelas        = $kelasMapel->kelas;
-$roles        = DashboardController::getRolesName();
-$editorAccess = $kelasMapel->editorAccess()->first();
-$tugasAll     = Tugas::where('kelas_mapel_id', $kelasMapel->id)->get();
-$userTugas    = UserTugas::where('tugas_id', $tugas->id)
-                            ->where('user_id', auth()->id())
-                            ->first();
-$assignedKelas = DashboardController::getAssignedClass();
-$title        = $tugas->name;
-
- return view('menu.pengajar.tugas.view', [
-        'userTugas'     => $userTugas,
-        'assignedKelas' => $assignedKelas,
-        'tugas'         => $tugas,
-        'kelas'         => $kelas,
-        'title'         => $title,
-        'roles'         => $roles,
-        'tugasAll'      => $tugasAll,
-        'mapel'         => $mapel,
-        'kelasMapel'    => $kelasMapel,
-        'editorAccess'  => $editorAccess,
-        'tab'           => 'tugas', // 
+    // ✅ Load kelasMapel dengan relasi yang sudah difilter
+    $kelasMapel = $tugas->kelasMapel->load([
+        'kelas.users' => function ($query) use ($tugas) {
+            // ✅ FILTER: Hanya ambil user yang punya role 'Siswa'
+            $query->role('Siswa')->with([
+                'userTugas' => function ($q) use ($tugas) {
+                    $q->where('tugas_id', $tugas->id)
+                      ->with('userTugasFile');
+                }
+            ]);
+        },
+        'mapel',
     ]);
+
+    $mapel        = $kelasMapel->mapel;
+    $kelas        = $kelasMapel->kelas;
+    $roles        = DashboardController::getRolesName();
+    $editorAccess = $kelasMapel->editorAccess;
+    $tugasAll     = Tugas::with('files')->where('kelas_mapel_id', $kelasMapel->id)->get();
+
+    $userTugas = UserTugas::where('tugas_id', $tugas->id)
+        ->where('user_id', auth()->id())
+        ->first();
+
+    $assignedKelas = DashboardController::getAssignedClass();
+    $title         = $tugas->name;
+
+    return view('menu.pengajar.tugas.view', compact(
+        'userTugas',
+        'assignedKelas',
+        'tugas',
+        'kelas',
+        'title',
+        'roles',
+        'tugasAll',
+        'mapel',
+        'kelasMapel',
+        'editorAccess'
+    ));
 }
 
 
 
-    public function viewTugasAdmin(Tugas $tugas)
-{
-    $kelasMapel = $tugas->kelasMapel;
-    $mapel      = $kelasMapel->mapel;
-    $kelas      = $kelasMapel->kelas;
-
-    $roles          = DashboardController::getRolesName();
-    $editorAccess   = $kelasMapel->editorAccess()->first();
-    $editorData     = $editorAccess ? $editorAccess->user()->where('roles_id', 2)->first() : null;
-    $tugasAll       = Tugas::where('kelas_mapel_id', $kelasMapel->id)->get();
-    $userTugas      = UserTugas::where('tugas_id', $tugas->id)
-                        ->where('user_id', auth()->id())
-                        ->first();
-    $assignedKelas  = DashboardController::getAssignedClass();
-
-    return view('menu.pengajar.tugas.viewAdmin', [
-        'userTugas'     => $userTugas,
-        'assignedKelas' => $assignedKelas,
-        'editor'        => $editorData,
-        'tugas'         => $tugas,
-        'kelas'         => $kelas,
-        'title'         => $tugas->name,
-        'roles'         => $roles,
-        'tugasAll'      => $tugasAll,
-        'mapel'         => $mapel,
-        'kelasMapel'    => $kelasMapel,
-    ]);
-}
 
 
-public function siswaUpdateNilai(Request $request, Tugas $tugas)
-{
-    foreach ($request->nilai as $i => $nilaiInput) {
-        if ($nilaiInput !== null && $nilaiInput !== '') {
-            $nilai = max(0, min(100, (int) $nilaiInput)); // clamp nilai 0–100
+    public function siswaUpdateNilai(Request $request, Tugas $tugas)
+    {
+        foreach ($request->nilai as $i => $nilaiInput) {
+            if ($nilaiInput !== null && $nilaiInput !== '') {
+                $nilai = max(0, min(100, (int) $nilaiInput)); // clamp nilai 0–100
 
-            $userId = $request->siswaId[$i];
-            $exist  = UserTugas::where('tugas_id', $tugas->id)
-                                ->where('user_id', $userId)
-                                ->first();
+                $userId = $request->siswaId[$i];
+                $exist = UserTugas::where('tugas_id', $tugas->id)
+                    ->where('user_id', $userId)
+                    ->first();
 
-            if ($exist) {
-                $exist->update([
-                    'status' => 'Telah dinilai',
-                    'nilai'  => $nilai,
-                ]);
-            } else {
-                UserTugas::create([
+                if ($exist) {
+                    $exist->update([
+                        'status' => 'Telah dinilai',
+                        'nilai' => $nilai,
+                    ]);
+                } else {
+                    UserTugas::create([
+                        'tugas_id' => $tugas->id,
+                        'user_id' => $userId,
+                        'status' => 'Telah dinilai',
+                        'nilai' => $nilai,
+                    ]);
+                }
+            }
+        }
+
+        return back()->with('success', 'Nilai berhasil diperbarui');
+    }
+
+    public function viewCreateTugas(KelasMapel $kelasMapel)
+    {
+        // Cari kelasMapel
+        $kelasMapel->load(['kelas', 'mapel']);
+
+
+
+        // Siapkan variabel dulu
+        $assignedKelas = DashboardController::getAssignedClass();
+        // $roles         = DashboardController::getRolesName();
+        $title = 'Tambah Tugas';
+        // $kelasId       = $kelas->id;
+
+        return view('menu.pengajar.tugas.add', [
+            'assignedKelas' => $assignedKelas,
+            'title' => $title,
+            'kelasMapel' => $kelasMapel,
+            'tab' => 'tugas',
+        ]);
+
+    }
+
+
+    public function viewUpdateTugas(Tugas $tugas)
+    {
+        $kelasMapel = $tugas->kelasMapel;
+
+        // Siapkan variabel yang akan dikirim ke view
+        $assignedKelas = DashboardController::getAssignedClass();
+        $title = 'Update Tugas';
+        // $roles         = DashboardController::getRolesName();
+        $kelasId = $kelasMapel->kelas_id;
+        $mapel = $kelasMapel->mapel;
+
+        return view('menu.pengajar.tugas.edit', [
+            'assignedKelas' => $assignedKelas,
+            'title' => $title,
+            // 'roles'      => $roles,
+            'tugas' => $tugas,
+            'kelasId' => $kelasId,
+            'mapel' => $mapel,
+            'kelasMapel' => $kelasMapel,
+            'tab' => 'tugas',
+        ]);
+    }
+
+    public function createTugas(Request $request, KelasMapel $kelasMapel)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'content' => 'required|string',
+                'due' => 'required|date_format:Y-m-d\TH:i',
+            ]);
+
+            $due = Carbon::createFromFormat('Y-m-d\TH:i', $request->due);
+
+            // Simpan data tugas ke database
+            $tugas = Tugas::create([
+                'kelas_mapel_id' => $kelasMapel->id,
+                'name' => $request->name,
+                'content' => $request->input('content'),
+                'due' => $due,
+                // 'isHidden' => $request->has('opened') ? 0 : 1,
+            ]);
+
+            //  Jika request dari AJAX (Dropzone)
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
                     'tugas_id' => $tugas->id,
-                    'user_id'  => $userId,
-                    'status'   => 'Telah dinilai',
-                    'nilai'    => $nilai,
                 ]);
             }
+
+            //  Jika bukan AJAX, redirect seperti biasa
+            return redirect()->route('viewKelasMapel', [
+                'mapel' => $kelasMapel->mapel_id,
+                'kelas' => $kelasMapel->kelas_id,
+                'tab' => 'tugas'
+            ])->with('success', 'Tugas berhasil ditambahkan!');
+        } catch (\Exception $e) {
+            dd($e->getMessage());
         }
     }
 
-    return back()->with('success', 'Nilai berhasil diperbarui');
-}
+    public function updateTugas(Request $request, Tugas $tugas)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'content' => 'required',
+            'due' => 'required|date_format:Y-m-d\TH:i',
+        ]);
 
-public function viewCreateTugas(KelasMapel $kelasMapel )
-{
-// Cari kelasMapel
- $kelasMapel->load(['kelas', 'mapel']);
+        $tugas->update([
+            'name' => $request->name,
+            'content' => $request->input('content'),
+            'due' => Carbon::createFromFormat('Y-m-d\TH:i', $request->due),
 
+        ]);
 
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'tugas_id' => $tugas->id,
+                'message' => 'Tugas berhasil diperbarui!',
+            ]);
+        }
 
-// Siapkan variabel dulu
-$assignedKelas = DashboardController::getAssignedClass();
-// $roles         = DashboardController::getRolesName();
-$title         = 'Tambah Tugas';
-// $kelasId       = $kelas->id;
+        return redirect()->route('viewKelasMapel', [
+            'mapel' => $tugas->kelasMapel->mapel_id,
+            'kelas' => $tugas->kelasMapel->kelas_id,
+            'tab' => 'tugas'
+        ])->with('success', 'Tugas berhasil diperbarui!');
+    }
 
-return view('menu.pengajar.tugas.add', [
-    'assignedKelas' => $assignedKelas,
-    'title'         => $title,
-    'kelasMapel'    => $kelasMapel,
-    'tab'           => 'tugas',
-]);
+    public function destroyTugas(Tugas $tugas)
+    {
+        $kelasMapel = $tugas->kelasMapel;
+        $tugas->delete();
 
-}
-
-
-public function viewUpdateTugas(Tugas $tugas)
-{
-$kelasMapel = $tugas->kelasMapel;
-
-// Siapkan variabel yang akan dikirim ke view
-$assignedKelas = DashboardController::getAssignedClass();
-$title         = 'Update Tugas';
-// $roles         = DashboardController::getRolesName();
-$kelasId       = $kelasMapel->kelas_id;
-$mapel         = $kelasMapel->mapel;
-
- return view('menu.pengajar.tugas.edit', [
-        'assignedKelas' => $assignedKelas,
-        'title'         => $title,
-        // 'roles'      => $roles,
-        'tugas'         => $tugas,
-        'kelasId'       => $kelasId,
-        'mapel'         => $mapel,
-        'kelasMapel'    => $kelasMapel,
-        'tab'           => 'tugas', 
-    ]);
-}
-
-
-/**
- * Simpan tugas baru
- */
-public function createTugas(Request $request, KelasMapel $kelasMapel)
-{
-   
-    $request->validate([
-        'name'    => 'required|string|max:255',
-        'content' => 'required|string',
-        'due'     => 'required|date_format:Y-m-d\TH:i',
-    ]);
-
- 
-    $due = Carbon::createFromFormat('Y-m-d\TH:i', $request->due);
-
-    //  Simpan data tugas
-    Tugas::create([
-        'kelas_mapel_id' => $kelasMapel->id,
-        'name'           => $request->name,
-        'content'        => $request->input('content'),
-        // 'due'            => $due,
-        'isHidden'       => $request->has('opened') ? 0 : 1,
-    ]);
-    
-
-    // Redirect kembali ke halaman kelas-mapel
-    return redirect()->route('viewKelasMapel', [
-        'mapel' => $kelasMapel->mapel_id,
-        'kelas' => $kelasMapel->kelas_id,
-        'tab'   => 'tugas'
-    ])->with('success', 'Tugas berhasil ditambahkan!');
-}
-
-
-public function updateTugas(Request $request, Tugas $tugas)
-{
-$request->validate([
-    'name'    => 'required|string|max:255',
-    'content' => 'required',
-    'due'     => 'required|date_format:Y-m-d H:i',
-]);
-
-$tugas->update([
-    'name'     => $request->name,
-    'content'        => $request->input('content'),
-    'due'      => Carbon::createFromFormat('Y-m-d H:i', $request->due),
-    'isHidden' => $request->has('opened') ? 0 : 1,
-]);
-
-if ($request->ajax()) {
-    return response()->json([
-        'success'   => true,
-        'tugas_id'  => $tugas->id,
-        'message'   => 'Tugas berhasil diperbarui!',
-    ]);
-}
-
-return redirect()->route('viewKelasMapel', [
-    'mapel' => $tugas->kelasMapel->mapel_id,
-    'kelas' => $tugas->kelasMapel->kelas_id,
-     'tab'   => 'tugas'
-])->with('success', 'Tugas berhasil diperbarui!');
-}
-
-public function destroyTugas(Tugas $tugas)
-{
-$kelasMapel = $tugas->kelasMapel;
-$tugas->delete();
-
-return redirect()->route('viewKelasMapel', [
-    'mapel' => $kelasMapel->mapel_id,
-    'kelas' => $kelasMapel->kelas_id,
-     'tab'   => 'tugas'
-])->with('success', 'Tugas berhasil dihapus!');
-}
+        return redirect()->route('viewKelasMapel', [
+            'mapel' => $kelasMapel->mapel_id,
+            'kelas' => $kelasMapel->kelas_id,
+            'tab' => 'tugas'
+        ])->with('success', 'Tugas berhasil dihapus!');
+    }
 }

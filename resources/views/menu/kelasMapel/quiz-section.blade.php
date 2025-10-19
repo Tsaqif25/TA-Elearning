@@ -2,12 +2,13 @@
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-2xl font-bold text-[#0A090B]">Quiz</h2>
 
-
-    <a href="{{ route('ujian.create', ['kelasMapel' => $kelasMapel->id])  }}" 
-       class="bg-[#6C63FF] text-white px-6 py-2 rounded-full font-semibold shadow hover:bg-[#574FFB] transition">
-      + Buat Quiz
-    </a>
-
+    {{-- ✅ Tombol Buat Quiz hanya untuk Pengajar --}}
+    @if (Auth::user()->hasRole('Pengajar'))
+      <a href="{{ route('ujian.create', ['kelasMapel' => $kelasMapel->id]) }}" 
+         class="bg-[#6C63FF] text-white px-6 py-2 rounded-full font-semibold shadow hover:bg-[#574FFB] transition">
+        + Buat Quiz
+      </a>
+    @endif
   </div>
 
   <div class="space-y-5">
@@ -26,29 +27,56 @@
           <p class="text-sm text-[#7F8190]">📚 Jumlah Soal: {{ $ujians->soalUjianMultiple->count() ?? 0 }}</p>
 
           <div class="flex gap-2 mt-3">
+            {{-- ✅ Tombol CRUD hanya untuk Pengajar --}}
+            @if (Auth::user()->hasRole('Pengajar'))
+              {{-- Hapus --}}
+              <form action="{{ route('ujian.destroy', $ujians->id) }}" method="POST"
+                    onsubmit="event.preventDefault(); handleDeleteUjian(this);" class="inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                        class="px-4 py-2 rounded-full bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
+                        title="Hapus Ujian">
+                  <i class="fa-solid fa-trash"></i> Hapus
+                </button>
+              </form>
 
+              {{-- Edit --}}
+              <a href="{{ route('ujian.edit', ['ujian' => $ujians->id]) }}"
+                 class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#0A090B] text-sm font-semibold hover:bg-[#F3F3F3] transition">
+                <i class="fa-solid fa-pen text-sm"></i> Edit
+              </a>
 
-            <form action="{{ route('ujian.destroy', $ujians->id) }}" method="POST"
-        onsubmit="event.preventDefault(); handleDeleteUjian(this);"
-        class="inline">
-      @csrf
-      @method('DELETE')
-      <button type="submit" class="px-4 py-2 rounded-full bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
-              title="Hapus Ujian">
-        <i class="fa-solid fa-trash"></i> Hapus
-      </button>
-  </form>
-          <a href="{{ route('ujian.edit', ['ujian' => $ujians->id]) }}"
-               class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#0A090B] text-sm font-semibold hover:bg-[#F3F3F3] transition">
-                   <i class="fa-solid fa-pen text-sm"></i> 
-              Edit
-            </a>  
+              {{-- Detail / Kelola Soal --}}
+              <a href="{{ route('ujian.soal.manage', ['ujian' => $ujians->id]) }}"
+                 class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6C63FF] text-white text-sm font-semibold hover:bg-[#574FFB] transition">
+                <i class="fa-solid fa-eye text-sm"></i> Detail
+              </a>
+            @else
+              {{-- ✅ Untuk siswa, tampilkan tombol Kerjakan atau Hasil --}}
+              @php
+                  $sudahJawab = $ujians->soalUjianMultiple
+                      ->flatMap(fn($soal) => $soal->userJawabans ?? [])
+                      ->where('user_id', Auth::id())
+                      ->count() > 0;
+              @endphp
 
- <a href="{{ route('ujian.soal.manage', ['ujian' => $ujians->id]) }}"
-   class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6C63FF] text-white text-sm font-semibold hover:bg-[#574FFB] transition">
-  <i class="fa-solid fa-eye text-sm"></i> Detail
-</a>
-
+              @if ($sudahJawab)
+                <a href="{{ route('ujian.learning.rapport', ['ujian' => $ujians->id]) }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition">
+                  <i class="fa-solid fa-chart-line"></i> Lihat Hasil
+                </a>
+              @else
+                <a href="{{ route('ujian.access', [
+                    'id' => $ujians->id,
+                    'kelas' => $kelas->id,
+                    'mapel' => $mapel->id,
+                ]) }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6C63FF] text-white text-sm font-semibold hover:bg-[#574FFB] transition">
+                  <i class="fa-solid fa-pencil"></i> Kerjakan
+                </a>
+              @endif
+            @endif
           </div>
         </div>
 

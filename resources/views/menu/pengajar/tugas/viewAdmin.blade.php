@@ -1,6 +1,6 @@
 @extends('layout.template.mainTemplate')
 
-@section('container')
+{{-- @section('container')
    
 
     {{-- Navigasi Breadcrumb --}}
@@ -8,7 +8,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb bg-white">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                @if (Auth()->user()->roles_id == 1)
+                  @if (Auth::user()->hasRole('Pengajar'))
                 @else
                     <li class="breadcrumb-item">
                         <a
@@ -32,7 +32,7 @@
     {{-- Judul Halaman --}}
     <div class="ps-4 pe-4 mt-4  pt-4">
         <h2 class="display-6 fw-bold">
-            @if (Auth()->user()->roles_id == 1)
+               @if (Auth::user()->hasRole('Pengajar'))
                 <a href="{{ route('activity') }}">
                     <button type="button" class="btn btn-outline-secondary rounded-circle">
                         <i class="fa-solid fa-arrow-left"></i>
@@ -171,7 +171,7 @@
                         </div>
                     </div>
 
-                    @if (Auth()->User()->roles_id == 2)
+                      @if (Auth::user()->hasRole('Pengajar'))
                         <form action="{{ route('siswaUpdateNilai', ['token' => encrypt($tugas['id'])]) }}" method="post">
                             @csrf
                             {{-- Siswa dan Assignment --}}
@@ -523,4 +523,4 @@
     <script src="{{ url('/asset/js/lottie.js') }}"></script>
     <script src="{{ url('/asset/js/customJS/simpleAnim.js') }}"></script>
 
-@endsection
+{{-- @endsection  --}}

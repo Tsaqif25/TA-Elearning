@@ -1,15 +1,11 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
-
-    {{-- Header --}}
-
-
     <div class="flex flex-col mb-8">
   <div class="flex items-center gap-4">
     <a href="{{ route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id
+        'kelas' => $kelasMapel->kelas->id,
         'tab' => 'materi'
     ]) }}" 
        class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-transparent hover:border-gray-200 shadow-sm hover:shadow-md transition">

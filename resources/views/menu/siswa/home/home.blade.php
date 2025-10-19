@@ -1,147 +1,136 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
-    <link rel="stylesheet" href="{{ url('/asset/css/card-img-full.css') }}">
+<link rel="stylesheet" href="{{ url('/asset/css/card-img-full.css') }}">
 
-    <div class="row">
-        @if (session()->has('success'))
-            <div class="alert alert-lg alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
+<div class="px-6 py-8 space-y-6">
 
-        <div class="col-12 ps-4 pe-4">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb bg-white">
-                    <li class="breadcrumb-item active" aria-current="page">Profile</li>
-                </ol>
-            </nav>
+    {{-- ✅ Alert Success --}}
+    @if (session()->has('success'))
+        <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-lg flex justify-between items-center">
+            <span>{{ session('success') }}</span>
+            <button onclick="this.parentElement.remove()" class="text-green-600 hover:text-green-800">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
+    @endif
 
-        <div class="bg-body-secondary rounded-4 mb-4">
-            <div class="container col-xxl-8 px-4 py-5">
-                <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-                    <div class="col-10 col-sm-8 col-lg-6">
-                        <img src="{{ url('/asset/img/work.png') }}" class="d-block mx-lg-auto img-fluid h-50 w-50" alt="Ilustrasi" loading="lazy">
-                    </div>
-                    <div class="col-lg-6">
-                        <h1 class="fw-bold text-body-emphasis lh-1 mb-3">{{ $kelas['name'] }}</h1>
-                        <p class="lead">Selamat datang!, Selamat belajar!</p>
-                        <button class="btn btn-outline-primary" onclick="getData('{{ $kelas['name'] }}')" data-bs-toggle="modal" data-bs-target="#modal-view">
-                            <i class="fa-solid fa-users"></i> View Siswa
-                        </button>
-                    </div>
-                </div>
-            </div>
+    {{-- ✅ Breadcrumb --}}
+    <div>
+        <nav class="text-sm text-gray-500">
+            <ol class="flex items-center space-x-2">
+                <li class="text-gray-700 font-medium">Profile</li>
+            </ol>
+        </nav>
+    </div>
+
+    {{-- ✅ Hero Section --}}
+    <div class="bg-gray-50 rounded-2xl p-8 flex flex-col lg:flex-row-reverse items-center justify-between gap-10 shadow-sm">
+        <div class="flex justify-center">
+            <img src="{{ url('/asset/img/work.png') }}" alt="Ilustrasi" class="w-52 h-52 object-contain">
         </div>
-
-        <div class="col-12 col-sm-5 col-md-5 col-lg-3 p-4">
-            <div class="bg-white rounded-2 p-4">
-                <div id="profile">
-                    <div class="mx-auto w-75">
-                        <div class="text-center">
-                            @if (empty($user->gambar))
-                                <img src="/asset/icons/profile-women.svg" class="image-previewer image-class rounded-circle" width="150" alt="Avatar default">
-                            @else
-                                <img src="{{ asset('storage/file/img-upload/' . $user->gambar) }}" alt="Foto profil" class="image-previewer image-class rounded-circle" width="150">
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-7 col-md-7 col-lg col-12 p-4">
-            <div class="border border-light-subtle p-4 rounded-2">
-                <div class="row d-sm-none d-block">
-                    @foreach ($mapelKelas as $mapelKelasItem)
-                        <div class="card w-100 my-4">
-                            <img src="{{ !empty($mapelKelasItem['gambar']) ? asset('storage/file/img-upload/' . $mapelKelasItem['gambar']) : url('/asset/img/placeholder-3.jpg') }}" class="card-img-top" height="150" alt="Gambar mapel">
-                            <div class="card-body">
-                                <a href="{{ route('viewKelasMapel', ['mapel' => $mapelKelasItem['mapel_id'], 'kelas' => $kelas['id']]) }}" class="text-dark" style="text-decoration: none;">
-                                    <h5 class="card-title">{{ $mapelKelasItem['mapel_name'] }}</h5>
-                                </a>
-                                <h6 class="small">Pengajar : {{ $mapelKelasItem['pengajar_name'] === '-' ? '-' : $mapelKelasItem['pengajar_name'] }}</h6>
-                                <p class="card-text">{{ \Illuminate\Support\Str::limit($mapelKelasItem['deskripsi'], 150) }}</p>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="row d-none d-sm-block">
-                    @foreach ($mapelKelas as $mapelKelasItem)
-                        <div class="card mb-3 col-12 mx-2 bg-white shadow-sm">
-                            <div class="row g-0">
-                                <div class="col-md-4">
-                                    <a href="{{ route('viewKelasMapel', ['mapel' => $mapelKelasItem['mapel_id'], 'kelas' => $kelas['id']]) }}" class="text-dark" style="text-decoration:none;">
-                                        <div class="card-img-full" style="background-image: url('{{ !empty($mapelKelasItem['gambar']) ? asset('storage/file/img-upload/' . $mapelKelasItem['gambar']) : url('/asset/img/placeholder-3.jpg') }}')">
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <a href="{{ route('viewKelasMapel', ['mapel' => $mapelKelasItem['mapel_id'], 'kelas' => $kelas['id']]) }}" class="text-dark" style="text-decoration:none;">
-                                            <h5 class="card-title text-black fw-bold">{{ $mapelKelasItem['mapel_name'] }}</h5>
-                                        </a>
-                                        <h6 class="small">Pengajar : {{ $mapelKelasItem['pengajar_name'] === '-' ? '-' : $mapelKelasItem['pengajar_name'] }}</h6>
-                                        <p class="card-text">{{ \Illuminate\Support\Str::limit($mapelKelasItem['deskripsi'], 150) }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
+        <div class="text-center lg:text-left space-y-4">
+            <h1 class="text-3xl font-bold text-gray-900">{{ $kelas['name'] }}</h1>
+            <p class="text-gray-600">Selamat datang! Selamat belajar 🎓</p>
+            <button onclick="getData('{{ $kelas['name'] }}')" data-modal-target="modal-view"
+                class="bg-white border border-blue-500 text-blue-600 hover:bg-blue-500 hover:text-white px-5 py-2.5 rounded-full transition duration-200 font-semibold flex items-center gap-2 justify-center">
+                <i class="fa-solid fa-users"></i> View Siswa
+            </button>
         </div>
     </div>
 
-    <div class="modal fade" id="modal-view" tabindex="-1" aria-labelledby="modal-view-title" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modal-view-title"><i class="fa-solid fa-book"></i> Siswa di {{ $kelas['name'] }}</h5>
-                    <button type="button" class="btn-close animate-btn-small" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-1 ps-4 pe-4">
-                        <img src="{{ url('/asset/img/panorama.png') }}" class="w-100 rounded-2 img-fluid" alt="Panorama">
+    {{-- ✅ Layout 2 Kolom --}}
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+        {{-- Kolom Profil --}}
+        <div class="bg-white p-6 rounded-xl shadow-sm flex flex-col items-center">
+            <div class="w-40 h-40 rounded-full overflow-hidden mb-3">
+                @if (empty($user->gambar))
+                    <img src="/asset/icons/profile-women.svg" class="w-full h-full object-cover" alt="Avatar default">
+                @else
+                    <img src="{{ asset('storage/file/img-upload/' . $user->gambar) }}" class="w-full h-full object-cover" alt="Foto profil">
+                @endif
+            </div>
+            <h3 class="font-semibold text-gray-800">{{ $user->name ?? 'Pengguna' }}</h3>
+            {{-- <p class="text-gray-500 text-sm">Guru / Pengajar</p> --}}
+        </div>
+
+        {{-- Kolom Mapel --}}
+        <div class="md:col-span-3 bg-white p-6 rounded-xl shadow-sm">
+            <div class="grid sm:grid-cols-2 gap-6">
+                @foreach ($mapelKelas as $mapelKelasItem)
+                    <div class="bg-gray-50 border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition">
+                        <a href="{{ route('viewKelasMapel', ['mapel' => $mapelKelasItem['mapel_id'], 'kelas' => $kelas['id']]) }}">
+                            <div class="h-40 bg-cover bg-center"
+                                style="background-image: url('{{ !empty($mapelKelasItem['gambar']) ? asset('storage/file/img-upload/' . $mapelKelasItem['gambar']) : url('/asset/img/placeholder-3.jpg') }}')">
+                            </div>
+                        </a>
+                        <div class="p-4 space-y-2">
+                            <a href="{{ route('viewKelasMapel', ['mapel' => $mapelKelasItem['mapel_id'], 'kelas' => $kelas['id']]) }}"
+                                class="text-lg font-semibold text-gray-900 hover:text-blue-600">
+                                {{ $mapelKelasItem['mapel_name'] }}
+                            </a>
+                            <p class="text-sm text-gray-600">Pengajar: {{ $mapelKelasItem['pengajar_name'] ?? '-' }}</p>
+                            <p class="text-sm text-gray-500">
+                                {{ \Illuminate\Support\Str::limit($mapelKelasItem['deskripsi'], 120) }}
+                            </p>
+                        </div>
                     </div>
-                    <div id="modalContent"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary animate-btn-small" data-bs-dismiss="modal">Tutup</button>
-                </div>
+                @endforeach
             </div>
         </div>
+
     </div>
 
-    <script>
-        const loading = `<div id="loadingIndicator2">
-                      <div class="spinner-border text-info" role="status">
-                          <span class="visually-hidden">Loading...</span>
-                      </div>
-                    </div>`;
+</div>
 
-        function getData(itemId) {
-            console.log(itemId);
-            let kelasName = "{{ $kelas['name'] }}";
-            $('#modalContent').html(loading);
-            $.ajax({
-              
-                type: "GET",
-                data: { kelasName: kelasName },
-                success: function(data) {
-                    $('#modalContent').html(data);
-                    $("#loadingIndicator2").addClass("d-none");
-                },
-                error: function() {
-                    console.error('Gagal mengambil data siswa.');
-                    $("#loadingIndicator2").addClass("d-none");
-                }
-            });
-        }
+{{-- ✅ Modal Tailwind --}}
+<div id="modal-view" tabindex="-1" aria-hidden="true"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div class="bg-white w-full max-w-lg rounded-xl shadow-lg overflow-hidden">
+        <div class="flex justify-between items-center border-b px-6 py-3">
+            <h5 class="text-lg font-semibold text-gray-800"><i class="fa-solid fa-book text-blue-500 mr-2"></i> Siswa di {{ $kelas['name'] }}</h5>
+            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+            <img src="{{ url('/asset/img/panorama.png') }}" class="w-full rounded-lg" alt="Panorama">
+            <div id="modalContent" class="text-center text-gray-600"></div>
+        </div>
+        <div class="border-t px-6 py-3 text-right">
+            <button onclick="closeModal()" class="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium">Tutup</button>
+        </div>
+    </div>
+</div>
 
-     
-    </script>
+<script>
+    const loading = `
+        <div class="flex justify-center py-8">
+            <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4l3.5-3.5L12 0v4a8 8 0 010 16v4l-3.5-3.5L12 20v-4a8 8 0 01-8-8z">
+                </path>
+            </svg>
+        </div>`;
+
+    function getData(itemId) {
+        document.getElementById('modal-view').classList.remove('hidden');
+        $('#modalContent').html(loading);
+        $.ajax({
+            type: "GET",
+            data: { kelasName: itemId },
+            success: function(data) {
+                $('#modalContent').html(data);
+            },
+            error: function() {
+                $('#modalContent').html('<p class="text-red-500">Gagal mengambil data siswa.</p>');
+            }
+        });
+    }
+
+    function closeModal() {
+        document.getElementById('modal-view').classList.add('hidden');
+    }
+</script>
 @endsection

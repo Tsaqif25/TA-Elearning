@@ -72,7 +72,7 @@
             {{-- Konten --}}
             <div>
                 <label for="content" class="block text-sm font-semibold text-gray-800 mb-2">
-                    Deskripsi <span class="text-gray-400 text-xs">(opsional)</span>
+                    Deskripsi 
                 </label>
                 <textarea id="content" name="content" rows="6"
                     class="w-full px-5 py-3 rounded-2xl border border-gray-300 bg-gray-50 
@@ -85,10 +85,10 @@
             {{-- Upload File --}}
             <div>
                 <label class="block text-sm font-semibold text-gray-800 mb-1">
-                    Upload File Pendukung <span class="text-gray-400 text-xs">(opsional)</span>
+                    Upload File Pendukung
                 </label>
                 <div id="my-dropzone" class="dropzone rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center">
-                    <p class="text-gray-500 text-sm">Tarik atau klik untuk unggah file</p>
+                   
                 </div>
             </div>
 
@@ -116,9 +116,9 @@
         {{-- File yang sudah ada --}}
         <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5">
             <h3 class="text-sm font-semibold text-gray-700 mb-3">File Tugas Saat Ini</h3>
-            @if ($tugas->TugasFile->count())
+            @if ($tugas->files->count())
                 <ul class="divide-y divide-gray-100">
-                    @foreach ($tugas->TugasFile as $key)
+                    @foreach ($tugas->files as $key)
                         <li class="flex items-center justify-between py-2">
                             <div class="flex items-center gap-2 text-sm text-gray-700">
                                 @if (Str::endsWith($key->file, ['.jpg', '.jpeg', '.png', '.gif']))
@@ -134,7 +134,7 @@
                                     {{ Str::limit($key->file, 20) }}
                                 </a>
                             </div>
-                            <form id="formDeleteFile" action="{{ route('tugas.file.delete') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus file ini?')">
+                            <form id="formDeleteFile"action="{{ route('tugas.deleteFile', $tugas->id) }}"method="POST"onsubmit="return confirm('Yakin ingin menghapus file ini?')">
                                 @csrf
                                 @method('DELETE')
                                 <input type="hidden" name="idTugas" value="{{ $tugas->id }}">
@@ -162,98 +162,92 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
     {{-- Script yang dibutuhkan --}}
-    <script src="https://cdn.tiny.cloud/1/1dcn6y89gj7jtaawstjd7qt5nddl47py62pg67ihnxq6vyoa/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-    <script src="{{ url('/asset/js/rich-text-editor.js') }}"></script>
-    
-    {{-- Tambahkan CSS datetimepicker --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
-    
-    {{-- Tambahkan JS datetimepicker SETELAH jQuery --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-    <script>
-        Dropzone.autoDiscover = false;
+<script>
+    Dropzone.autoDiscover = false;
 
-        // 🔹 Inisialisasi Dropzone (sama seperti pola materi)
-        const myDropzone = new Dropzone("#my-dropzone", {
-            url: "{{ route('tugas.file.upload') }}?action=edit&idTugas={{ $tugas->id }}", // langsung pakai ID tugas yang sudah ada
-            paramName: "file",
-            maxFilesize: 10, // MB
-            acceptedFiles: ".jpg,.jpeg,.png,.gif,.mp4,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.mp3,.avi,.mov",
-            addRemoveLinks: true,
-            timeout: 60000,
-            dictDefaultMessage: "Seret file ke sini atau klik untuk mengunggah",
-            autoProcessQueue: false,
-            parallelUploads: 100,
-            headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
+    // 🔹 Inisialisasi Dropzone (sama seperti pola materi)
+    const myDropzone = new Dropzone("#my-dropzone", {
+        url: "{{ route('tugas.uploadFile', $tugas->id) }}", // ❗ hapus ?action=edit (tidak perlu)
+        paramName: "file",
+        maxFilesize: 10, // MB
+        acceptedFiles: ".jpg,.jpeg,.png,.gif,.mp4,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.mp3,.avi,.mov",
+        addRemoveLinks: true,
+        timeout: 60000,
+        dictDefaultMessage: "Seret file ke sini atau klik untuk mengunggah",
+        autoProcessQueue: false,
+        parallelUploads: 100,
+        headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
+    });
+
+    // 🔹 Redirect hanya setelah semua file berhasil upload
+    myDropzone.on("success", function (file, response) {
+        console.log("✅ File berhasil diupload:", response);
+    });
+
+    myDropzone.on("queuecomplete", function () {
+        console.log("✅ Semua file sudah selesai diunggah.");
+        // 🔸 Redirect ke halaman tugas setelah semua file selesai
+        window.location.href = "{{ route('viewKelasMapel', [
+            'mapel' => $kelasMapel->mapel->id,
+            'kelas' => $kelasMapel->kelas->id,
+            'tab' => 'tugas'
+        ]) }}";
+    });
+
+    // 🔹 Handle form update tugas
+    $(document).ready(function () {
+
+        // Handle modal delete button click
+        $('#modalDelete').on('show.bs.modal', function(event) {
+            const button = $(event.relatedTarget);
+            const filename = button.data('filename');
+            const modal = $(this);
+            modal.find('input[name="fileName"]').val(filename);
         });
 
-        // 🔹 Kalau semua file selesai diupload → redirect
-        myDropzone.on("queuecomplete", function () {
-            window.location.href = "{{ route('viewKelasMapel', [
-                'mapel' => $kelasMapel->mapel->id,
-                'kelas' => $kelasMapel->kelas->id
-            ]) }}";
-        });
+        // Handle form submit
+        $('#formTugasUpdate').submit(function (e) {
+            e.preventDefault();
 
-        // 🔹 Handle form update tugas
-        $(document).ready(function () {
-            // Handle modal delete button click
-           $('#modalDelete').on('show.bs.modal', function(event) {
-    const button = $(event.relatedTarget);
-    const filename = button.data('filename');
-    const modal = $(this);
-    modal.find('input[name="fileName"]').val(filename);
-});
+            let formData = new FormData(this);
 
-            // Initialize datetimepicker
-            $('#due').datetimepicker({
-                format: 'Y-m-d H:i',
-                locale: 'id',
-            });
+            $.ajax({
+                type: 'POST', // meski ada @method('PUT'), Ajax tetap pakai POST
+                url: $(this).attr('action'),
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                success: function (response) {
+                    console.log("🟢 Update berhasil:", response);
 
-            // Handle form submit
-            $('#formTugasUpdate').submit(function (e) {
-                e.preventDefault();
-
-                let formData = new FormData(this);
-
-                $.ajax({
-                    type: 'POST', // meski ada @method('PUT'), Ajax tetap pakai POST
-                    url: $(this).attr('action'),
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                    success: function (response) {
-                        console.log(response);
-
-                        if (myDropzone.getQueuedFiles().length === 0) {
-                            // Tidak ada file → langsung redirect
-                            window.location.href = "{{ route('viewKelasMapel', [
-                                'mapel' => $kelasMapel->mapel->id,
-                                'kelas' => $kelasMapel->kelas->id
-                            ]) }}";
-                        } else {
-                            // Ada file → proses upload
-                            myDropzone.processQueue();
-                        }
-                    },
-                    error: function (xhr) {
-                        console.log(xhr.responseText);
-                        alert("Terjadi kesalahan saat menyimpan tugas.");
+                    if (myDropzone.getQueuedFiles().length === 0) {
+                        // Tidak ada file → langsung redirect
+                        window.location.href = "{{ route('viewKelasMapel', [
+                            'mapel' => $kelasMapel->mapel->id,
+                            'kelas' => $kelasMapel->kelas->id,
+                            'tab' => 'tugas'
+                        ]) }}";
+                    } else {
+                        console.log("📤 Mulai upload file ke:", myDropzone.options.url);
+                        // Ada file → proses upload
+                        myDropzone.processQueue();
                     }
-                });
+                },
+                error: function (xhr) {
+                    console.error("❌ Error saat update:", xhr.responseText);
+                    alert("Terjadi kesalahan saat menyimpan tugas.");
+                }
             });
         });
-    </script>
+    });
+</script>
+
 @endsection

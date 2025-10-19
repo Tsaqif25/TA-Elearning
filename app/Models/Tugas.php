@@ -14,7 +14,7 @@ class Tugas extends Model
         'name',
         'content',
         'due',
-        // 'isHidden',
+    
     ];
 
 
@@ -31,8 +31,11 @@ class Tugas extends Model
         return $this->hasmany(UserTugas::class);
     }
 
-    public function tugasFile()
-    {
-        return $this->hasMany(TugasFile::class);
-    }
+  
+
+    public function files()
+{
+    return $this->hasMany(TugasFile::class);
+}
+
 }

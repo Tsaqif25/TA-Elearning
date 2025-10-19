@@ -128,10 +128,10 @@
                             <div class="h-100 p-4">
                                 <h4 class="fw-bold mb-2">Files</h4>
                                 <hr>
-                                @if (count($tugas->TugasFile) > 0)
+                                @if (count($tugas->files) > 0)
                                     <ul class="list-group">
                                         <div class="row">
-                                            @foreach ($tugas->TugasFile as $key)
+                                            @foreach ($tugas->files as $key)
                                                 <div class="col-lg-4 col-sm-6 col-12 mb-2">
 
                                                     <a href="{{ route('getFileTugas', ['namaFile' => $key->file]) }}">
@@ -170,89 +170,87 @@
                         </div>
                     </div>
 
-                    @if (Auth::user()->hasRole('Pengajar'))
-                        <form action="{{ route('siswaUpdateNilai', ['tugas' => $tugas['id']]) }}" method="post">
-                            @csrf
-                            {{-- Siswa dan Assignment --}}
-                            <div class="accordion mb-4" id="sdsd">
-                                <div class="accordion-item ">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button bg-outline-primary  fw-bold" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#sdsd-collapseOne"
-                                            aria-controls="sdsd-collapseOne">
-                                            Submittion Siswa
-                                        </button>
-                                    </h2>
-                                    <div id="sdsd-collapseOne" class="accordion-collapse collapse show">
-                                        <div class="accordion-body table-responsive">
-                                            <table id="table" class="table table-striped table-hover table-lg ">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">#</th>
-                                                        <th scope="col">Nama</th>
-                                                        <th scope="col">Submittion</th>
-                                                        <th scope="col">Nilai</th>
-                                                        <th scope="col">Input Nilai</th>
-                                                    </tr>
-                                                </thead>
+@if (Auth::user()->hasRole('Pengajar'))
+<form action="{{ route('siswaUpdateNilai', ['tugas' => $tugas->id]) }}" method="post">
+    @csrf
+    
+    {{-- ✅ DEBUG: Cek isi $kelas->users --}}
+    <div class="alert alert-info mb-3">
+        <strong>🔍 DEBUG:</strong><br>
+        Total siswa: <strong>{{ $kelas->users->count() }}</strong><br>
+        @foreach($kelas->users as $s)
+            - {{ $s->name }} (ID: {{ $s->id }})<br>
+        @endforeach
+    </div>
+    
+    <div class="accordion mb-4" id="accordionTugas">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button bg-outline-primary fw-bold" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapseTugas">
+                    Submission Siswa ({{ $kelas->users->count() }} siswa)
+                </button>
+            </h2>
 
-                                                <tbody>
-                                                    @foreach ($kelas->users as $key)
-                                                        @php
-                                                            // Mencari UserTugas sesuai dengan ID tugas yang Anda inginkan
-                                                            $userTugas = $key->UserTugas
-                                                                ->where('tugas_id', $tugas['id'])
-                                                                ->first();
-                                                            $nilai =
-                                                                $userTugas && is_numeric($userTugas->nilai)
-                                                                    ? intval($userTugas->nilai)
-                                                                    : null;
-                                                        @endphp
-
-                                                        <tr>
-                                                            <td>{{ $loop->iteration }}</td>
-                                                            <td>{{ $key->name }}</td>
-                                                            <td>
-                                                                @if ($userTugas)
-                                                                    @if ($userTugas->UserTugasFile)
-                                                                        @foreach ($userTugas->UserTugasFile as $file)
-                                                                            <a class="d-block"
-                                                                                href="{{ route('getFileUser', ['namaFile' => $file->file]) }}">{{ $file->file }}</a>
-                                                                        @endforeach
-                                                                    @endif
-                                                                @else
-                                                                    -
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                @if ($userTugas)
-                                                                    @if ($nilai !== null && $nilai >= 0)
-                                                                        {{ $nilai }}
-                                                                    @else
-                                                                        -
-                                                                    @endif
-                                                                @else
-                                                                    -
-                                                                @endif
-                                                            </td>
-                                                            <input type="hidden" name="siswaId[]"
-                                                                value="{{ $key->id }}">
-                                                            <td class="w-25">
-                                                                <input type="number" class="form-control w-100"
-                                                                    placeholder="-" aria-label="nilai" name="nilai[]"
-                                                                    value="{{ $nilai !== null ? $nilai : '' }}">
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="btn btn-primary w-100" type="submit">submit</button>
-                        </form>
+            <div id="collapseTugas" class="accordion-collapse collapse show">
+                <div class="accordion-body table-responsive">
+                    <table class="table table-striped table-hover table-lg">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nama</th>
+                                <th>Submission</th>
+                                <th>Nilai</th>
+                                <th>Input Nilai</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($kelas->users as $siswa)
+                                @php
+                                    $userTugas = $siswa->userTugas
+                                        ->where('tugas_id', $tugas->id)
+                                        ->first();
+                                    $nilai = $userTugas && is_numeric($userTugas->nilai)
+                                        ? intval($userTugas->nilai)
+                                        : null;
+                                @endphp
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $siswa->name }}</td>
+                                    <td>
+                                        @if ($userTugas && $userTugas->userTugasFile->count())
+                                            @foreach ($userTugas->userTugasFile as $file)
+                                                <a class="d-block"
+                                                    href="{{ route('getFileUser', ['namaFile' => $file->file]) }}">
+                                                    {{ $file->file }}
+                                                </a>
+                                            @endforeach
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td>{{ $nilai ?? '-' }}</td>
+                                    <input type="hidden" name="siswaId[]" value="{{ $siswa->id }}">
+                                    <td class="w-25">
+                                        <input type="number" class="form-control w-100"
+                                            name="nilai[]" value="{{ $nilai ?? '' }}" placeholder="-">
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-danger">
+                                        ❌ Tidak ada siswa di kelas ini
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-primary w-100" type="submit">Submit</button>
+</form>
                     @elseif (Auth::user()->hasRole('Siswa'))
                         <h3 class="fw-bold text-primary">Submit Tugas
                             @if ($userTugas)
@@ -474,117 +472,177 @@
     </div>
 
     {{-- Load CSS dan JS Library --}}
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.19/dist/css/tempus-dominus.min.css"
-        crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" />
+  <!-- ====== CSS ====== -->
+<!-- ========== STYLESHEET ========== -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.19/dist/css/tempus-dominus.min.css"
+      crossorigin="anonymous">
 
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.19/dist/js/tempus-dominus.min.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.19/dist/locales/id.js" crossorigin="anonymous">
-    </script>
-
-    <script src="https://cdn.tiny.cloud/1/1dcn6y89gj7jtaawstjd7qt5nddl47py62pg67ihnxq6vyoa/tinymce/7/tinymce.min.js"
-        referrerpolicy="origin"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
-    <script src="{{ url('/asset/js/rich-text-editor.js') }}"></script>
-    {{-- Script untuk mengatur gambar agar responsif --}}
-    <script>
-        var img = document.querySelectorAll('img');
-
-        img.forEach(function(element) {
-            element.classList.add('img-fluid');
-        });
-
-        function changeValue(itemId) {
-            console.log(itemId);
-            const fileName = document.getElementById('fileName');
-            fileName.setAttribute('value', itemId);
-        }
-    </script>
-
-    {{-- Script tambahan jika diperlukan --}}
-    <script src="{{ url('/asset/js/lottie.js') }}"></script>
-    <script src="{{ url('/asset/js/customJS/simpleAnim.js') }}"></script>
-    @if (Auth::user()->hasRole('Siswa'))
-        <script>
-            $(document).ready(function() {
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" />
 
 
-                // Menangkap submit form
-                $('#submitTugas').submit(function(e) {
-                    e.preventDefault(); // Mencegah form melakukan submit default
+<!-- ========== SCRIPT ORDER ========== -->
+<!-- 1️⃣ jQuery wajib paling atas -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-                    // Mengambil data form
-                    var formData = new FormData(this);
+<!-- 2️⃣ Popper.js & TempusDominus -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.19/dist/js/tempus-dominus.min.js" crossorigin="anonymous"></script>
 
-                    // Menggunakan AJAX untuk mengirim data ke server
-                    $.ajax({
-                        type: 'POST',
-                        url: $(this).attr('action'),
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            // Berhasil, lakukan sesuatu dengan respons dari server jika diperlukan
-                            console.log(response);
-                            uploadFiles();
-                        },
-                        error: function(error) {
-                            // Terjadi kesalahan, tangani kesalahan jika diperlukan
-                            console.log(error);
-                            // Di sini Anda dapat menambahkan logika lain atau menampilkan pesan kesalahan kepada pengguna.
-                        }
-                    });
-                });
-            });
-        </script>
-    @endif
-
-   <script>
-    Dropzone.autoDiscover = false;
-
-    // 🔹 Inisialisasi Dropzone (pola sama dengan materi & edit tugas)
-    const myDropzone = new Dropzone("#my-dropzone", {
-        url: "{{ route('submitFileTugas') }}",
-        paramName: "file",
-        maxFilesize: 10, // MB
-        acceptedFiles: ".jpg,.jpeg,.png,.gif,.mp4,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.mp3,.avi,.mov",
-        addRemoveLinks: true,
-        timeout: 60000,
-        dictDefaultMessage: "Seret file ke sini atau klik untuk mengunggah",
-        autoProcessQueue: false,
-        parallelUploads: 100,
-        headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" },
-        init: function() {
-            // Tambahkan tugasId ke setiap request
-            this.on("sending", function(file, xhr, formData) {
-                formData.append("tugasId", "{{ $tugas->id }}");
-            });
-        }
-    });
-
-    // 🔹 Kalau semua file selesai diupload → redirect
-    myDropzone.on("queuecomplete", function () {
-        window.location.href = "{{ route('viewKelasMapel', ['mapel' => $mapel['id'], 'kelas' => $kelas->id]) }}";
-    });
-
-    // 🔹 Handle form submit
-    $(document).ready(function() {
-        $('#submitTugas').on('submit', function(e) {
-            e.preventDefault();
-
-            if (myDropzone.getQueuedFiles().length === 0) {
-                // Tidak ada file → langsung redirect
-                window.location.href = "{{ route('viewKelasMapel', ['mapel' => $mapel['id'], 'kelas' => $kelas->id]) }}";
-            } else {
-                // Ada file → proses upload
-                myDropzone.processQueue();
-            }
-        });
-    });
+<script>
+  // Inisialisasi TempusDominus secara manual tanpa locales/id.js
+  document.addEventListener('DOMContentLoaded', function () {
+    const el = document.getElementById('due');
+    if (el) {
+      new tempusDominus.TempusDominus(el, {
+        localization: {
+          locale: 'id',
+          startOfTheWeek: 1,
+        },
+        display: {
+          components: {
+            decades: true,
+            year: true,
+            month: true,
+            date: true,
+            hours: true,
+            minutes: true,
+            seconds: false
+          },
+        },
+      });
+    }
+  });
 </script>
+
+<!-- 3️⃣ TinyMCE -->
+<script src="https://cdn.tiny.cloud/1/1dcn6y89gj7jtaawstjd7qt5nddl47py62pg67ihnxq6vyoa/tinymce/7/tinymce.min.js"
+        referrerpolicy="origin"></script>
+<script src="{{ url('/asset/js/rich-text-editor.js') }}"></script>
+
+<!-- 4️⃣ Dropzone -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+
+<!-- 5️⃣ Custom scripts -->
+<script src="{{ url('/asset/js/lottie.js') }}"></script>
+
+<script>
+  // Tambahkan class responsive ke semua gambar di halaman
+  document.querySelectorAll('img').forEach(function (el) {
+    el.classList.add('img-fluid');
+  });
+
+  // Untuk modal hapus file
+  function changeValue(itemId) {
+    document.getElementById('fileName').value = itemId;
+  }
+</script>
+
+<!-- ====================================================== -->
+<!-- 🧩 LOGIKA DROPZONE BERDASARKAN ROLE -->
+<!-- ====================================================== -->
+
+@if (Auth::user()->hasRole('Siswa'))
+<script>
+Dropzone.autoDiscover = false;
+
+const myDropzone = new Dropzone("#my-dropzone", {
+  url: "{{ route('submitFileTugas') }}", // route khusus siswa
+  paramName: "file",
+  maxFilesize: 10, // MB
+  acceptedFiles: ".jpg,.jpeg,.png,.gif,.mp4,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.mp3,.avi,.mov",
+  addRemoveLinks: true,
+  timeout: 60000,
+  dictDefaultMessage: "Seret file ke sini atau klik untuk mengunggah",
+  autoProcessQueue: false,
+  parallelUploads: 100,
+  headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+  init: function () {
+    this.on("sending", function (file, xhr, formData) {
+      formData.append("tugasId", "{{ $tugas->id }}");
+    });
+  }
+});
+
+let uploadedCount = 0;
+myDropzone.on("complete", function (file) {
+  uploadedCount++;
+  if (uploadedCount === myDropzone.getAcceptedFiles().length) {
+    window.location.href = "{{ route('viewKelasMapel', [
+      'mapel' => $mapel['id'],
+      'kelas' => $kelas->id
+    ]) }}";
+  }
+});
+
+// Handle submit form siswa
+$(document).ready(function () {
+  $('#submitTugas').on('submit', function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    $.ajax({
+      type: 'POST',
+      url: $(this).attr('action'),
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (response) {
+        console.log('Data tersimpan:', response);
+        uploadFiles();
+      },
+      error: function (error) {
+        console.error(error);
+        alert('Terjadi kesalahan saat menyimpan tugas.');
+      }
+    });
+  });
+});
+
+function uploadFiles() {
+  if (myDropzone.getQueuedFiles().length === 0) {
+    window.location.href = "{{ route('viewKelasMapel', [
+      'mapel' => $mapel['id'],
+      'kelas' => $kelas->id
+    ]) }}";
+  } else {
+    myDropzone.processQueue();
+  }
+}
+</script>
+@endif
+
+
+@if (Auth::user()->hasRole('Pengajar'))
+<script>
+Dropzone.autoDiscover = false;
+
+const myDropzoneGuru = new Dropzone("#my-dropzone", {
+  url: "{{ route('tugas.uploadFile', $tugas->id) }}", // route khusus pengajar
+  paramName: "file",
+  maxFilesize: 10, // MB
+  acceptedFiles: ".jpg,.jpeg,.png,.gif,.mp4,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.mp3,.avi,.mov",
+  addRemoveLinks: true,
+  timeout: 60000,
+  dictDefaultMessage: "Seret file ke sini atau klik untuk mengunggah",
+  headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+  init: function () {
+    this.on("sending", function (file, xhr, formData) {
+      formData.append("tugasId", "{{ $tugas->id }}");
+    });
+    this.on("success", function (file, response) {
+      console.log('Upload sukses:', response);
+    });
+    this.on("error", function (file, errorMessage) {
+      console.error('Upload gagal:', errorMessage);
+    });
+  }
+});
+</script>
+@endif
+
+
+
     @endif
 @endsection

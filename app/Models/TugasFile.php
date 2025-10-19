@@ -14,8 +14,14 @@ class TugasFile extends Model
         'file',
     ];
 
+    // public function tugas()
+    // {
+    //   return  $this->belongsTo(UserTugas::class);
+    // }
+
     public function tugas()
-    {
-      return  $this->belongsTo(UserTugas::class);
-    }
+{
+    return $this->belongsTo(Tugas::class);
+}
+
 }

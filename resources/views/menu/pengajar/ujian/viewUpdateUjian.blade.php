@@ -35,10 +35,7 @@
             @csrf
             @method('PUT')
 
-            <h4 class="font-semibold text-indigo-600 mb-3 flex items-center gap-2">
-                <i class="fa-solid fa-pen-to-square"></i>
-                <span>Edit Data Ujian</span>
-            </h4>
+           
 
             <div class="p-4 bg-white rounded-2xl border-2 border-black shadow-sm space-y-4">
                 {{-- Judul Ujian --}}

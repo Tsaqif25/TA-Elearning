@@ -115,9 +115,12 @@
     </div>
 </div>
 
-{{-- Dropzone Scripts --}}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+    <!-- CDN: jQuery, Dropzone, Dropzone CSS, Toastify CSS & JS -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <script>
 Dropzone.autoDiscover = false;
@@ -177,4 +180,6 @@ $(document).ready(function () {
     });
 });
 </script>
+
+
 @endsection

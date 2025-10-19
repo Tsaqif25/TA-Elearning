@@ -73,10 +73,7 @@ public function store(Request $request, KelasMapel $kelasMapel)
         return response()->json(['success' => true, 'message' => 'Ujian berhasil dibuat!', 'ujian_id' => $ujian->id]);
     }
 
-    // return redirect()->route('viewKelasMapel', [
-    //     'mapel' => $kelasMapel->mapel_id,
-    //     'kelas' => $kelasMapel->kelas_id
-    // ])->with('success', 'Ujian berhasil ditambahkan!');
+
 
      return redirect()->route('ujian.soal.manage', $ujian->id)
     ->with('success', 'Ujian berhasil dibuat! Silakan tambahkan soal ujian.');
