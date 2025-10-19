@@ -24,49 +24,61 @@ class TugasController extends Controller
 
 public function viewTugas(Tugas $tugas)
 {
-    $tugas->load('files');
+// ✅ Muat relasi yang diperlukan
+$tugas->load(['files', 'kelasMapel.kelas.users.userTugas.userTugasFile', 'kelasMapel.mapel']);
 
-    // ✅ Load kelasMapel dengan relasi yang sudah difilter
-    $kelasMapel = $tugas->kelasMapel->load([
-        'kelas.users' => function ($query) use ($tugas) {
-            // ✅ FILTER: Hanya ambil user yang punya role 'Siswa'
-            $query->role('Siswa')->with([
-                'userTugas' => function ($q) use ($tugas) {
-                    $q->where('tugas_id', $tugas->id)
-                      ->with('userTugasFile');
-                }
-            ]);
-        },
-        'mapel',
-    ]);
 
-    $mapel        = $kelasMapel->mapel;
-    $kelas        = $kelasMapel->kelas;
-    $roles        = DashboardController::getRolesName();
-    $editorAccess = $kelasMapel->editorAccess;
-    $tugasAll     = Tugas::with('files')->where('kelas_mapel_id', $kelasMapel->id)->get();
+$kelasMapel = $tugas->kelasMapel;
+$kelas = $kelasMapel->kelas;
+$mapel = $kelasMapel->mapel;
 
-    $userTugas = UserTugas::where('tugas_id', $tugas->id)
-        ->where('user_id', auth()->id())
-        ->first();
 
-    $assignedKelas = DashboardController::getAssignedClass();
-    $title         = $tugas->name;
+$roles = DashboardController::getRolesName();
+$editorAccess = $kelasMapel->editorAccess;
 
-    return view('menu.pengajar.tugas.view', compact(
-        'userTugas',
-        'assignedKelas',
-        'tugas',
-        'kelas',
-        'title',
-        'roles',
-        'tugasAll',
-        'mapel',
-        'kelasMapel',
-        'editorAccess'
-    ));
+
+// Semua tugas dalam kelasMapel
+$tugasAll = Tugas::with('files')->where('kelas_mapel_id', $kelasMapel->id)->get();
+
+
+// Data user tugas untuk user yang login
+$userTugas = UserTugas::where('tugas_id', $tugas->id)
+->where('user_id', auth()->id())
+->first();
+
+
+// Kelas yang diampu
+$assignedKelas = DashboardController::getAssignedClass();
+
+
+// Debug untuk memastikan siswa ter-load dan ada userTugas-nya
+$debugInfo = [
+'total_siswa' => $kelas->users->count(),
+'nama_siswa' => $kelas->users->pluck('name'),
+'user_tugas' => $kelas->users->mapWithKeys(function ($s) use ($tugas) {
+$ut = $s->userTugas->where('tugas_id', $tugas->id)->first();
+return [$s->name => $ut ? 'ada' : 'kosong'];
+}),
+];
+
+
+$title = $tugas->name;
+
+
+return view('menu.pengajar.tugas.view', compact(
+'userTugas',
+'assignedKelas',
+'tugas',
+'kelas',
+'title',
+'roles',
+'tugasAll',
+'mapel',
+'kelasMapel',
+'editorAccess',
+'debugInfo'
+));
 }
-
 
 
 
