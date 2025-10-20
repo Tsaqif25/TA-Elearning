@@ -13,9 +13,7 @@ class Kelas extends Model
         'name',
     ];
 
-    // protected $guarded = [
-    //     'id',
-    // ];
+
 
     public function users()
     {

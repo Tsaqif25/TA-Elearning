@@ -20,10 +20,57 @@
       <h1 class="text-3xl font-extrabold text-[#0A090B]">{{ $kelas->name }}</h1>
       <p class="text-[#7F8190] text-sm">{{ $mapel->name}}</p>
     </div>
-    <a href="#" 
+    {{-- <a href="#" 
       class="flex items-center gap-2 px-5 py-2 border border-[#0A090B] rounded-full text-sm font-semibold text-[#0A090B] hover:bg-[#0A090B] hover:text-white transition">
       <i class="fa-regular fa-user"></i> Lihat Siswa
-    </a>
+    </a> --}}
+    <a href="{{ route('viewKelasMapel', [
+    'mapel' => $mapel->id,
+    'kelas' => $kelas->id,
+    'tab'   => 'siswa'
+]) }}" 
+class="flex items-center gap-2 px-5 py-2 border border-[#0A090B] rounded-full text-sm font-semibold text-[#0A090B] hover:bg-[#0A090B] hover:text-white transition">
+  <i class="fa-regular fa-user"></i> Lihat Siswa
+</a>
+{{-- TAB SISWA --}}
+@if (request('tab') == 'siswa')
+  <div id="siswa" class="tab-content">
+    <h2 class="text-2xl font-bold text-[#0A090B] mb-6">Daftar Siswa</h2>
+
+    <div class="bg-white border-2 border-black rounded-xl p-6 shadow-sm">
+      <table class="min-w-full border-collapse text-sm">
+        <thead class="bg-gray-100 border-b-2 border-black">
+          <tr>
+            <th class="py-3 px-4 text-left">#</th>
+            <th class="py-3 px-4 text-left">Nama</th>
+            <th class="py-3 px-4 text-left">Email</th>
+            <th class="py-3 px-4 text-left">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse ($kelas->users as $siswa)
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-3 px-4">{{ $loop->iteration }}</td>
+              <td class="py-3 px-4 font-medium">{{ $siswa->name }}</td>
+              <td class="py-3 px-4 text-gray-500">{{ $siswa->email }}</td>
+              <td class="py-3 px-4">
+                <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Aktif</span>
+              </td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="4" class="text-center py-5 text-red-500 font-semibold">
+                Tidak ada siswa di kelas ini
+              </td>
+            </tr>
+          @endforelse
+        </tbody>
+      </table>
+    </div>
+  </div>
+@endif
+
+
   </div>
 
   <!-- Mini Navbar -->

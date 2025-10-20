@@ -21,7 +21,7 @@ class TugasSubmitController extends Controller
             abort(404, 'Kelas Mapel tidak ditemukan untuk tugas ini');
         }
 
-
+        
         $mapel = $kelasMapel->mapel;
         $kelas = $kelasMapel->kelas;
         $tugasAll = Tugas::where('kelas_mapel_id', $kelasMapel->id)->get();
@@ -38,6 +38,7 @@ class TugasSubmitController extends Controller
             'tugasAll',
             'userTugas',
             'title' ,
+            'kelasMapel',
             'assignedKelas'
         ));
     }
