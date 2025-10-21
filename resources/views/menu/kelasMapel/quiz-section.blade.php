@@ -52,6 +52,11 @@
                  class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6C63FF] text-white text-sm font-semibold hover:bg-[#574FFB] transition">
                 <i class="fa-solid fa-eye text-sm"></i> Detail
               </a>
+
+                  <a href="{{ route('ujian.students', ['ujian' => $ujians->id]) }}"
+                 class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6C63FF] text-white text-sm font-semibold hover:bg-[#574FFB] transition">
+                <i class="fa-solid fa-eye text-sm"></i> Hasil Quiz
+              </a>
             @else
               {{-- ✅ Untuk siswa, tampilkan tombol Kerjakan atau Hasil --}}
               @php
@@ -68,7 +73,7 @@
                 </a>
               @else
                 <a href="{{ route('ujian.access', [
-                    'id' => $ujians->id,
+                    'ujian' => $ujians->id,
                     'kelas' => $kelas->id,
                     'mapel' => $mapel->id,
                 ]) }}"
@@ -93,9 +98,7 @@
   </div>
 </div>
 
-<!-- ✅ Toastify CDN -->
-{{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script> --}}
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -8,10 +8,7 @@ use App\Http\Controllers\MapelController;
 use App\Http\Controllers\UjianController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\Materi\MateriController;
-use App\Http\Controllers\SurveyController;
-// use App\Http\Controllers\Diskusi\DiskusiController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\LearningController;
 use App\Http\Controllers\PengajarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataSiswaController;
@@ -19,7 +16,6 @@ use App\Http\Controllers\KelasMapelController;
 use App\Http\Controllers\Materi\MateriFileController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\LoginRegistController;
-use App\Http\Controllers\RekomendasiController;
 use App\Http\Controllers\AdminRegisterController;
 use App\Http\Controllers\StudentAnswerController;
 use App\Http\Controllers\Tugas\TugasFileController;
@@ -98,6 +94,10 @@ Route::middleware('auth')->controller(KelasMapelController::class)->group(functi
             Route::get('manage','show')->name('manage');
             Route::get('create','createSoal')->name('create');
             Route::post('store','storeSoal')->name('store');
+             Route::get('edit/{soal}', 'editSoal')->name('edit'); 
+             Route::put('update/{soal}', 'updateSoal')->name('update'); 
+            Route::delete('delete/{soal}', 'destroySoal')->name('destroy');
+
         });
         Route::controller(UjianEvaluationController::class)->group(function(){
             Route::get('{ujian}/siswa','listStudent')->name('students');
@@ -110,14 +110,15 @@ Route::middleware(['auth','role:Siswa'])
     ->name('ujian.')
     ->controller(UjianStudentController::class)
     ->group(function(){
-        Route::get('access/{id}{kelas}{mapel}','ujianAccess')->name('access');
-        Route::get('start/{id}','startUjian')->name('start');
-        Route::get('do/{ujian}','siswaUjian')->name('userUjian');
-        Route::post('{ujian}/answer/{soal}','storeAnswer')->name('answer.store');
-        Route::get('{ujian}/finished','learningFinished')->name('learning.finished');
-        Route::get('{ujian}/raport','learningRapport')->name('learning.raport');
-
+       Route::get('access/{ujian}/{kelas}/{mapel}', 'ujianAccess')->name('access');
+          Route::get('{ujian}/start', 'startUjian')->name('start');
+        Route::get('{ujian}/finished', 'learningFinished')->name('learning.finished');
+        Route::get('{ujian}/raport', 'learningRapport')->name('learning.raport');
+        Route::get('{ujian}/{soal}', 'siswaUjian')->name('userUjian'); // tampil soal
+        Route::post('{ujian}/{soal}/submit', 'storeAnswer')->name('answer.store'); // submit jawaban
+     
     });
+
 
 
 

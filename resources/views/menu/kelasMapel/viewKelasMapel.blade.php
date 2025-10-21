@@ -70,7 +70,6 @@ class="flex items-center gap-2 px-5 py-2 border border-[#0A090B] rounded-full te
   </div>
 @endif
 
-
   </div>
 
   <!-- Mini Navbar -->

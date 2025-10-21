@@ -51,5 +51,7 @@ public function editorAccess()
         return $this->hasMany(Ujian::class);
     }
 
+    
+
 
 }

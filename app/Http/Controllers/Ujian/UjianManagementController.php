@@ -25,19 +25,6 @@ use Illuminate\Validation\ValidationException;
 class UjianManagementController extends Controller
 {
 
-public function index(KelasMapel $kelasMapel)
-{
-    $kelasMapel->load(['kelas', 'mapel']);
-    $ujians = Ujian::where('kelas_mapel_id', $kelasMapel->id)->with('soalUjianMultiple')->get();
-
-    return view('menu.pengajar.ujian.manageUjian', [
-        'assignedKelas' => DashboardController::getAssignedClass(),
-        'roles' => DashboardController::getRolesName(),
-        'kelasMapel' => $kelasMapel,
-        'ujians' => $ujians,
-        'title' => 'Manage Ujian',
-    ]);
-}
 
 
     // FORM TAMBAH UJIAN
@@ -46,7 +33,7 @@ public function index(KelasMapel $kelasMapel)
     $kelasMapel->load(['kelas', 'mapel']);
     return view('menu.pengajar.ujian.viewTambahUjian', [
         'assignedKelas' => DashboardController::getAssignedClass(),
-        'roles' => DashboardController::getRolesName(),
+        // 'roles' => DashboardController::getRolesName(),
         'kelasMapel' => $kelasMapel,
         'title' => 'Tambah Ujian',
         'tipe' => $request->type,

@@ -64,7 +64,7 @@
   <img src="/assets/images/thumbnail/Web-Development-big.png" width="200" class="mb-4">
   <h2 class="fw-bold mb-2">🎉 Congratulations! You’ve Finished the Test</h2>
   <p class="text-muted">See your results and improve for the next test.</p>
-  <a href="{{ route('ujian.learning.rapport', $ujian->id) }}" class="btn btn-primary mt-3">View Test Result</a>
+  <a href="{{ route('ujian.learning.raport', $ujian->id) }}" class="btn btn-primary mt-3">View Test Result</a>
 </section>
 
 

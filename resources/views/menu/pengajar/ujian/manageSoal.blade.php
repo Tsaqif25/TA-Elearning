@@ -95,12 +95,12 @@
 
                                     {{-- Tombol Aksi --}}
                                     <div class="flex items-center gap-2 opacity-90 group-hover:opacity-100 transition">
-                                        <a href=""
+                                        <a href="{{ route('ujian.soal.edit',[$ujian->id, $soal->id]) }}) }}"
                                             class="px-4 py-2 rounded-full bg-[#2B82FE] text-white font-semibold text-sm shadow hover:bg-[#1E6EEB] transition">
                                             <i class="fa-solid fa-pen me-1"></i>Edit
                                         </a>
 
-                                        <form action="" method="POST"
+                               <form action="{{ route('ujian.soal.destroy', [$ujian->id, $soal->id]) }}" method="POST"
                                             onsubmit="return confirm('Yakin ingin menghapus soal ini?')">
                                             @csrf
                                             @method('DELETE')
@@ -146,10 +146,6 @@
                             </div>
                         @endforelse
                     </div>
-
-
-
-
                 </div>
             </div>
         </div>
