@@ -1,6 +1,6 @@
 @extends('layout.template.mainTemplate')
 
-@section('title', 'Dashboard Saya — AnggaCBT')
+@section('title', 'Dashboard ')
 
 @section('container')
 <div class="flex flex-col px-5 mt-5 gap-6">

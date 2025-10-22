@@ -21,9 +21,9 @@
         @yield('content')
       </main>
     </div>
-  </div> <!-- PERBAIKI: Tutup div dengan benar -->
+  </div> <
   
-  {{-- Bootstrap JS Bundle --}}
+
   
 </body>
 </html>
