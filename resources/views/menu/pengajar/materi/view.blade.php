@@ -1,132 +1,116 @@
 @extends('layout.template.mainTemplate')
 
+@section('title', 'Detail Materi | AnggaCBT')
+
 @section('container')
-    <div class="flex flex-col lg:flex-row gap-6">
+<div class="flex flex-col w-full bg-[#FAFAFA] font-poppins">
 
-        {{-- Kiri: Konten Utama --}}
-        <div class="flex-1 space-y-6">
-            {{-- Header --}}
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-    <a href="{{ route('viewKelasMapel', [
-        'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id
-    ]) }}" 
-       class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-transparent hover:border-gray-200 shadow-sm hover:shadow-md transition">
-      <i class="fa-solid fa-arrow-left text-gray-700"></i>
-    </a>
-                    <div>
-                        <h1 class="text-2xl font-bold text-gray-900">{{ $materi->name }}</h1>
-                        <p class="text-sm text-gray-500">Diunggah {{ $materi->created_at->translatedFormat('d F Y') }}</p>
-                    </div>
-                </div>
-            </div>
-            {{-- Deskripsi Materi --}}
-            <div class="bg-white border-2 border-black rounded-2xl shadow-sm p-6">
-                <h2 class="text-lg font-semibold mb-4">Deskripsi</h2>
-                <div class="whitespace-pre-line text-gray-700 leading-relaxed">
-                    {{($materi->content)}}
-                </div>
-            </div>
-            {{-- File Materi --}}
-            <div class="bg-white border-2 border-black rounded-2xl shadow-sm p-6">
-                <h2 class="text-lg font-semibold mb-4">File Materi</h2>
+  
+  <div class="max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-10 mt-6 mb-10">
 
-                @forelse ($materi->files as $file)
-                    <div
-                        class="flex items-center justify-between p-3 border-1 border-black rounded-xl mb-2 hover:bg-gray-50 transition">
-                        <div class="flex items-center gap-3">
-                            {{-- Icon --}}
-                            <i class="fa-solid fa-file text-gray-500 text-lg"></i>
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-5 gap-3">
+      <div>
+        <h1 class="text-xl sm:text-2xl font-extrabold text-[#0A090B]">{{ $materi->name }}</h1>
+        <p class="text-sm text-[#7F8190] mt-1">
+          Diunggah {{ $materi->created_at->translatedFormat('d F Y') }}
+          @if($materi->pengajar)
+          oleh <span class="font-semibold text-[#2B82FE]">{{ $materi->pengajar->name ?? '' }}</span>
+          @endif
+        </p>
+      </div>
 
-                            {{-- Nama File Asli --}}
-                            <a href="{{ asset('storage/' . $file->file) }}" target="_blank"
-                                class="text-sm text-gray-800 hover:underline break-all">
-                                {{ basename($file->file) }}
-                            </a>
-                        </div>
-
-                        {{-- Tombol Download --}}
-                        <a href="{{ route('getFile', ['namaFile' => $file->file]) }}"
-                            class="px-3 py-2 text-sm rounded-lg border-2 border-black text-gray-700 hover:bg-gray-100 font-medium transition flex items-center gap-2">
-                            <i class="fa-solid fa-download"></i> Download
-                        </a>
-                    </div>
-                @empty
-                    <p class="text-gray-500 text-sm">Belum ada file materi diunggah.</p>
-                @endforelse
-            </div>
-
-
-            @if ($materi->youtube_link)
-                <div class="bg-white border border-black rounded-2xl shadow-sm p-6">
-                    <h2 class="text-lg font-semibold mb-4">Video Pembelajaran</h2>
-
-                    @php
-                        // Pisahkan setiap baris menjadi link terpisah
-                        $links = preg_split("/(\r\n|\r|\n)/", trim($materi->youtube_link));
-                        $links = array_filter($links);
-                    @endphp
-
-                    @foreach ($links as $link)
-                        @php
-                            $link = trim($link);
-
-                            // Bersihkan parameter tambahan seperti ?si=xxxxx atau &t=123s
-                            $cleanLink = preg_replace('/\?.*/', '', $link);
-
-                            // Konversi berbagai format link ke bentuk embed standar
-                            if (str_contains($cleanLink, 'youtu.be/')) {
-                                $embedLink = str_replace('youtu.be/', 'www.youtube.com/embed/', $cleanLink);
-                            } elseif (str_contains($cleanLink, 'watch?v=')) {
-                                $embedLink = str_replace('watch?v=', 'embed/', $cleanLink);
-                            } else {
-                                $embedLink = $cleanLink;
-                            }
-                        @endphp
-
-                        <div class="mb-5">
-                            <iframe width="100%" height="400" class="rounded-2xl" src="{{ $embedLink }}"
-                                title="YouTube video player" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
-
-
-
-
-
-        </div>
-        {{-- Kanan: Informasi Materi --}}
-        <div class="w-full lg:w-80 space-y-6">
-            <div class="bg-white  border-2 border-black rounded-2xl shadow-sm p-6">
-                <h3 class="text-sm font-semibold text-gray-600 mb-3 uppercase">Informasi Materi</h3>
-                <ul class="text-sm text-gray-700 space-y-2">
-                    <li><span class="font-medium">Total File:</span> {{ $materi->files->count() }} File</li>
-
-                </ul>
-
-                <div class="mt-4">
-                    <h4 class="text-sm font-semibold text-gray-600 mb-2">Deskripsi Singkat</h4>
-                    <p class="text-sm text-gray-600">{{ Str::limit($materi->content, 100) }}</p>
-                </div>
-            </div>
-
-            {{-- Tombol Aksi --}}
-            <div class="bg-white  border-2 border-black rounded-2xl shadow-sm p-6">
-                <h3 class="text-sm font-semibold text-gray-600 mb-3 uppercase">Aksi</h3>
-                <div class="flex flex-col gap-3">
-                    <a href="{{ route('viewKelasMapel', [
-        'mapel' => $materi->kelasMapel->mapel->id,
-        'kelas' => $materi->kelasMapel->kelas->id
-    ]) }}" class="w-full text-center py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">
-                        ← Kembali ke Kelas
-                    </a>
-                </div>
-            </div>
-        </div>
+      <div class="flex flex-wrap gap-2 sm:gap-3">
+        <a href="{{ route('viewKelasMapel', [
+            'mapel' => $materi->kelasMapel->mapel->id,
+            'kelas' => $materi->kelasMapel->kelas->id
+        ]) }}"
+           class="flex items-center gap-1 bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-gray-200 transition">
+          <i class="fa-solid fa-arrow-left text-[11px]"></i> Kembali
+        </a>
+      </div>
     </div>
+
+    <!-- Deskripsi -->
+    <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-5 sm:p-6 mb-6">
+      <h2 class="text-base sm:text-lg font-semibold mb-2">Deskripsi Materi</h2>
+      <p class="text-sm text-[#7F8190] leading-relaxed whitespace-pre-line">
+        {{ $materi->content }}
+      </p>
+    </div>
+
+    <!-- File Materi -->
+ <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-5 sm:p-6 mb-6">
+  <h2 class="text-base sm:text-lg font-semibold mb-3">File Materi</h2>
+
+  @if ($materi->files->count())
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      @foreach ($materi->files as $file)
+        @php
+          $ext = pathinfo($file->file, PATHINFO_EXTENSION);
+          $iconClass = match($ext) {
+            'pdf' => 'fa-file-pdf text-red-500',
+            'ppt', 'pptx' => 'fa-file-powerpoint text-orange-500',
+            'doc', 'docx' => 'fa-file-word text-blue-500',
+            'xls', 'xlsx' => 'fa-file-excel text-green-500',
+            default => 'fa-file text-gray-500'
+          };
+        @endphp
+
+        {{-- Card File --}}
+        <div class="flex items-center justify-between border border-gray-100 rounded-2xl px-4 py-3 hover:bg-gray-50 transition">
+          <div class="flex items-center gap-3 overflow-hidden">
+            <i class="fa-solid {{ $iconClass }} text-2xl flex-shrink-0"></i>
+            <a href="{{ asset('storage/' . $file->file) }}" target="_blank"
+               class="font-medium text-sm text-gray-700 hover:underline truncate">
+              {{ basename($file->file) }}
+            </a>
+          </div>
+
+          <a href="{{ route('getFile', ['namaFile' => $file->file]) }}"
+             class="text-[#2B82FE] text-xs sm:text-sm font-semibold hover:underline whitespace-nowrap">
+            Lihat
+          </a>
+        </div>
+      @endforeach
+    </div>
+  @else
+    <p class="text-gray-500 text-sm">Belum ada file materi diunggah.</p>
+  @endif
+</div>
+
+
+    <!-- Video -->
+    @if ($materi->youtube_link)
+    <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-5 sm:p-6">
+      <h2 class="text-base sm:text-lg font-semibold mb-3">Video Pembelajaran</h2>
+      @php
+        $links = preg_split("/(\r\n|\r|\n)/", trim($materi->youtube_link));
+        $links = array_filter($links);
+      @endphp
+      @foreach ($links as $link)
+        @php
+          $link = trim($link);
+          $cleanLink = preg_replace('/\?.*/', '', $link);
+          if (str_contains($cleanLink, 'youtu.be/')) {
+            $embedLink = str_replace('youtu.be/', 'www.youtube.com/embed/', $cleanLink);
+          } elseif (str_contains($cleanLink, 'watch?v=')) {
+            $embedLink = str_replace('watch?v=', 'embed/', $cleanLink);
+          } else {
+            $embedLink = $cleanLink;
+          }
+        @endphp
+
+        <div class="aspect-video rounded-xl overflow-hidden mb-5">
+          <iframe class="w-full h-full rounded-xl"
+                  src="{{ $embedLink }}"
+                  title="YouTube video player" frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+        </div>
+      @endforeach
+    </div>
+    @endif
+  </div>
+</div>
 @endsection

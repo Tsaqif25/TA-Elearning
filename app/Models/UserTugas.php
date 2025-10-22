@@ -12,7 +12,7 @@ class UserTugas extends Model
     protected $fillable = [
         'tugas_id',
         'user_id',
-        'status',
+        // 'status',
         'nilai',
     ];
 

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tugas_id')->constrained('tugas')->onDelete('cascade');
             $table->foreignid('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('status')->default('Belum Mengerjakan');
+            // $table->string('status')->default('Belum Mengerjakan');
             $table->BigInteger('nilai')->nullable();
             $table->timestamps();
         });

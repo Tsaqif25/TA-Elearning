@@ -1,127 +1,121 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
-    {{-- Navigasi Breadcrumb --}}
-    <div class="col-12 ps-4 pe-4 mb-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb bg-white">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item">
-                    <a href="{{ route('viewKelasMapel', ['mapel' => $mapel['id'], 'kelas' => $kelas['id']]) }}">
-                        {{ $mapel['name'] }}
-                    </a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">Ujian</li>
-            </ol>
-        </nav>
+<div class="flex flex-col px-6 lg:px-10 mt-6">
+
+  <!-- 📋 INFO KUIS -->
+  <div class="bg-white border border-[#EEEEEE] rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-center gap-5 shadow-sm">
+    <div>
+      <h1 class="text-2xl font-extrabold text-[#0A090B]">{{ $ujian->name }} — Ujian</h1>
+      <p class="text-sm text-[#7F8190] mt-1">Pastikan kamu sudah siap sebelum memulai ujian</p>
     </div>
 
-    {{-- Judul Halaman --}}
-    <div class="ps-4 pe-4 mt-4 pt-4">
-        <h2 class="display-6 fw-bold">
-            <a href="{{ route('viewKelasMapel', ['mapel' => $mapel['id'], 'kelas' => $kelas['id']]) }}">
-                {{ $mapel['name'] }}
-            </a>
-            Ujian
-        </h2>
+    <div class="w-[80px] h-[80px] bg-gradient-to-r from-[#2B82FE] to-[#1E3A8A] rounded-2xl flex items-center justify-center shadow">
+      <i class="fa-solid fa-clipboard-question text-white text-3xl"></i>
     </div>
+  </div>
 
-    {{-- Informasi Ujian --}}
-    <div class="mb-4 p-4 bg-white rounded-4">
-        <div class="p-4">
-            <h4 class="fw-bold mb-2">Informasi</h4>
-            <hr>
-            <h3 class="fw-bold text-primary">
-                {{ $ujian->name }}
-            </h3>
+  <!-- 🔙 Tombol Kembali -->
+  <div class="mt-6">
+    <a href="{{ route('viewKelasMapel', ['mapel' => $mapel['id'], 'kelas' => $kelas['id']]) }}"
+       class="inline-flex items-center gap-2 text-[#7F8190] hover:text-[#0A090B] font-semibold transition">
+      <div class="w-9 h-9 flex items-center justify-center rounded-full border border-[#E5E7EB] hover:bg-[#F3F4F6]">
+        <i class="fa-solid fa-arrow-left text-sm"></i>
+      </div>
+      Kembali ke Daftar Ujian
+    </a>
+  </div>
 
-            @php
-                $dueDateTime = \Carbon\Carbon::parse($ujian->due);
-                $now = \Carbon\Carbon::now();
-            @endphp
+  @php
+      $dueDateTime = \Carbon\Carbon::parse($ujian->due);
+      $now = \Carbon\Carbon::now();
+      $siswaJawaban = \App\Models\UserJawaban::where('user_id', auth()->id())
+          ->whereIn('multiple_id', $ujian->soalUjianMultiple->pluck('id'))
+          ->get()
+          ->keyBy('multiple_id');
+      $sudahMenjawab = $siswaJawaban->isNotEmpty();
+  @endphp
 
-            <div class="row">
-                @if ($dueDateTime < $now)
-                    <div class="border p-3 fw-bold col-lg-3 col-12">
-                        Status : <span class="badge bg-danger p-2">Ditutup</span>
-                    </div>
-                @else
-                    <div class="border p-3 fw-bold col-lg-3 col-12">
-                        Status : <span class="badge bg-primary p-2">Dibuka</span>
-                    </div>
-                @endif
+  <!-- 📘 DETAIL INFORMASI UJIAN -->
+  <div class="mt-6 bg-white border border-[#EEEEEE] rounded-2xl p-6 shadow-sm space-y-4 max-w-3xl">
+    <h3 class="font-bold text-lg text-[#0A090B] flex items-center gap-2">
+      <i class="fa-solid fa-circle-info text-[#2B82FE]"></i> Informasi Ujian
+    </h3>
 
-                <div class="col-12 border p-3 col-lg-3">
-                    <span class="fw-bold">Durasi:</span> {{ $ujian->time }} Menit
-                </div>
-                <div class="col-12 border p-3 col-lg-3">
-                    <span class="fw-bold">Deadline:</span>
-                    {{ $dueDateTime->translatedFormat('d F Y H:i') }}
-                </div>
-            </div>
-        </div>
+    <div class="border-t border-[#E5E7EB] pt-4 space-y-3">
+      <div class="flex justify-between">
+        <p class="text-[#7F8190] font-medium">Judul</p>
+        <p class="font-semibold text-[#0A090B]">{{ $ujian->name }}</p>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <p class="text-[#7F8190] font-medium">Status</p>
+        @if ($dueDateTime < $now)
+          <span class="font-semibold px-3 py-1 bg-[#FEE2E2] text-[#B91C1C] rounded-full text-sm">Ditutup</span>
+        @else
+          <span class="font-semibold px-3 py-1 bg-[#DCFCE7] text-[#065F46] rounded-full text-sm">Dibuka</span>
+        @endif
+      </div>
+
+      <div class="flex justify-between">
+        <p class="text-[#7F8190] font-medium">Durasi</p>
+        <p class="font-semibold text-[#0A090B]">{{ $ujian->time }} Menit</p>
+      </div>
+
+      <div class="flex justify-between">
+        <p class="text-[#7F8190] font-medium">Deadline</p>
+        <p class="font-semibold text-[#0A090B]">{{ $dueDateTime->translatedFormat('d F Y H:i') }}</p>
+      </div>
     </div>
+  </div>
 
-    <hr>
+  <!-- 🚀 TAMPILAN HASIL ATAU MULAI UJIAN -->
+  @if ($sudahMenjawab)
+  <div class="mt-10 bg-white border border-[#EEEEEE] rounded-2xl shadow-sm p-6 overflow-x-auto">
+    <h3 class="font-bold text-lg text-[#0A090B] mb-4">Hasil Ujian</h3>
+    <table class="min-w-full border-collapse text-sm">
+      <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+        <tr>
+          <th class="py-3 px-4 text-left">#</th>
+          <th class="py-3 px-4 text-left">Soal</th>
+          <th class="py-3 px-4 text-left">Jawaban Anda</th>
+          <th class="py-3 px-4 text-left">Kunci Jawaban</th>
+          <th class="py-3 px-4 text-center">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach ($ujian->soalUjianMultiple as $key)
+          @php
+              $jawaban = $siswaJawaban[$key->id] ?? null;
+              $correct = $key->answer ? $key->answer->firstWhere('is_correct', 1) : null;
+              $isCorrect = $jawaban && $correct && $jawaban->user_jawaban == $correct->jawaban;
+          @endphp
+          <tr class="border-b hover:bg-gray-50">
+            <td class="py-3 px-4">{{ $loop->iteration }}</td>
+            <td class="py-3 px-4 font-medium">{{ $key->soal }}</td>
+            <td class="py-3 px-4">{{ $jawaban ? $jawaban->user_jawaban : '-' }}</td>
+            <td class="py-3 px-4">{{ $correct ? $correct->jawaban : '-' }}</td>
+            <td class="py-3 px-4 text-center">
+              @if ($isCorrect)
+                <span class="px-3 py-1 rounded-full bg-[#DCFCE7] text-[#065F46] font-semibold text-xs">✅ Benar</span>
+              @else
+                <span class="px-3 py-1 rounded-full bg-[#FEE2E2] text-[#B91C1C] font-semibold text-xs">❌ Salah</span>
+              @endif
+            </td>
+          </tr>
+        @endforeach
+      </tbody>
+    </table>
+  </div>
 
-    {{-- Kondisi pengerjaan ujian --}}
-    @php
-        // Ambil semua jawaban siswa untuk ujian ini
-        $siswaJawaban = \App\Models\UserJawaban::where('user_id', auth()->id())
-            ->whereIn('multiple_id', $ujian->soalUjianMultiple->pluck('id'))
-            ->get()
-            ->keyBy('multiple_id');
-
-        $sudahMenjawab = $siswaJawaban->isNotEmpty();
-    @endphp
-
-    @if ($sudahMenjawab)
-        {{-- Jika sudah ada jawaban → tampilkan hasil --}}
-        <div class="mb-4 p-4 bg-white rounded-4 text-center">
-            <h6 class="fw-bold display-6 text-primary mb-4">Hasil Ujian</h6>
-
-            <div class="accordion-body table-responsive p-4">
-                <table id="table" class="table table-striped table-hover table-lg align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Soal</th>
-                            <th>Jawaban Anda</th>
-                            <th>Kunci Jawaban</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($ujian->soalUjianMultiple as $key)
-                            @php
-                                $jawaban = $siswaJawaban[$key->id] ?? null;
-                                $correct = $key->answer ? $key->answer->firstWhere('is_correct', 1) : null;
-                                $isCorrect = $jawaban && $correct && $jawaban->user_jawaban == $correct->jawaban;
-                            @endphp
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td class="text-start">{{ $key->soal }}</td>
-                                <td>{{ $jawaban ? $jawaban->user_jawaban : '-' }}</td>
-                                <td>{{ $correct ? $correct->jawaban : '-' }}</td>
-                                <td>
-                                    @if ($isCorrect)
-                                        <span class="badge bg-success px-3 py-2">✅ Benar</span>
-                                    @else
-                                        <span class="badge bg-danger px-3 py-2">❌ Salah</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    @else
-        {{-- Jika belum ada jawaban → tombol mulai ujian --}}
-        <div class="text-center">
-            <a href="{{ route('ujian.start', $ujian->id) }}" class="btn btn-lg btn-primary px-5 py-3 fw-semibold">
-                Mulai Ujian
-            </a>
-        </div>
-    @endif
+  @else
+  <div class="mt-10 text-center">
+    <a href="{{ route('ujian.start', $ujian->id) }}"
+       class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-[#2B82FE] to-[#4F46E5] text-white font-semibold rounded-full text-lg hover:shadow-[0_4px_15px_0_#2B82FE4D] hover:scale-[1.02] transition">
+      <i class="fa-solid fa-play"></i> Mulai Ujian
+    </a>
+    <p class="text-sm text-[#7F8190] mt-2">Pastikan koneksi internet stabil sebelum memulai</p>
+  </div>
+  @endif
+</div>
 @endsection

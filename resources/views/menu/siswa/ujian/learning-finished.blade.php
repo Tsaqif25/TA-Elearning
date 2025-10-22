@@ -6,9 +6,9 @@
   <title>Finish Test - Digital Marketing 101</title>
 
   <!-- Bootstrap CSS -->
-  {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
-  {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"> --}}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -33,42 +33,21 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="border-bottom">
-    <div class="container d-flex justify-content-between align-items-center py-3">
-      <!-- Left: Course Info -->
-      <div class="d-flex align-items-center gap-3">
-        <div class="rounded-circle overflow-hidden" style="width:50px; height:50px;">
-          <img src="assets/images/thumbnail/Digital-Marketing-101.png" class="img-fluid" alt="thumbnail">
-        </div>
-        <div>
-          <p class="fw-bold mb-0">Digital Marketing 101</p>
-          <small class="text-secondary">Beginners</small>
-        </div>
-      </div>
-      <!-- Right: User Info -->
-      <div class="d-flex align-items-center gap-3">
-        <div class="text-end">
-          <small class="text-secondary d-block">Howdy</small>
-          <span class="fw-semibold">Bondan Poro</span>
-        </div>
-        <div class="rounded-circle overflow-hidden" style="width:46px; height:46px;">
-          <img src="assets/images/photos/default-photo.svg" class="img-fluid" alt="photo">
-        </div>
-      </div>
-    </div>
-  </header>
+
 
   <!-- Congratulations Section -->
-<section class="text-center py-5">
-  <img src="/assets/images/thumbnail/Web-Development-big.png" width="200" class="mb-4">
-  <h2 class="fw-bold mb-2">🎉 Congratulations! You’ve Finished the Test</h2>
-  <p class="text-muted">See your results and improve for the next test.</p>
-  <a href="{{ route('ujian.learning.raport', $ujian->id) }}" class="btn btn-primary mt-3">View Test Result</a>
-</section>
-
+  <section class="d-flex flex-column align-items-center justify-content-center text-center mt-5 mb-4 px-3">
+    <div class="mb-4" style="width:200px; height:200px;">
+      <img src="assets/images/thumbnail/Web-Development-big.png" class="img-fluid" alt="icon">
+    </div>
+    <div class="mb-3" style="max-width:374px;">
+      <h1 class="fw-bold fs-3 mb-2">🎉 Congratulations! <br>You Have Finished Test</h1>
+      <p class="text-secondary">Hopefully you will get a better result to prepare your great future career soon enough</p>
+    </div>
+    <a href="{{ route('ujian.learning.raport', $ujian->id) }}" class="btn btn-purple">View Test Result</a>
+  </section>
 
   <!-- Bootstrap JS -->
-  {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> --}}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

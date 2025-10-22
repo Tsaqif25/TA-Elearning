@@ -3,27 +3,34 @@
 @section('container')
 <section class="container py-5">
 
-  {{-- ✅ Judul Soal --}}
-  <div class="text-center mb-4">
-    <h3 class="fw-bold text-primary">{{ $soal->soal }}</h3>
-  </div>
 
   {{-- ✅ Form Jawaban --}}
-  <form action="{{ route('ujian.answer.store', ['ujian' => $ujian->id, 'soal' => $soal->id]) }}" method="POST" class="mx-auto" style="max-width: 700px;">
-    @csrf
+<form action="{{ route('ujian.answer.store', ['ujian' => $ujian->id, 'soal' => $soal->id]) }}" method="POST" class="learning flex flex-col gap-[50px] items-center mt-[50px] w-full pb-[30px]">
+  @csrf
+  <h1 class="max-w-[800px] font-extrabold text-[40px] sm:text-[46px] leading-[60px] sm:leading-[69px] text-center text-[#0A090B]">
+    {{ $soal->soal }}
+  </h1>
 
+  <div class="flex flex-col gap-[30px] max-w-[750px] w-full">
     @foreach ($soal->answer as $index => $ans)
-      <div class="border rounded-3 p-3 mb-3 d-flex justify-content-between align-items-center">
-        <div>
-          <strong>{{ chr(65 + $index) }}.</strong> {{ $ans->jawaban }}
+      <label for="answer{{ $index }}" class="group flex items-center justify-between rounded-full w-full border border-[#EEEEEE] p-[18px_20px] gap-[14px] transition-all duration-300 has-[:checked]:border-2 has-[:checked]:border-[#0A090B] cursor-pointer">
+        <div class="flex items-center gap-[14px]">
+          <img src="{{ asset('images/icons/arrow-circle-right.svg') }}" alt="icon">
+          <span class="font-semibold text-lg sm:text-xl leading-[30px] text-[#0A090B]">
+            <strong>{{ chr(65 + $index) }}.</strong> {{ $ans->jawaban }}
+          </span>
         </div>
-        <input type="radio" name="answer_id" value="{{ $ans->id }}" required>
-      </div>
+        <div class="hidden group-has-[:checked]:block">
+          <img src="{{ asset('images/icons/tick-circle.svg') }}" alt="icon">
+        </div>
+        <input type="radio" name="answer_id" value="{{ $ans->id }}" id="answer{{ $index }}" class="hidden" required>
+      </label>
     @endforeach
+  </div>
 
-    <div class="text-center mt-4">
-      <button type="submit" class="btn btn-primary px-4 py-2">Simpan & Lanjut</button>
-    </div>
-  </form>
+  <button type="submit" class="w-fit p-[14px_40px] bg-[#6436F1] rounded-full font-bold text-sm sm:text-base text-white transition-all duration-300 hover:shadow-[0_4px_15px_0_#6436F14D] text-center align-middle">
+    Save & Next Question
+  </button>
+</form>
 </section>
 @endsection
