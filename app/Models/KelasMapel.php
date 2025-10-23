@@ -14,14 +14,7 @@ class KelasMapel extends Model
         'mapel_id',
     ];
 
-    // protected $guarded = [
-    //     'id',
-    // ];
 
-    // public function editorAccess()
-    // {
-    //     return $this->hasMany(EditorAccess::class);
-    // }
 public function editorAccess()
 {
     return $this->hasOne(EditorAccess::class);  

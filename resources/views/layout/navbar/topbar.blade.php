@@ -37,7 +37,7 @@
     <!-- Profil & Logout -->
     <div class="flex gap-3 items-center">
       <div class="hidden sm:block text-right">
-        <p class="text-sm text-[#7F8190]">Halo,</p>
+
         <p class="font-semibold">{{ Auth::user()->name }}</p>
       </div>
 

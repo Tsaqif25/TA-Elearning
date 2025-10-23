@@ -6,9 +6,9 @@ use App\Http\Controllers\Tugas\FileController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MapelController;
 use App\Http\Controllers\UjianController;
-use App\Http\Controllers\CourseController;
+
 use App\Http\Controllers\Materi\MateriController;
-use App\Http\Controllers\ProfileController;
+
 use App\Http\Controllers\PengajarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataSiswaController;
@@ -17,7 +17,7 @@ use App\Http\Controllers\Materi\MateriFileController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\LoginRegistController;
 use App\Http\Controllers\AdminRegisterController;
-use App\Http\Controllers\StudentAnswerController;
+
 use App\Http\Controllers\Tugas\TugasFileController;
 use App\Http\Controllers\Tugas\TugasController;
 use App\Http\Controllers\Tugas\TugasSubmitController;
@@ -65,11 +65,6 @@ Route::middleware('auth')->controller(KelasMapelController::class)->group(functi
         Route::get('/activity', 'viewAllActivities')->name('activity');
     });
 
-    // Khusus Pengajar
-    Route::middleware('role:Pengajar')->group(function () {
-        Route::get('/export-nilai-tugas', 'exportNilaiTugas')->name('exportNilaiTugas');
-        Route::get('/export-nilai-ujian', 'exportNilaiUjian')->name('exportNilaiUjian');
-    });
 });
 
     Route::middleware(['auth','role:Pengajar'])
@@ -186,17 +181,7 @@ Route::middleware('auth')->controller(PengumumanController::class)->group(functi
         Route::get('/tugasAdmin', 'viewTugasAdmin')->name('viewTugasAdmin');
     });
 });
-// // ============================
-// // 📌 TugasFileController (soal)
-// // ============================
-// Route::middleware(['auth', 'role:Pengajar'])
-//     ->prefix('tugas/file')
-//     ->name('tugas.file.')
-//     ->controller(TugasFileController::class)
-//     ->group(function () {
-//         Route::post('upload', 'store')->name('uploadFile');         
-//         Route::delete('delete', 'destroy')->name('deleteFile');      
-//     });
+
 Route::middleware(['auth', 'role:Pengajar'])
     ->prefix('tugas')
     ->name('tugas.')
