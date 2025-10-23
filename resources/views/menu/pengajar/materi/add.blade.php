@@ -4,7 +4,7 @@
 
 <div class="flex flex-col w-full p-6 lg:px-10 mt-6 bg-[#FAFAFA] min-h-screen font-poppins">
 
-  <!-- 🧱 Header Kelas -->
+  <!--  Header Kelas -->
   <div class="mb-6">
     <div class="flex items-center gap-4">
       <a href="{{ route('viewKelasMapel', [
@@ -25,10 +25,10 @@
     </div>
   </div>
 
-  <!-- 🧩 Card Form -->
+  <!--  Card Form -->
   <div class="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-8 flex flex-col lg:flex-row gap-6">
 
-    <!-- 📝 Kolom Kiri (Form) -->
+    <!-- Kolom Kiri (Form) -->
     <div class="flex-1">
       <form id="formMateri" action="{{ route('materi.store', $kelasMapel->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
         @csrf
@@ -99,7 +99,7 @@
       </form>
     </div>
 
-    <!-- 📘 Kolom Kanan (Catatan) -->
+    <!--  Kolom Kanan (Catatan) -->
     <div class="lg:w-[30%] bg-gray-50 border border-gray-200 rounded-2xl p-5 h-fit">
       <h3 class="font-bold text-[#0A090B] mb-3 text-sm">CATATAN</h3>
       <ul class="list-disc list-inside text-sm text-[#7F8190] space-y-2">
@@ -114,7 +114,7 @@
 
 
 {{-- ========================== --}}
-{{-- ✅ SCRIPT DROPZONE & TOASTIFY --}}
+{{--  SCRIPT DROPZONE & TOASTIFY --}}
 {{-- ========================== --}}
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>

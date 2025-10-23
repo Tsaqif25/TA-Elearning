@@ -1,4 +1,5 @@
-<div class="flex justify-between items-center p-5 border-b border-[#EEEEEE] bg-white sticky top-0 z-30">
+<div class="flex justify-between items-center p-5 border-b border-[#EEEEEE] bg-white ">
+  <!-- kalau mau fixed pada topbar tambahkan kode : sticky top-0 z-30 -->
   <div class="flex items-center gap-4">
     <!-- Tombol Hamburger (Mobile) -->
     <button class="lg:hidden text-[#2B82FE]" onclick="toggleSidebar()">

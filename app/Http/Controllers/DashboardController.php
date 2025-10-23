@@ -11,7 +11,7 @@ class DashboardController extends Controller
 {
     /**
      * ==========================================================
-     *  DASHBOARD CONTROLLER (VERSI RINGKAS & AMAN)
+     * 
      *  ----------------------------------------------------------
      *  Menentukan tampilan dashboard berdasarkan role pengguna.
      * ==========================================================
@@ -45,7 +45,7 @@ class DashboardController extends Controller
 
     /**
      * ==========================================================
-     *  DASHBOARD ADMIN
+     * 
      *  ----------------------------------------------------------
      *  Menampilkan data statistik global sistem.
      * ==========================================================
@@ -167,9 +167,6 @@ class DashboardController extends Controller
         ->values() // reset index agar rapi
         ->toArray();
 }
-
-
-
 
     /**
      * Mendapatkan daftar kelas yang dimiliki pengguna berdasarkan role.

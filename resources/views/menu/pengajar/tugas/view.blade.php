@@ -15,7 +15,7 @@
     </a>
   </div>
 
-  <!-- 🧾 Detail Tugas -->
+  <!--  Detail Tugas -->
   <div class="bg-white border border-[#EEEEEE] rounded-2xl shadow-sm p-6 space-y-6">
 
     <div class="grid sm:grid-cols-3 gap-4">
@@ -79,7 +79,7 @@
     </div>
   </div>
 
-  <!-- 🧮 Submission Siswa -->
+  <!--  Submission Siswa -->
   <form action="{{ route('siswaUpdateNilai', ['tugas' => $tugas->id]) }}" method="post" class="bg-white border border-[#EEEEEE] rounded-2xl shadow-sm p-6">
     @csrf
     <div class="flex justify-between items-center mb-4">

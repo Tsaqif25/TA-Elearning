@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  <!-- 🔙 Tombol Kembali -->
+  <!--  Tombol Kembali -->
   <div class="mt-6">
     <a href="{{ route('viewKelasMapel', [ 'mapel' => $kelasMapel->mapel->id, 'kelas' => $kelasMapel->kelas->id, 'tab' => 'quiz' ]) }}"
        class="inline-flex items-center gap-2 text-[#7F8190] hover:text-[#0A090B] font-semibold transition">
@@ -38,7 +38,7 @@
     </a>
   </div>
 
-  <!-- 🧑‍🎓 DAFTAR SISWA -->
+  <!--  DAFTAR SISWA -->
   <div class="mt-6 space-y-5">
 
     @forelse ($students as $student)

@@ -2,7 +2,7 @@
 
 @section('container')
 <div class="flex flex-col px-6 lg:px-10 mt-6">
-  <!-- 🧭 Header -->
+  <!--  Header -->
   <div class="mb-6">
     <div class="flex items-center gap-4">
       <a href="{{ route('viewKelasMapel', [ 'mapel' => $kelasMapel->mapel->id, 'kelas' => $kelasMapel->kelas->id, 'tab' => 'tugas' ]) }}" 
@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <!-- 🧩 Form Card -->
+  <!--  Form Card -->
   <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-6 sm:p-8 flex flex-col lg:flex-row gap-8">
 
     <!-- 📝 Kolom Kiri -->
@@ -73,7 +73,7 @@
       </form>
     </div>
 
-    <!-- 📂 Kolom Kanan (File Lama) -->
+    <!--  Kolom Kanan (File Lama) -->
     <div class="lg:w-[30%] bg-gray-50 border border-gray-200 rounded-2xl p-5 h-fit">
       <h3 class="font-bold text-[#0A090B] mb-3 text-sm">File Tugas Saat Ini</h3>
       @if ($tugas->files->count())

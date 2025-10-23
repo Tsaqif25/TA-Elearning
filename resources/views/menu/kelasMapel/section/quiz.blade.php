@@ -2,7 +2,7 @@
   <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-3">
     <h2 class="text-xl font-bold">Daftar Quiz</h2>
 
-    {{-- ✅ Tombol Buat Quiz hanya untuk Pengajar --}}
+    {{--  Tombol Buat Quiz hanya untuk Pengajar --}}
     @if (Auth::user()->hasRole('Pengajar'))
       <a href="{{ route('ujian.create', ['kelasMapel' => $kelasMapel->id]) }}" 
          class="flex items-center gap-2 bg-[#2B82FE] text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:bg-[#1a6ae0] transition">
@@ -36,7 +36,7 @@
 
           {{-- Tombol Aksi --}}
           <div class="flex flex-wrap gap-2 mt-2">
-            {{-- ✅ CRUD hanya untuk Pengajar --}}
+            {{--  CRUD hanya untuk Pengajar --}}
             @if (Auth::user()->hasRole('Pengajar'))
               {{-- Hapus --}}
               <form action="{{ route('ujian.destroy', $ujians->id) }}" method="POST"
@@ -67,7 +67,7 @@
                 <i class="fa-solid fa-chart-line text-[12px]"></i> Hasil
               </a>
             @else
-              {{-- ✅ Untuk siswa, tampilkan tombol Kerjakan atau Hasil --}}
+              {{--  Untuk siswa, tampilkan tombol Kerjakan atau Hasil --}}
               @php
                   $sudahJawab = $ujians->soalUjianMultiple
                       ->flatMap(fn($soal) => $soal->userJawabans ?? [])
