@@ -20,10 +20,10 @@ class MateriFileController extends Controller
         ]);
 
         try {
-            // ✅ Simpan file langsung ke folder public/materi/{id}
+            //  Simpan file langsung ke folder public/materi/{id}
             $path = $validated['file']->store("materi/{$materi->id}", 'public');
 
-            // ✅ Simpan ke database via relasi
+            //  Simpan ke database via relasi
             $materi->files()->create(['file' => basename($path)]);
             return response()->json([
                 'success' => true,
@@ -59,12 +59,12 @@ class MateriFileController extends Controller
 
     $file->delete();
 
-    // 🔁 Kalau request dari AJAX, kirim JSON
+    //  Kalau request dari AJAX, kirim JSON
     if ($request->ajax()) {
         return response()->json(['success' => true, 'message' => 'File berhasil dihapus.']);
     }
 
-    // 🔁 Kalau request dari form biasa, redirect balik
+    //  Kalau request dari form biasa, redirect balik
     return redirect()->back()->with('success', 'File berhasil dihapus.');
 }
 

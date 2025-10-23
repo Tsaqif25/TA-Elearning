@@ -33,14 +33,6 @@
 </div>
 
 </div>
-
-
-
-
-
     
 @endsection
 
-
-
-{{-- Script JavaScript --}}

@@ -19,28 +19,25 @@ class UjianStudentController extends Controller
 {
 public function ujianAccess(Ujian $ujian, Kelas $kelas, Mapel $mapel)
 {
-    // 🔹 Muat semua soal + jawabannya sekaligus agar tidak query berulang di Blade
+    //  Muat semua soal + jawabannya sekaligus agar tidak query berulang di Blade
     $ujian->load('soalUjianMultiple.answer');
 
-    $roles = DashboardController::getRolesName();
-    $assignedKelas = DashboardController::getAssignedClass();
+  
 
-    // 🔹 Ambil SEMUA jawaban siswa dalam 1 query saja
+    //  Ambil SEMUA jawaban siswa dalam 1 query saja
     $siswaJawaban = UserJawaban::where('user_id', Auth::id())
         ->whereIn('multiple_id', $ujian->soalUjianMultiple->pluck('id'))
         ->get()
         ->keyBy('multiple_id'); // -> agar bisa dipanggil langsung di Blade seperti array: $siswaJawaban[$id]
 
-    // 🔹 Cek apakah siswa sudah menjawab minimal 1 soal
+    //  Cek apakah siswa sudah menjawab minimal 1 soal
     $sudahMenjawab = $siswaJawaban->isNotEmpty();
 
-    // 🔹 Kirim ke view
+    //  Kirim ke view
     return view('menu.siswa.ujian.ujianAccess', compact(
         'ujian',
         'kelas',
         'mapel',
-        'roles',
-        'assignedKelas',
         'sudahMenjawab',
         'siswaJawaban'
     ));
@@ -84,7 +81,7 @@ public function storeAnswer(Request $request, Ujian $ujian, SoalUjianMultiple $s
     try {
         $selectedAnswer = SoalUjianAnswer::findOrFail($validated['answer_id']);
 
-        // ✅ Log debug agar tahu ID yang diterima
+        //  Log debug agar tahu ID yang diterima
         Log::info('Jawaban yang dipilih:', [
             'user_id' => Auth::id(),
             'ujian_id' => $ujian->id,
@@ -93,7 +90,7 @@ public function storeAnswer(Request $request, Ujian $ujian, SoalUjianMultiple $s
             'jawaban' => $selectedAnswer->jawaban,
         ]);
 
-        // ✅ Cek apakah sudah menjawab sebelumnya
+        //  Cek apakah sudah menjawab sebelumnya
         $existing = UserJawaban::where('user_id', Auth::id())
             ->where('multiple_id', $soal->id)
             ->first();
@@ -115,7 +112,7 @@ public function storeAnswer(Request $request, Ujian $ujian, SoalUjianMultiple $s
 
         DB::commit();
 
-        // ✅ Redirect ke soal berikutnya
+        //  Redirect ke soal berikutnya
         $nextSoal = SoalUjianMultiple::where('ujian_id', $ujian->id)
             ->where('id', '>', $soal->id)
             ->orderBy('id', 'asc')

@@ -5,7 +5,7 @@
 
 <div class="px-6 py-8 space-y-8">
 
-    {{-- ✅ Alert Success --}}
+    {{--  Alert Success --}}
     @if (session()->has('success'))
         <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-lg flex justify-between items-center">
             <span>{{ session('success') }}</span>
@@ -15,14 +15,14 @@
         </div>
     @endif
 
-    {{-- ✅ Breadcrumb --}}
+    {{--  Breadcrumb --}}
     <nav class="text-sm text-gray-500">
         <ol class="flex items-center space-x-2">
             <li class="text-gray-700 font-medium">Profile</li>
         </ol>
     </nav>
 
-    {{-- ✅ Hero Section --}}
+    {{-- Hero Section --}}
     <div class="bg-gray-50 rounded-2xl p-8 flex flex-col lg:flex-row-reverse items-center justify-between gap-10 border-2 border-black shadow-sm">
         <div class="flex justify-center">
             <img src="{{ url('/asset/img/work.png') }}" alt="Ilustrasi" class="w-52 h-52 object-contain">
@@ -42,7 +42,7 @@
       <span x-text="open ? 'Tutup Daftar Siswa' : 'View Siswa'"></span>
   </button>
 
-  <!-- ✅ Dropdown daftar siswa -->
+  <!--  Dropdown daftar siswa -->
   <div 
       x-show="open" 
       x-transition 
@@ -72,7 +72,7 @@
         </div>
     </div>
 
-    {{-- ✅ Layout 2 Kolom --}}
+    {{--  Layout 2 Kolom --}}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
 
         {{-- Kolom Profil --}}

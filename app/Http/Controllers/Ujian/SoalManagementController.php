@@ -18,13 +18,11 @@ public function show(Ujian $ujian)
     // ambil kelas_mapel (otomatis bawa relasi kelas & mapel lewat accessor di model)
     $kelasMapel = $ujian->kelasMapel;
 
-    // ambil kelas yang diajar guru (opsional, untuk sidebar/dashboard)
-    // $assignedKelas = DashboardController::getAssignedClass();
+
 
     return view('menu.pengajar.ujian.manageSoal', [
         'ujian' => $ujian,
         'kelasMapel' => $kelasMapel,
-        // 'assignedKelas' => $assignedKelas,
         'title' => 'Kelola Soal',
     ]);
 }
@@ -39,8 +37,7 @@ public function createSoal(Ujian $ujian)
     $kelas = $kelasMapel->kelas;
     $mapel = $kelasMapel->mapel;
 
-    // Ambil kelas yang diampu guru (opsional, untuk sidebar/dashboard)
-    // $assignedKelas = DashboardController::getAssignedClass();
+  
 
     // Kirim semua data ke view
     return view('menu.pengajar.ujian.viewTambahSoal', [
@@ -48,7 +45,6 @@ public function createSoal(Ujian $ujian)
         'kelasMapel' => $kelasMapel,
         'kelas' => $kelas,
         'mapel' => $mapel,
-        // 'assignedKelas' => $assignedKelas,
         'title' => 'Tambah Soal',
     ]);
 }
@@ -57,13 +53,10 @@ public function createSoal(Ujian $ujian)
 public function editSoal(Ujian $ujian, SoalUjianMultiple $soal)
 {
     $kelasMapel = $ujian->kelasMapel;
-    // $assignedKelas = DashboardController::getAssignedClass();
-
     return view('menu.pengajar.ujian.viewEditSoal', [
         'ujian' => $ujian,
         'soal' => $soal,
         'kelasMapel' => $kelasMapel,
-        'assignedKelas' => $assignedKelas,
         'title' => 'Edit Soal',
     ]);
 }
@@ -122,10 +115,6 @@ public function destroySoal(Ujian $ujian, SoalUjianMultiple $soal)
 }
 
 
-
-
-
-    
 
     public function storeSoal(Request $request, Ujian $ujian)
 {

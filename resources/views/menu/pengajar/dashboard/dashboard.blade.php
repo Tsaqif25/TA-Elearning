@@ -10,14 +10,14 @@
     <p class="text-[#7F8190]">Selesaikan semua pembelajaran untuk berkembang</p>
   </div>
 
-  <!-- 🔹 Stats Cards -->
+  <!--  Stats Cards -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     <!-- Total Siswa -->
     <div class="bg-white p-5 rounded-2xl border border-[#EEEEEE] hover:shadow-md transition-all duration-300">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-[#7F8190] text-sm">Total Siswa</p>
-          <p class="text-3xl font-bold mt-1">{{ $jumlahSiswa ?? 0 }}</p>
+          <p class="text-3xl font-bold mt-1"> {{ $totalSiswa  ?? 0 }}</p>
         </div>
         <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -33,7 +33,7 @@
       <div class="flex items-center justify-between">
         <div>
           <p class="text-[#7F8190] text-sm">Total Mapel</p>
-          <p class="text-3xl font-bold mt-1">{{ $jumlahMapel ?? 0 }}</p>
+          <p class="text-3xl font-bold mt-1">{{ $totalMapel  ?? 0 }}</p>
         </div>
         <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -49,7 +49,7 @@
       <div class="flex items-center justify-between">
         <div>
           <p class="text-[#7F8190] text-sm">Total Kelas</p>
-          <p class="text-3xl font-bold mt-1">{{ $jumlahKelas ?? 0 }}</p>
+          <p class="text-3xl font-bold mt-1">{{ $totalKelas?? 0 }}</p>
         </div>
         <div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -61,8 +61,8 @@
     </div>
   </div>
 
-  <!-- 🧩 Kelas yang Diajar -->
-<!-- 🧩 Kelas yang Diajar -->
+  
+<!--  Kelas yang Diajar -->
   <div class="bg-white rounded-2xl border border-[#EEEEEE] p-4 sm:p-6">
     <h2 class="font-bold text-lg sm:text-xl mb-4">Kelas yang Diajar</h2>
 

@@ -11,13 +11,13 @@ class CreatePengajar extends CreateRecord
 
     protected function afterCreate(): void
     {
-        // ✅ Tambahkan role "Pengajar" secara otomatis
+        //  Tambahkan role "Pengajar" secara otomatis
         $this->record->assignRole('Pengajar');
     }
 
     protected function getRedirectUrl(): string
     {
-        // ✅ Redirect kembali ke index, bukan ke edit
+        //  Redirect kembali ke index, bukan ke edit
         return $this->getResource()::getUrl('index');
     }
 }

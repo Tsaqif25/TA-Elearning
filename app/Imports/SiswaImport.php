@@ -17,7 +17,7 @@ class SiswaImport implements ToModel, WithStartRow
             return null;
         }
 
-        // ✅ Ambil data dengan urutan kolom Excel:
+        //  Ambil data dengan urutan kolom Excel:
         // [0] No | [1] Nama | [2] Kelas | [3] NIS | [4] No Telp
         $nama    = trim($row[1]);
         $kelasNm = trim($row[2] ?? '');
@@ -40,7 +40,7 @@ class SiswaImport implements ToModel, WithStartRow
             'name'      => $nama,
             'kelas_id'  => $kelasId,
             'nis'       => $nis,
-            'no_telp'   => $noTelp,   // ✅ tambahkan ini
+            'no_telp'   => $noTelp,   //  tambahkan ini
         ];
 
         if ($siswa) {

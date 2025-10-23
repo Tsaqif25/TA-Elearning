@@ -14,8 +14,6 @@ public function getFile($namaFile)
         abort(404, 'File tidak ditemukan');
     }
 
-    // tampilkan langsung di browser (inline)
-    // return response()->file($path);
 
     // kalau mau paksa download pakai:
      return response()->download($path, basename($path));

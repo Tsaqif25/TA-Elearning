@@ -12,7 +12,7 @@ class UjianEvaluationController extends Controller
     public function listStudent(Ujian $ujian)
     {
             $kelasMapel = $ujian->kelasMapel;
-        $assignedKelas = DashboardController::getAssignedClass();
+    
 
         // 🔹 Ambil hanya siswa dari kelas yang ikut ujian
         $students = $ujian->kelasMapel->kelas->users()
@@ -52,7 +52,6 @@ class UjianEvaluationController extends Controller
         return view('menu.pengajar.ujian.hasilUjianSiswa', [
             'ujian' => $ujian,
             'students' => $students,
-            'assignedKelas' => $assignedKelas,
             'kelasMapel' => $kelasMapel
         ]);
     }

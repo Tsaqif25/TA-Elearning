@@ -12,27 +12,27 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
-use Maatwebsite\Excel\Concerns\SkipsEmptyRows; // ✅ Tambahkan ini
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows; //  Tambahkan ini
 
 class PengajarImport implements ToModel, WithStartRow, SkipsEmptyRows
 {
     public function model(array $row)
     {
         try {
-            // ✅ Filter baris yang semua kolomnya null/kosong
+            //  Filter baris yang semua kolomnya null/kosong
             if ($this->isRowEmpty($row)) {
                 return null;
             }
 
             DB::beginTransaction();
 
-            // 🚨 Periksa jumlah kolom minimal
+            //  Periksa jumlah kolom minimal
             if (count($row) < 8) {
                 Log::warning('⚠️ Jumlah kolom tidak sesuai. Ditemukan: ' . count($row));
                 return null;
             }
 
-            // 🚨 Periksa nama & email
+            //  Periksa nama & email
             $nama = trim($row[1] ?? '');
             $email = trim($row[2] ?? '');
 
@@ -41,7 +41,7 @@ class PengajarImport implements ToModel, WithStartRow, SkipsEmptyRows
                 return null;
             }
 
-            // 📋 Ambil semua kolom
+            //  Ambil semua kolom
             $data = [
                 'nama'     => $nama,
                 'email'    => $email,
@@ -52,7 +52,7 @@ class PengajarImport implements ToModel, WithStartRow, SkipsEmptyRows
                 'mapel'    => trim($row[7] ?? ''),
             ];
 
-            // 🔹 Buat / update user
+            //  Buat / update user
             $user = User::updateOrCreate(
                 ['email' => $data['email']],
                 [
@@ -62,7 +62,7 @@ class PengajarImport implements ToModel, WithStartRow, SkipsEmptyRows
             );
             $user->assignRole('Pengajar');
 
-            // 🔹 Buat relasi kelas_mapel jika ada
+            //  Buat relasi kelas_mapel jika ada
             $kelasMapelId = null;
 
             if (!empty($data['kelas']) && !empty($data['mapel'])) {
@@ -77,7 +77,7 @@ class PengajarImport implements ToModel, WithStartRow, SkipsEmptyRows
                 $kelasMapelId = $kelasMapel->id;
             }
 
-            // 🔹 Buat editor access
+            //  Buat editor access
             EditorAccess::updateOrCreate(
                 [
                     'user_id' => $user->id,
@@ -90,7 +90,7 @@ class PengajarImport implements ToModel, WithStartRow, SkipsEmptyRows
             );
 
             DB::commit();
-            Log::info('✅ Import berhasil untuk: ' . $data['email']);
+            Log::info(' Import berhasil untuk: ' . $data['email']);
 
             return $user;
         } catch (\Exception $e) {
@@ -101,7 +101,7 @@ class PengajarImport implements ToModel, WithStartRow, SkipsEmptyRows
     }
 
     /**
-     * ✅ Helper untuk cek apakah baris benar-benar kosong
+     *  Helper untuk cek apakah baris benar-benar kosong
      */
     private function isRowEmpty(array $row): bool
     {

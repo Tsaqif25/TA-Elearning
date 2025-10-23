@@ -95,15 +95,9 @@ return view('menu.pengajar.tugas.view', compact(
         $kelasMapel->load(['kelas', 'mapel']);
 
 
-
-        // Siapkan variabel dulu
-        // $assignedKelas = DashboardController::getAssignedClass();
-        // $roles         = DashboardController::getRolesName();
         $title = 'Tambah Tugas';
-        // $kelasId       = $kelas->id;
 
         return view('menu.pengajar.tugas.add', [
-            // 'assignedKelas' => $assignedKelas,
             'title' => $title,
             'kelasMapel' => $kelasMapel,
             'tab' => 'tugas',
@@ -115,18 +109,12 @@ return view('menu.pengajar.tugas.view', compact(
     public function viewUpdateTugas(Tugas $tugas)
     {
         $kelasMapel = $tugas->kelasMapel;
-
-        // Siapkan variabel yang akan dikirim ke view
-        // $assignedKelas = DashboardController::getAssignedClass();
         $title = 'Update Tugas';
-        // $roles         = DashboardController::getRolesName();
         $kelasId = $kelasMapel->kelas_id;
         $mapel = $kelasMapel->mapel;
 
         return view('menu.pengajar.tugas.edit', [
-            // 'assignedKelas' => $assignedKelas,
             'title' => $title,
-            // 'roles'      => $roles,
             'tugas' => $tugas,
             'kelasId' => $kelasId,
             'mapel' => $mapel,
@@ -152,7 +140,6 @@ return view('menu.pengajar.tugas.view', compact(
                 'name' => $request->name,
                 'content' => $request->input('content'),
                 'due' => $due,
-                // 'isHidden' => $request->has('opened') ? 0 : 1,
             ]);
 
             //  Jika request dari AJAX (Dropzone)
@@ -163,7 +150,6 @@ return view('menu.pengajar.tugas.view', compact(
                 ]);
             }
 
-            //  Jika bukan AJAX, redirect seperti biasa
             return redirect()->route('viewKelasMapel', [
                 'mapel' => $kelasMapel->mapel_id,
                 'kelas' => $kelasMapel->kelas_id,

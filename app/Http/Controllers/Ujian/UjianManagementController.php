@@ -32,8 +32,6 @@ class UjianManagementController extends Controller
     {
         $kelasMapel->load(['kelas', 'mapel']);
         return view('menu.pengajar.ujian.viewTambahUjian', [
-            // 'assignedKelas' => DashboardController::getAssignedClass(),
-            // 'roles' => DashboardController::getRolesName(),
             'kelasMapel' => $kelasMapel,
             'title' => 'Tambah Ujian',
             'tipe' => $request->type,
@@ -74,7 +72,6 @@ class UjianManagementController extends Controller
 
         return view('menu.pengajar.ujian.viewUpdateUjian', [
             'ujian' => $ujian,
-            // 'assignedKelas' => DashboardController::getAssignedClass(),
             'kelasMapel' => $kelasMapel,
         ]);
     }
