@@ -32,22 +32,22 @@ if (!$kelasMapel) {
 
 $mapel        = $kelasMapel->mapel;
 $kelas        = $kelasMapel->kelas;
-$roles        = DashboardController::getRolesName();
+
 $editorAccess = $kelasMapel->editorAccess()->first();
 $tugasAll     = Tugas::where('kelas_mapel_id', $kelasMapel->id)->get();
 $userTugas    = UserTugas::where('tugas_id', $tugas->id)
                             ->where('user_id', auth()->id())
                             ->first();
-$assignedKelas = DashboardController::getAssignedClass();
+
 $title        = $tugas->name;
 
 return view('menu.pengajar.tugas.view', compact(
     'userTugas',
-    'assignedKelas',
+ 
     'tugas',
     'kelas',
     'title',
-    'roles',
+  
     'tugasAll',
     'mapel',
     'kelasMapel',
@@ -97,13 +97,13 @@ return view('menu.pengajar.tugas.view', compact(
 
 
         // Siapkan variabel dulu
-        $assignedKelas = DashboardController::getAssignedClass();
+        // $assignedKelas = DashboardController::getAssignedClass();
         // $roles         = DashboardController::getRolesName();
         $title = 'Tambah Tugas';
         // $kelasId       = $kelas->id;
 
         return view('menu.pengajar.tugas.add', [
-            'assignedKelas' => $assignedKelas,
+            // 'assignedKelas' => $assignedKelas,
             'title' => $title,
             'kelasMapel' => $kelasMapel,
             'tab' => 'tugas',
@@ -117,14 +117,14 @@ return view('menu.pengajar.tugas.view', compact(
         $kelasMapel = $tugas->kelasMapel;
 
         // Siapkan variabel yang akan dikirim ke view
-        $assignedKelas = DashboardController::getAssignedClass();
+        // $assignedKelas = DashboardController::getAssignedClass();
         $title = 'Update Tugas';
         // $roles         = DashboardController::getRolesName();
         $kelasId = $kelasMapel->kelas_id;
         $mapel = $kelasMapel->mapel;
 
         return view('menu.pengajar.tugas.edit', [
-            'assignedKelas' => $assignedKelas,
+            // 'assignedKelas' => $assignedKelas,
             'title' => $title,
             // 'roles'      => $roles,
             'tugas' => $tugas,

@@ -17,8 +17,8 @@ class MateriController extends Controller
     
         $kelasMapel->load(['kelas', 'mapel']);
         // Ambil assigned kelas 
-        $assignedKelas = DashboardController::getAssignedClass();
-       return view('menu.pengajar.materi.add', compact('kelasMapel', 'assignedKelas'))
+        // $assignedKelas = DashboardController::getAssignedClass();
+       return view('menu.pengajar.materi.add', compact('kelasMapel'))
        ->with('title', 'Tambah Materi');
 
     }
@@ -55,12 +55,12 @@ class MateriController extends Controller
         $materi->load(['kelasMapel.kelas', 'kelasMapel.mapel']);
         
         // Ambil assigned kelas untuk sidebar
-        $assignedKelas = DashboardController::getAssignedClass();
+        // $assignedKelas = DashboardController::getAssignedClass();
         
         return view('menu.pengajar.materi.edit', [
             'materi' => $materi,
             'kelasMapel' => $materi->kelasMapel,
-            'assignedKelas' => $assignedKelas,
+            // 'assignedKelas' => $assignedKelas,
             'title' => 'Update Materi'
         ]);
     }
@@ -112,7 +112,7 @@ public function show(Materi $materi)
     $editor = $materi->kelasMapel->editorAccess->first()?->user;
 
     // Ambil assigned kelas untuk sidebar
-    $assignedKelas = DashboardController::getAssignedClass();
+    // $assignedKelas = DashboardController::getAssignedClass();
 
     $kelasMapel = $materi->kelasMapel; 
     $title = $materi->name; 
@@ -122,7 +122,7 @@ public function show(Materi $materi)
         'materiAll',
         'editor',
         'kelasMapel',
-        'assignedKelas',
+        // 'assignedKelas',
         'title'
     ));
 }

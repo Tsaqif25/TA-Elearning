@@ -29,7 +29,7 @@ class TugasSubmitController extends Controller
             ->where('user_id', auth()->id())
             ->first();
         $title = $tugas->name;
-        $assignedKelas = DashboardController::getAssignedClass();
+        // $assignedKelas = DashboardController::getAssignedClass();
 
         return view('menu.siswa.tugas.uploadtugas', compact(
             'tugas',

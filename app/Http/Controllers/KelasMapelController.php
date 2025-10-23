@@ -78,7 +78,7 @@ public function viewKelasMapel(Mapel $mapel, Kelas $kelas)
     'materi'        => $kelasMapel->materi, 
     'tugas'         => $kelasMapel->tugas,  
     'ujian'         => $kelasMapel->ujian,  
-    'assignedKelas' => DashboardController::getAssignedClass(),
+    // 'assignedKelas' => DashboardController::getAssignedClass(),
     'editor'        => optional($kelasMapel->editorAccess?->user)->only('id', 'name'),
     'title'         => "{$kelas->name} — {$mapel->name}",
     'kelas'         => $kelas,

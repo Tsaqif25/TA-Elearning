@@ -94,7 +94,7 @@ class DashboardController extends Controller
             'jumlahKelas' => $kelasIds->count(),
             'jumlahMapel' => $mapelIds->count(),
             'jumlahSiswa' => DataSiswa::whereIn('kelas_id', $kelasIds)->count(),
-            'assignedKelas' => self::getAssignedClass(), // masih aman
+            // 'assignedKelas' => self::getAssignedClass(), // masih aman
             'kelasDanMapel' => $kelasMapel->map(fn($item) => [
                 'kelas_id' => $item->kelasMapel->kelas?->id,
                 'kelas_nama' => $item->kelasMapel->kelas?->name,
@@ -172,19 +172,19 @@ class DashboardController extends Controller
      * Mendapatkan daftar kelas yang dimiliki pengguna berdasarkan role.
      * (versi aman tanpa getPengajarKelas dan getSiswaKelas)
      */
-   public static function getAssignedClass(): ?array
-    {
-        $user = Auth::user();
-        if (!$user) return [];
+//    public static function getAssignedClass(): ?array
+//     {
+//         $user = Auth::user();
+//         if (!$user) return [];
 
-        if ($user->hasRole('Admin')) {
-            return null;
-        } elseif ($user->hasRole('Pengajar')) {
-            return [];
-        } elseif ($user->hasRole('Siswa')) {
-            return [];
-        } else {
-            return [];
-        }
-    }
+//         if ($user->hasRole('Admin')) {
+//             return null;
+//         } elseif ($user->hasRole('Pengajar')) {
+//             return [];
+//         } elseif ($user->hasRole('Siswa')) {
+//             return [];
+//         } else {
+//             return [];
+//         }
+//     }
 }
