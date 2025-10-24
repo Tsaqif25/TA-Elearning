@@ -118,17 +118,7 @@
                   <span class="text-gray-500 italic">Belum upload</span>
                 @endif
               </td>
-              {{-- <td class="py-3 px-4">
-                @if ($userTugas)
-                  @if ($userTugas->status == 'Telah dinilai')
-                    <span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-700 font-semibold">Sudah Upload</span>
-                  @else
-                    <span class="px-3 py-1 rounded-full text-xs bg-gray-200 text-gray-700 font-semibold">Belum Dinilai</span>
-                  @endif
-                @else
-                  <span class="px-3 py-1 rounded-full text-xs bg-red-100 text-red-700 font-semibold">Belum Mengerjakan</span>
-                @endif
-              </td> --}}
+            
               <td class="py-3 px-4 text-center text-gray-800 font-semibold">{{ $nilai ?? '-' }}</td>
               <td class="py-3 px-4 text-center">
                 <input type="hidden" name="siswaId[]" value="{{ $siswa->id }}">

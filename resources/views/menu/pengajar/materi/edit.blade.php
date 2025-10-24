@@ -61,8 +61,7 @@
           <label class="block text-sm font-semibold text-gray-800 mb-2">Upload File Baru</label>
           <div id="my-dropzone" class="dropzone border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 rounded-xl p-10 text-center cursor-pointer transition">
             <i class="fa-solid fa-cloud-arrow-up text-4xl text-[#2B82FE] mb-3"></i>
-            <p class="text-sm text-gray-600 font-medium">Seret file ke sini atau klik untuk mengunggah</p>
-            <p class="text-xs text-gray-400 mt-1">Format: PDF, DOCX, PPTX, ZIP</p>
+     
           </div>
         </div>
 

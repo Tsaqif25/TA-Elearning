@@ -11,26 +11,34 @@ use Illuminate\Support\Facades\Storage;
 class MateriFileController extends Controller
 {
     /**
-     * Upload file untuk materi.
+     * Upload file materi (via Dropzone / AJAX)
      */
     public function store(Request $request, Materi $materi)
     {
-        $validated = $request->validate([
-            'file' => ['required', 'file', 'max:10240'], // 10MB
+        //  Validasi input
+        $request->validate([
+            'file' => 'required|file|max:10240', // max 10 MB
         ]);
 
         try {
-            //  Simpan file langsung ke folder public/materi/{id}
-            $path = $validated['file']->store("materi/{$materi->id}", 'public');
+            // Simpan file ke storage/public/materi/{id_materi}
+            $file = $request->file('file');
+            $path = $file->store("materi/{$materi->id}", 'public');
 
-            //  Simpan ke database via relasi
-            $materi->files()->create(['file' => basename($path)]);
+            //  Simpan nama file ke tabel materi_files via relasi
+            $materi->files()->create([
+                'file' => basename($path)
+            ]);
+
+            //  Response untuk Dropzone
             return response()->json([
                 'success' => true,
                 'message' => 'File berhasil diunggah!',
-                'path' => $path,
-            ]);
+                'path' => $path
+            ], 200);
+
         } catch (\Throwable $e) {
+            //  Tangani error upload
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal upload file: ' . $e->getMessage(),
@@ -39,33 +47,46 @@ class MateriFileController extends Controller
     }
 
     /**
-     * Hapus file dari materi.
+     * Hapus file materi
      */
- public function destroy(Request $request, Materi $materi)
-{
-    $validated = $request->validate([
-        'file_id' => ['required', 'integer', 'exists:materi_files,id'],
-    ]);
+    public function destroy(Request $request, Materi $materi)
+    {
+        // Validasi ID file
+        $request->validate([
+            'file_id' => 'required|integer|exists:materi_files,id',
+        ]);
 
-    $file = $materi->files()->find($validated['file_id']);
+        //   Cari file yang terhubung dengan materi ini
+        $file = $materi->files()->find($request->file_id);
 
-    if (!$file) {
-        return back()->with('error', 'File tidak ditemukan.');
+        //  Pastikan file benar-benar milik materi tersebut
+        if (!$file) {
+            return $this->responseError('File tidak ditemukan.');
+        }
+
+        //  Hapus dari storage jika file ada
+        $filePath = "materi/{$materi->id}/{$file->file}";
+        if (Storage::disk('public')->exists($filePath)) {
+            Storage::disk('public')->delete($filePath);
+        }
+
+        //  Hapus dari database
+        $file->delete();
+
+        //  Kembalikan respon sesuai jenis request
+        return $request->ajax()
+            ? response()->json(['success' => true, 'message' => 'File berhasil dihapus.'])
+            : back()->with('success', 'File berhasil dihapus.');
     }
 
-    if (Storage::disk('public')->exists($file->file)) {
-        Storage::disk('public')->delete($file->file);
+    /**
+     * Helper untuk respon error
+     */
+    private function responseError(string $message)
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message
+        ], 404);
     }
-
-    $file->delete();
-
-    //  Kalau request dari AJAX, kirim JSON
-    if ($request->ajax()) {
-        return response()->json(['success' => true, 'message' => 'File berhasil dihapus.']);
-    }
-
-    //  Kalau request dari form biasa, redirect balik
-    return redirect()->back()->with('success', 'File berhasil dihapus.');
-}
-
 }

@@ -1,6 +1,6 @@
 @extends('layout.template.mainTemplate')
 
-@section('title', 'Detail Materi | AnggaCBT')
+@section('title', 'Detail Materi')
 
 @section('container')
 <div class="flex flex-col w-full bg-[#FAFAFA] font-poppins">
@@ -81,36 +81,62 @@
 
 
     <!-- Video -->
-    @if ($materi->youtube_link)
-    <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-5 sm:p-6">
-      <h2 class="text-base sm:text-lg font-semibold mb-3">Video Pembelajaran</h2>
-      @php
-        $links = preg_split("/(\r\n|\r|\n)/", trim($materi->youtube_link));
-        $links = array_filter($links);
-      @endphp
-      @foreach ($links as $link)
-        @php
-          $link = trim($link);
-          $cleanLink = preg_replace('/\?.*/', '', $link);
-          if (str_contains($cleanLink, 'youtu.be/')) {
-            $embedLink = str_replace('youtu.be/', 'www.youtube.com/embed/', $cleanLink);
-          } elseif (str_contains($cleanLink, 'watch?v=')) {
-            $embedLink = str_replace('watch?v=', 'embed/', $cleanLink);
-          } else {
-            $embedLink = $cleanLink;
-          }
-        @endphp
+@if ($materi->youtube_link)
+  <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-5 sm:p-6">
+    <h2 class="text-base sm:text-lg font-semibold mb-3">Video Pembelajaran</h2>
 
-        <div class="aspect-video rounded-xl overflow-hidden mb-5">
-          <iframe class="w-full h-full rounded-xl"
-                  src="{{ $embedLink }}"
-                  title="YouTube video player" frameborder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen></iframe>
-        </div>
-      @endforeach
-    </div>
-    @endif
+    @php
+      //  Pisahkan per baris
+      $links = preg_split("/(\r\n|\r|\n)/", trim($materi->youtube_link));
+      $links = array_filter($links);
+
+      //  Fungsi helper untuk ubah ke embed
+      function toEmbed($url) {
+          $url = trim($url);
+          $url = preg_replace('/\?.*/', '', $url); // hapus query (?si= dsb)
+
+          // Normalisasi (hapus spasi dan trailing slash)
+          $url = rtrim($url, '/');
+
+          //  youtu.be/xxxxxx
+          if (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)/', $url, $match)) {
+              return 'https://www.youtube.com/embed/' . $match[1];
+          }
+
+          //  youtube.com/watch?v=xxxxxx
+          if (preg_match('/v=([a-zA-Z0-9_-]+)/', $url, $match)) {
+              return 'https://www.youtube.com/embed/' . $match[1];
+          }
+
+          //  youtube.com/shorts/xxxxxx
+          if (preg_match('/shorts\/([a-zA-Z0-9_-]+)/', $url, $match)) {
+              return 'https://www.youtube.com/embed/' . $match[1];
+          }
+
+          //  Sudah embed? biarkan
+          if (str_contains($url, 'embed/')) {
+              return $url;
+          }
+
+          //  Format tidak dikenali → kembalikan aslinya
+          return $url;
+      }
+    @endphp
+
+    {{--  Tampilkan semua video --}}
+    @foreach ($links as $link)
+      @php $embedLink = toEmbed($link); @endphp
+      <div class="aspect-video rounded-xl overflow-hidden mb-5">
+        <iframe class="w-full h-full rounded-xl"
+                src="{{ $embedLink }}"
+                title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+      </div>
+    @endforeach
+  </div>
+@endif
+
   </div>
 </div>
 @endsection

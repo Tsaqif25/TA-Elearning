@@ -16,9 +16,7 @@ protected $fillable = [
     'youtube_link'
 ];
 
-// protected $guarded = [
-//     'id',
-// ];
+
 
 public function kelasMapel()
 {

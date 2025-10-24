@@ -4,36 +4,43 @@ namespace App\Http\Controllers\Materi;
 
 use App\Models\Materi;
 use App\Models\KelasMapel;
-use App\Models\MateriFile;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Controllers\DashboardController;
+
 
 class MateriController extends Controller
 {
-    public function create(KelasMapel $kelasMapel)
+ public function create(KelasMapel $kelasMapel)
     {
-    
-        $kelasMapel->load(['kelas', 'mapel']);
-       return view('menu.pengajar.materi.add', compact('kelasMapel'))
-       ->with('title', 'Tambah Materi');
+        // Ambil data kelas dan mapel langsung
+        $kelas = $kelasMapel->kelas;
+        $mapel = $kelasMapel->mapel;
 
+        return view('menu.pengajar.materi.add', [
+            'kelasMapel' => $kelasMapel,
+            'kelas' => $kelas,
+            'mapel' => $mapel,
+            'title' => 'Tambah Materi'
+        ]);
     }
+
     public function store(Request $request, KelasMapel $kelasMapel)
     {
         $validated = $request->validate([
-            'name' => 'required',
-            'content' => 'required',
-       'youtube_link' => 'nullable|string',
+            'name' => 'required|string',
+            'content' => 'required|string',
+            'youtube_link' => 'nullable',
         ]);
+
         $materi = Materi::create([
             'kelas_mapel_id' => $kelasMapel->id,
             'name' => $validated['name'],
-            'content' => $validated['content'] ?? null,
+            'content' => $validated['content'],
             'youtube_link' => $validated['youtube_link'] ?? null,
         ]);
-        // Return JSON untuk AJAX
+
+        // Jika via AJAX (Dropzone)
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
@@ -41,19 +48,26 @@ class MateriController extends Controller
                 'materi_id' => $materi->id
             ]);
         }
+
+        // Redirect biasa
         return redirect()->route('viewKelasMapel', [
             'mapel' => $kelasMapel->mapel_id,
             'kelas' => $kelasMapel->kelas_id,
-              'tab'   => 'materi'
+            'tab'   => 'materi'
         ])->with('success', 'Materi berhasil ditambahkan!');
     }
+
     public function edit(Materi $materi)
     {
-        // Load relasi
-        $materi->load(['kelasMapel.kelas', 'kelasMapel.mapel']);
-             return view('menu.pengajar.materi.edit', [
+        $kelasMapel = $materi->kelasMapel;
+        $kelas = $kelasMapel->kelas;
+        $mapel = $kelasMapel->mapel;
+
+        return view('menu.pengajar.materi.edit', [
             'materi' => $materi,
-            'kelasMapel' => $materi->kelasMapel,
+            'kelasMapel' => $kelasMapel,
+            'kelas' => $kelas,
+            'mapel' => $mapel,
             'title' => 'Update Materi'
         ]);
     }
@@ -63,15 +77,10 @@ class MateriController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'content' => 'required|string',
-             'youtube_link' => 'nullable|string',
+            'youtube_link' => 'nullable|string',
         ]);
 
-        $materi->update([
-            'kelas_mapel_id' => $materi->kelas_mapel_id, 
-            'name' => $validated['name'],
-            'content' => $validated['content'],
-            'youtube_link' => $validated['youtube_link'] ?? null,
-        ]);
+        $materi->update($validated);
 
         if ($request->ajax()) {
             return response()->json([
@@ -81,41 +90,38 @@ class MateriController extends Controller
             ]);
         }
 
+        $kelasMapel = $materi->kelasMapel;
+
         return redirect()->route('viewKelasMapel', [
-            'mapel' => $materi->kelasMapel->mapel_id,
-            'kelas' => $materi->kelasMapel->kelas_id,
-             'tab'   => 'materi'
+            'mapel' => $kelasMapel->mapel_id,
+            'kelas' => $kelasMapel->kelas_id,
+            'tab'   => 'materi'
         ])->with('success', 'Materi berhasil diperbarui!');
     }
 
-public function show(Materi $materi)
-{
-    // Load relasi
-    $materi->load([
-        'kelasMapel.kelas',
-        'kelasMapel.mapel',
-        'kelasMapel.editorAccess.user',
-    ]);
-    // Ambil semua materi di kelas mapel yang sama
-    $materiAll = Materi::where('kelas_mapel_id', $materi->kelas_mapel_id)
-        ->orderBy('created_at', 'asc')
-        ->get();
+    public function show(Materi $materi)
+    {
+        $kelasMapel = $materi->kelasMapel;
+        $kelas = $kelasMapel->kelas;
+        $mapel = $kelasMapel->mapel;
+        $editor = optional($kelasMapel->editorAccess->first())->user;
 
-    // Ambil data pengajar
-    $editor = $materi->kelasMapel->editorAccess->first()?->user;
-    $kelasMapel = $materi->kelasMapel; 
-    $title = $materi->name; 
+        $materiAll = Materi::where('kelas_mapel_id', $kelasMapel->id)
+            ->orderBy('created_at', 'asc')
+            ->get();
 
-    return view('menu.pengajar.materi.view', compact(
-        'materi',
-        'materiAll',
-        'editor',
-        'kelasMapel',
-        // 'assignedKelas',
-        'title'
-    ));
-}
-  public function destroy(Materi $materi)
+        return view('menu.pengajar.materi.view', [
+            'title' => $materi->name,
+            'materi' => $materi,
+            'materiAll' => $materiAll,
+            'kelasMapel' => $kelasMapel,
+            'kelas' => $kelas,
+            'mapel' => $mapel,
+            'editor' => $editor,
+        ]);
+    }
+
+public function destroy(Materi $materi)
 {
     $kelasMapel = $materi->kelasMapel;
     $materi->delete();
@@ -126,5 +132,4 @@ public function show(Materi $materi)
         'tab'   => 'materi'
     ])->with('success', 'Materi berhasil dihapus!');
 }
-
 }
