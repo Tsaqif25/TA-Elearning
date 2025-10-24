@@ -22,6 +22,8 @@ class DashboardController extends Controller
 
         if ($user->hasRole('Admin')) {
             return $this->adminDashboard();
+                } elseif ($user->hasRole('Wakur')) {
+            return $this->pengajarDashboard(); 
         } elseif ($user->hasRole('Pengajar')) {
             return $this->pengajarDashboard();
         } elseif ($user->hasRole('Siswa')) {

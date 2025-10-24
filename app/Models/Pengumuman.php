@@ -8,14 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Pengumuman extends Model
 {
     use HasFactory;
+       protected $table = 'pengumumans';
     protected $fillable = [
-        'kelas_mapel_id',
-        'name',
-        'content',
-        // 'isHidden',
+        'user_id',
+        'judul',
+        'isi',
+        'lampiran',
+        'published_at',
     ];
 
-    protected $guarded = [
-        'id',
-    ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -94,7 +94,7 @@ public function dataSiswa()
       public function canAccessPanel(\Filament\Panel $panel): bool
     {
         // Hanya Admin & Pengajar yang boleh masuk ke /admin
-        return $this->hasRole(['Admin', 'Pengajar']);
+         return $this->hasRole(['Admin', 'Pengajar', 'Wakur']);
     }
 
 

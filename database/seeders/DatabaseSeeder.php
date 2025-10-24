@@ -25,5 +25,16 @@ class DatabaseSeeder extends Seeder
             // Assign role Admin
             $admin->assignRole('Admin');
         }
+
+        // Tambah user wakur default
+if (!User::where('email', 'wakur@example.com')->exists()) {
+    $wakur = User::create([
+        'name' => 'Wakil Kurikulum',
+        'email' => 'wakur@example.com',
+        'password' => Hash::make('password'),
+    ]);
+    $wakur->assignRole('Wakur');
+}
+
     }
 }
