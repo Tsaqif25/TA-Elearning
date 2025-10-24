@@ -1,8 +1,7 @@
 <div id="content-materi" class="tab-content block p-6">
   <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-3">
-    <h2 class="text-xl font-bold">Daftar Materi</h2>
+    <h2 class="text-xl font-bold text-[#0A090B]">Daftar Materi</h2>
 
-    {{-- Tombol Tambah hanya untuk Pengajar --}}
     @if (Auth::user()->hasRole('Pengajar'))
       <a href="{{ route('materi.create', ['kelasMapel' => $kelasMapel->id]) }}"
          class="flex items-center gap-2 bg-[#2B82FE] text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:bg-[#1a6ae0] transition">
@@ -11,38 +10,49 @@
     @endif
   </div>
 
-  {{-- Jika Belum Ada Materi --}}
   @if ($materi->isEmpty())
     <p class="text-center text-[#7F8190] py-6">Belum ada materi yang ditambahkan.</p>
   @else
-    <!-- Daftar Card Materi -->
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      @forelse ($materi as $materis)
-        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-          <div class="flex justify-between items-start mb-3">
-            <h3 class="font-semibold text-gray-800 text-lg leading-snug">{{ $materis->name }}</h3>
-            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-semibold">Materi</span>
-          </div>
-          <p class="text-sm text-[#7F8190] mb-4">
-            <i class="fa-solid fa-calendar-days text-[#2B82FE] text-xs mr-1"></i>
-            Tanggal: {{ $materis->created_at->format('d/m/Y') }}
-          </p>
+    <div class="flex flex-col gap-3">
+      @foreach ($materi as $materis)
+        <div class="bg-white border border-gray-100 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-sm hover:shadow-md transition hover:-translate-y-0.5 duration-200">
+          <!-- Kiri -->
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-[#2B82FE] rounded-lg flex-shrink-0">
+              <i class="fa-solid fa-file-lines text-lg"></i>
+            </div>
 
-          <div class="flex flex-wrap gap-2">
-            {{-- Tombol Lihat --}}
+            <div>
+              <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1 leading-snug">
+                {{ $materis->name }}
+              </h3>
+              <p class="text-sm text-[#7F8190]">
+                <span class="inline-flex items-center gap-1">
+                  <i class="fa-solid fa-calendar-days text-xs"></i>
+                  {{ $materis->created_at->format('d/m/Y') }}
+                </span>
+                <span class="mx-2 text-gray-300">•</span>
+                <span class="inline-flex items-center gap-1">
+                  <i class="fa-solid fa-book text-xs"></i> Materi
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Kanan -->
+          <div class="flex flex-wrap gap-2 mt-4 sm:mt-0">
             <a href="{{ route('materi.show', $materis->id) }}"
                class="flex items-center gap-1 bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-gray-200 transition">
               <i class="fa-solid fa-eye text-[12px]"></i> Lihat
             </a>
 
-            {{-- Tombol Edit & Hapus hanya untuk Pengajar --}}
             @if (Auth::user()->hasRole('Pengajar'))
               <a href="{{ route('materi.edit', $materis->id) }}"
                  class="flex items-center gap-1 bg-amber-100 text-amber-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-amber-200 transition">
                 <i class="fa-solid fa-pen text-[12px]"></i> Edit
               </a>
 
-              <a href="#" 
+              <a href="#"
                  onclick="event.preventDefault(); handleDeleteMateri('{{ route('materi.destroy', $materis->id) }}');"
                  class="flex items-center gap-1 bg-rose-100 text-rose-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-rose-200 transition">
                 <i class="fa-solid fa-trash text-[12px]"></i> Hapus
@@ -50,12 +60,11 @@
             @endif
           </div>
         </div>
-      @empty
-        <p class="text-center text-[#7F8190] py-6">Belum ada materi yang ditambahkan.</p>
-      @endforelse
+      @endforeach
     </div>
   @endif
 </div>
+
 
 {{-- SweetAlert Delete Confirmation --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

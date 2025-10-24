@@ -66,6 +66,11 @@ class PengumumanController extends Controller
         return redirect()->route('pengumuman.index')->with('success', 'Pengumuman berhasil diperbarui.');
     }
 
+
+    public function show (Pengumuman $pengumuman) {
+
+         return view('menu.wakur.pengumuman.show', compact('pengumuman'));
+    }
     public function destroy(Pengumuman $pengumuman)
     {
         if ($pengumuman->lampiran && Storage::disk('public')->exists($pengumuman->lampiran)) {
@@ -74,6 +79,7 @@ class PengumumanController extends Controller
 
         $pengumuman->delete();
 
-        return back()->with('success', 'Pengumuman berhasil dihapus.');
+    
+        return redirect()->route('pengumuman.index')->with('success', 'Pengumuman berhasil dihapus.');
     }
 }

@@ -70,7 +70,7 @@
               @endif
               <span class="text-sm font-medium text-gray-700">{{ Str::substr($key->file, 5, 20) }}</span>
             </div>
-            <a href="{{ route('getFileTugas', ['namaFile' => $key->file]) }}" class="text-[#2B82FE] text-sm font-semibold hover:underline">Lihat</a>
+            {{-- <a href="{{ route('getFileTugas', ['namaFile' => $key->file]) }}" class="text-[#2B82FE] text-sm font-semibold hover:underline">Lihat</a> --}}
           </div>
         @endforeach
       @else
