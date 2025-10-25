@@ -1,8 +1,8 @@
 <div id="content-tugas" class="tab-content block p-6">
+  <!-- Header -->
   <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-3">
-    <h2 class="text-xl font-bold">Daftar Tugas</h2>
+    <h2 class="text-xl font-bold text-[#0A090B]">Daftar Tugas</h2>
 
-    {{-- Tombol Tambah hanya untuk Pengajar --}}
     @if (Auth::user()->hasRole('Pengajar'))
       <a href="{{ route('viewCreateTugas', $kelasMapel->id) }}" 
          class="flex items-center gap-2 bg-[#2B82FE] text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:bg-[#1a6ae0] transition">
@@ -11,28 +11,44 @@
     @endif
   </div>
 
-  {{-- Jika Belum Ada Tugas --}}
+  {{-- Jika belum ada tugas --}}
   @if ($tugas->isEmpty())
     <p class="text-center text-[#7F8190] py-6">Belum ada tugas yang ditambahkan.</p>
   @else
-    <!-- Daftar Card Tugas -->
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="flex flex-col gap-3">
       @foreach ($tugas as $tugass)
-        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-          <div class="flex justify-between items-start mb-3">
-            <h3 class="font-semibold text-gray-800 text-lg leading-snug truncate">
-              {{ $tugass->name }}
-            </h3>
-            <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full font-semibold">Tugas</span>
+        <div class="bg-white border border-gray-100 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-sm hover:shadow-md transition hover:-translate-y-0.5 duration-200">
+          <!-- Kiri -->
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 flex items-center justify-center bg-indigo-100 text-[#2B82FE] rounded-lg flex-shrink-0">
+              <i class="fa-solid fa-clipboard-list text-lg"></i>
+            </div>
+
+            <div>
+              <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1 leading-snug">
+                {{ $tugass->name }}
+              </h3>
+
+              <p class="text-sm text-[#7F8190] leading-relaxed mb-2">
+                {{ Str::words(strip_tags($tugass->content?? 'Belum ada deskripsi untuk tugas ini.'), 7, '...') }}
+              </p>
+
+              <p class="text-sm text-[#7F8190]">
+                <span class="inline-flex items-center gap-1">
+                  <i class="fa-solid fa-calendar-days text-xs"></i>
+                  Deadline: {{ \Carbon\Carbon::parse($tugass->due ?? '2025-10-20')->format('d/m/Y') }}
+                </span>
+                <span class="mx-2 text-gray-300">•</span>
+                <span class="inline-flex items-center gap-1">
+                  <i class="fa-solid fa-book text-xs"></i> Tugas
+                </span>
+              </p>
+            </div>
           </div>
 
-          <p class="text-sm text-[#7F8190] mb-4">
-            <i class="fa-solid fa-calendar-days text-[#2B82FE] text-xs mr-1"></i>
-            Deadline: {{ \Carbon\Carbon::parse($tugass->due ?? '2025-10-20')->format('d/m/Y') }}
-          </p>
-
-          <div class="flex flex-wrap gap-2">
-            {{-- Tombol Lihat (untuk semua user) --}}
+          <!-- Kanan -->
+          <div class="flex flex-wrap gap-2 mt-4 sm:mt-0">
+            {{-- Tombol Lihat --}}
             @if (Auth::user()->hasRole('Siswa'))
               <a href="{{ route('lihatTugas', $tugass->id) }}"
                  class="flex items-center gap-1 bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-gray-200 transition">

@@ -52,13 +52,28 @@ class AnalyticsController extends Controller
             ];
         }
 
+$materiPerGuru = User::role('Pengajar')
+    ->leftJoin('editor_accesses', 'users.id', '=', 'editor_accesses.user_id')
+    ->leftJoin('kelas_mapels', 'editor_accesses.kelas_mapel_id', '=', 'kelas_mapels.id')
+    ->leftJoin('materis', 'kelas_mapels.id', '=', 'materis.kelas_mapel_id')
+    ->select(
+        'users.name as nama_guru',
+        DB::raw('COUNT(materis.id) as total_upload'),
+        DB::raw('MAX(materis.created_at) as terakhir_upload')
+    )
+    ->groupBy('users.id', 'users.name')
+    ->orderByDesc('total_upload')
+    ->get();
+
+
         // 🔹 Kirim ke view
-        return view('wakur.analytics', [
+        return view('menu.wakur.analytics.analytics', [
             'totalUpload' => $totalUpload,
             'rataUploadPerHari' => $rataUploadPerHari,
             'guruAktif' => $guruAktif,
             'totalMateri' => $totalMateri,
             'dataGrafik' => $dataGrafik,
+               'materiPerGuru' => $materiPerGuru,
         ]);
     }
 }

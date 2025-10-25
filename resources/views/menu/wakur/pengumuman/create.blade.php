@@ -3,12 +3,18 @@
 @section('container')
 <div class="flex flex-col w-full px-8 pt-8 pb-12 bg-[#F9FAFB] min-h-screen font-poppins">
 
+  <!-- 🔹 Tombol Back -->
+  <div class="mb-6">
+    <a href="{{ route('pengumuman.index') }}"
+       class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm transition">
+      <i class="fa-solid fa-arrow-left text-xs"></i>
+      Kembali ke Daftar Pengumuman
+    </a>
+  </div>
+
   <!-- Header Title -->
   <div class="flex items-center gap-3 mb-8">
-    <a href="{{ route('pengumuman.index') }}"
-       class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-gray-100 transition">
-      <i class="fa-solid fa-arrow-left text-gray-700"></i>
-    </a>
+  
     <div>
       <h1 class="text-xl font-extrabold text-[#0A090B]">Buat Pengumuman Baru</h1>
       <p class="text-sm text-[#7F8190]">Isi form di bawah untuk membuat pengumuman</p>

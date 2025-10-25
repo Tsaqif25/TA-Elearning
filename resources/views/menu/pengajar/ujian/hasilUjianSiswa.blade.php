@@ -2,7 +2,17 @@
 
 @section('container')
 <div class="flex flex-col px-6 lg:px-10 mt-6">
-
+  <div class="mt-8">
+    <a href="{{ route('viewKelasMapel', [
+        'mapel' => $kelasMapel->mapel->id,
+        'kelas' => $kelasMapel->kelas->id,
+        'tab' => 'quiz'
+    ]) }}"
+       class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm transition">
+      <i class="fa-solid fa-arrow-left text-xs"></i>
+      Kembali ke Daftar Quiz
+    </a>
+  </div>
   <!-- 🧾 Header Quiz Info -->
   <div class="bg-white border border-[#EEEEEE] rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-center gap-5 shadow-sm">
     <div>
@@ -27,18 +37,8 @@
     </div>
   </div>
 
-  <!--  Tombol Kembali -->
-  <div class="mt-6">
-    <a href="{{ route('viewKelasMapel', [ 'mapel' => $kelasMapel->mapel->id, 'kelas' => $kelasMapel->kelas->id, 'tab' => 'quiz' ]) }}"
-       class="inline-flex items-center gap-2 text-[#7F8190] hover:text-[#0A090B] font-semibold transition">
-      <div class="w-9 h-9 flex items-center justify-center rounded-full border border-[#E5E7EB] hover:bg-[#F3F4F6]">
-        <i class="fa-solid fa-arrow-left text-sm"></i>
-      </div>
-      Kembali ke Daftar Quiz
-    </a>
-  </div>
 
-  <!--  DAFTAR SISWA -->
+  <!-- 📋 DAFTAR SISWA -->
   <div class="mt-6 space-y-5">
 
     @forelse ($students as $student)
@@ -80,4 +80,5 @@
 
   </div> <!-- END DAFTAR SISWA -->
 </div>
+
 @endsection

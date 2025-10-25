@@ -3,6 +3,15 @@
 @section('container')
 <div class="flex flex-col px-6 lg:px-10 mt-6">
 
+  <!-- 🔹 Tombol Back -->
+  <div class="mb-6">
+    <a href="{{ route('ujian.soal.manage', $ujian->id) }}"
+       class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm transition">
+      <i class="fa-solid fa-arrow-left text-xs"></i>
+      Kembali ke Daftar Soal
+    </a>
+  </div>
+
   <!-- Header Quiz Info -->
   <div class="bg-white border border-[#EEEEEE] rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-center gap-5 shadow-sm">
     <div>
@@ -20,15 +29,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Tombol Kembali -->
-  <a href="{{ route('ujian.soal.manage', $ujian->id) }}"
-     class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold mt-8 transition">
-    <div class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100">
-      <i class="fa-solid fa-arrow-left text-sm"></i>
-    </div>
-    Kembali
-  </a>
 
   <!-- Form Section -->
   <div class="mt-6 bg-white border border-[#EEEEEE] rounded-2xl shadow-sm p-6 sm:p-10 flex flex-col gap-6">
@@ -84,4 +84,5 @@
     </form>
   </div>
 </div>
+
 @endsection

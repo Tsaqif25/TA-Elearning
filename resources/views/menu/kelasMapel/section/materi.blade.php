@@ -26,6 +26,10 @@
               <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1 leading-snug">
                 {{ $materis->name }}
               </h3>
+   <p class="text-sm text-[#7F8190] leading-relaxed mb-2">
+  {{ Str::words(strip_tags($materis->content), 7, '...') ?? 'Belum ada deskripsi untuk materi ini.' }}
+</p>
+
               <p class="text-sm text-[#7F8190]">
                 <span class="inline-flex items-center gap-1">
                   <i class="fa-solid fa-calendar-days text-xs"></i>

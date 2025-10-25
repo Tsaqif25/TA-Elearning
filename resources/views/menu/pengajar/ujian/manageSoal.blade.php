@@ -3,6 +3,19 @@
 @section('container')
 <div class="flex flex-col px-4 sm:px-6 lg:px-10 mt-6">
 
+  <!-- 🔹 Tombol Back -->
+  <div class="mb-6">
+    <a href="{{ route('viewKelasMapel', [
+        'mapel' => $kelasMapel->mapel->id,
+        'kelas' => $kelasMapel->kelas->id,
+        'tab' => 'quiz'
+    ]) }}"
+       class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm transition">
+      <i class="fa-solid fa-arrow-left text-xs"></i>
+      Kembali ke Daftar Quiz
+    </a>
+  </div>
+
   <!-- Header Quiz Info -->
   <div class="bg-white border border-[#EEEEEE] rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-center gap-5 shadow-sm">
     <div class="text-center sm:text-left">
@@ -78,4 +91,5 @@
     @endforelse
   </div>
 </div>
+
 @endsection

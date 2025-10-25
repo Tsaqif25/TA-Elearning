@@ -17,3 +17,5 @@ require __DIR__.'/tugas.php';
 require __DIR__.'/ujian.php';
 require __DIR__.'/pengumuman.php';
 require __DIR__.'/analytics.php';
+require __DIR__.'/file.php';
+require __DIR__.'/repository.php';

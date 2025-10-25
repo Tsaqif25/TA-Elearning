@@ -3,12 +3,18 @@
 @section('container')
 <div class="flex flex-col w-full p-8 bg-[#F9FAFB] min-h-screen font-poppins">
 
+  <!-- 🔹 Tombol Back -->
+  <div class="mb-6">
+    <a href="{{ route('pengumuman.index') }}"
+       class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm transition">
+      <i class="fa-solid fa-arrow-left text-xs"></i>
+      Kembali ke Daftar Pengumuman
+    </a>
+  </div>
+
   <!-- Header -->
   <div class="flex items-center gap-4 mb-8">
-    <a href="{{ route('pengumuman.index') }}" 
-       class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-gray-100 transition">
-      <i class="fa-solid fa-arrow-left text-gray-700"></i>
-    </a>
+    
     <div>
       <h1 class="text-2xl font-extrabold text-[#0A090B]">Edit Pengumuman</h1>
       <p class="text-sm text-[#7F8190]">Perbarui isi dan lampiran pengumuman ini</p>
@@ -16,7 +22,7 @@
   </div>
 
   <!-- Form Container -->
-  <div class="bg-white border border-[#E5E7EB] rounded-2xl shadow-sm p-8 max-w-4xl mx-auto">
+  <div class="bg-white border border-[#E5E7EB] rounded-2xl shadow-sm p-8 max-w-3xl">
     <h2 class="font-bold text-lg mb-6 text-[#0A090B]">Detail Pengumuman</h2>
 
     <form action="{{ route('pengumuman.update', $pengumuman->id) }}" method="POST" enctype="multipart/form-data" class="space-y-7">
@@ -82,4 +88,5 @@
     </form>
   </div>
 </div>
+
 @endsection
