@@ -5,7 +5,7 @@
 <div class="flex flex-col w-full bg-[#FAFAFA] font-poppins">
   <div class="max-w-[1200px] w-full mx-auto px-5 sm:px-6 lg:px-10 mt-8 mb-16">
 
-    {{-- 🔙 Tombol Kembali --}}
+    {{--  Tombol Kembali --}}
     <div class="mb-5">
       <a href="{{ route('viewKelasMapel', [ 'mapel' => $kelasMapel->mapel->id, 'kelas' => $kelasMapel->kelas->id, 'tab' => 'tugas']) }}"
          class="flex items-center gap-2 text-sm text-[#2B82FE] hover:underline font-medium">
@@ -67,7 +67,7 @@
       </div>
     </div>
 
-    {{-- 🔸 Detail & File --}}
+    {{--  Detail & File --}}
     <div class="grid lg:grid-cols-3 gap-8">
       {{-- Kiri --}}
       <div class="lg:col-span-2 flex flex-col gap-6">
@@ -79,36 +79,42 @@
             <div class="text-sm text-[#0A090B] leading-relaxed">{!! $tugas->content !!}</div>
           </div>
 
-          <div>
-            <h4 class="text-sm text-[#7F8190] font-semibold mb-2">File Tugas</h4>
-            @if (count($tugas->files) > 0)
-              @foreach ($tugas->files as $key)
-                <div class="flex items-center justify-between bg-[#F9FAFB] border border-gray-100 rounded-xl px-5 py-3 hover:bg-gray-50 transition mb-2">
-                  <div class="flex items-center gap-3 overflow-hidden">
-                    @if (Str::endsWith($key->file, ['.pdf']))
-                      <i class="fa-solid fa-file-pdf text-red-500 text-xl"></i>
-                    @elseif (Str::endsWith($key->file, ['.jpg', '.jpeg', '.png', '.gif']))
-                      <i class="fa-solid fa-image text-blue-500 text-xl"></i>
-                    @elseif (Str::endsWith($key->file, ['.mp4', '.avi', '.mov']))
-                      <i class="fa-solid fa-video text-purple-500 text-xl"></i>
-                    @elseif (Str::endsWith($key->file, ['.doc', '.docx']))
-                      <i class="fa-solid fa-file-word text-blue-700 text-xl"></i>
-                    @elseif (Str::endsWith($key->file, ['.ppt', '.pptx']))
-                      <i class="fa-solid fa-file-powerpoint text-orange-500 text-xl"></i>
-                    @elseif (Str::endsWith($key->file, ['.xls', '.xlsx']))
-                      <i class="fa-solid fa-file-excel text-green-600 text-xl"></i>
-                    @else
-                      <i class="fa-solid fa-file text-gray-500 text-xl"></i>
-                    @endif
-                    <span class="text-sm font-medium text-gray-700 truncate">{{ Str::substr($key->file, 5, 30) }}</span>
-                  </div>
-                  <i class="fa-solid fa-ellipsis-vertical text-[#7F8190] hover:text-[#2B82FE] cursor-pointer"></i>
-                </div>
-              @endforeach
-            @else
-              <p class="text-sm text-gray-500 italic">(Tidak ada file untuk tugas ini)</p>
-            @endif
-          </div>
+     <div>
+  <h4 class="text-sm text-[#7F8190] font-semibold mb-2">File Tugas</h4>
+
+  @if ($tugas->files->isNotEmpty())
+    @foreach ($tugas->files as $key)
+      <a href="{{ route('getFileTugas', ['namaFile' => $key->file]) }}" 
+         class="flex items-center justify-between bg-[#F9FAFB] border border-gray-100 rounded-xl px-5 py-3 hover:bg-gray-50 transition mb-2" 
+         target="_blank">
+         
+        <div class="flex items-center gap-3 overflow-hidden">
+          @if (Str::endsWith($key->file, ['.pdf']))
+            <i class="fa-solid fa-file-pdf text-red-500 text-xl"></i>
+          @elseif (Str::endsWith($key->file, ['.jpg', '.jpeg', '.png', '.gif']))
+            <i class="fa-solid fa-image text-blue-500 text-xl"></i>
+          @elseif (Str::endsWith($key->file, ['.mp4', '.avi', '.mov']))
+            <i class="fa-solid fa-video text-purple-500 text-xl"></i>
+          @elseif (Str::endsWith($key->file, ['.doc', '.docx']))
+            <i class="fa-solid fa-file-word text-blue-700 text-xl"></i>
+          @elseif (Str::endsWith($key->file, ['.ppt', '.pptx']))
+            <i class="fa-solid fa-file-powerpoint text-orange-500 text-xl"></i>
+          @elseif (Str::endsWith($key->file, ['.xls', '.xlsx']))
+            <i class="fa-solid fa-file-excel text-green-600 text-xl"></i>
+          @else
+            <i class="fa-solid fa-file text-gray-500 text-xl"></i>
+          @endif
+          <span class="text-sm font-medium text-gray-700 truncate">{{ Str::substr($key->file, 5, 30) }}</span>
+        </div>
+
+        <i class="fa-solid fa-ellipsis-vertical text-[#7F8190] hover:text-[#2B82FE]"></i>
+      </a>
+    @endforeach
+  @else
+    <p class="text-sm text-gray-500 italic">(Tidak ada file untuk tugas ini)</p>
+  @endif
+</div>
+
         </div>
 
         {{-- Submission Siswa --}}

@@ -143,6 +143,8 @@ public function storeAnswer(Request $request, Ujian $ujian, SoalUjianMultiple $s
 
     public function learningRapport(Ujian $ujian)
     {
+
+        $kelasMapel = $ujian->kelasMapel ;
         $studentAnswers = UserJawaban::with(['soalUjianMultiple.answer'])
             ->where('user_id', Auth::id())
             ->whereIn('multiple_id', $ujian->soalUjianMultiple->pluck('id'))
@@ -155,6 +157,6 @@ public function storeAnswer(Request $request, Ujian $ujian, SoalUjianMultiple $s
             return $correct && $ans->user_jawaban === $correct->jawaban;
         })->count();
 
-        return view('menu.siswa.ujian.learning-raport', compact('ujian', 'studentAnswers', 'totalQuestions', 'correctAnswers'));
+        return view('menu.siswa.ujian.learning-raport', compact('ujian', 'studentAnswers', 'totalQuestions', 'correctAnswers','kelasMapel'));
     }
 }
