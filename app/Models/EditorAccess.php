@@ -16,9 +16,7 @@ class EditorAccess extends Model
         'nip',
     ];
 
-    // protected $guarded = [
-    //     'id'
-    // ];
+
 
     
 
