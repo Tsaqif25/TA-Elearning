@@ -48,7 +48,7 @@
 
         <!-- Kanan -->
         <div class="flex flex-wrap gap-2 mt-4 sm:mt-0">
-          <a href="{{ route('repository.show', $repo->id) }}"
+          <a href="{{ route('repository.showPublic', $repo->id) }}"
              class="flex items-center gap-1 bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-gray-200 transition">
             <i class="fa-solid fa-eye text-[12px]"></i> Lihat
           </a>

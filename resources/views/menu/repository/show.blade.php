@@ -1,18 +1,34 @@
-@extends('layout.template.mainTemplate')
+@extends('layout.template.publicTemplate')
 
 @section('container')
 <div class="flex flex-col w-full bg-[#FAFAFA] font-poppins">
   <div class="max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-10 mt-8 mb-16">
 
-    {{-- 🔙 Tombol Kembali --}}
+    {{--  Tombol Kembali --}}
+@auth
+  @if (Auth::user()->hasRole('Wakur|Pengajar'))
     <div class="mb-5">
       <a href="{{ route('repository.index') }}"
          class="flex items-center gap-2 text-sm text-[#2B82FE] hover:underline font-medium">
         <i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke Daftar Repository
       </a>
     </div>
+  @endif
+@endauth
 
-    {{-- 🔷 Header Biru --}}
+@guest
+  <div class="mb-5">
+    <a href="{{ route('repository.public') }}"
+       class="flex items-center gap-2 text-sm text-[#2B82FE] hover:underline font-medium">
+      <i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke Daftar Repository
+    </a>
+  </div>
+@endguest
+
+
+
+
+    {{--  Header Biru --}}
     <div class="bg-[#2B82FE] text-white rounded-2xl p-6 sm:p-8 mb-8 shadow-sm">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -55,7 +71,7 @@
       </div>
     </div>
 
-    {{-- 🔸 Konten & Sidebar --}}
+    {{-- Konten & Sidebar --}}
     <div class="grid lg:grid-cols-3 gap-8">
 
       {{-- Kolom Kiri --}}

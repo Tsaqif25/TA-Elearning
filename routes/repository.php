@@ -14,13 +14,13 @@ Route::middleware('auth')
     ->group(function () {
 
         Route::middleware('role:Pengajar|Admin|Wakur')->group(function () {
-            Route::get('/', 'index')->name('index');             
-            Route::get('/create', 'create')->name('create');      
-            Route::post('/', 'store')->name('store');              
-            Route::get('/{repository}', 'show')->name('show');     
-            Route::get('/{repository}/edit', 'edit')->name('edit');
-            Route::put('/{repository}', 'update')->name('update'); 
-            Route::delete('/{repository}', 'destroy')->name('destroy'); 
+            Route::get('/', 'index')->name('index');               
+            Route::get('/create', 'create')->name('create');       
+            Route::post('/', 'store')->name('store');              // simpan data baru
+            // tampil detail repository
+            Route::get('/{repository}/edit', 'edit')->name('edit');// form edit
+            Route::put('/{repository}', 'update')->name('update'); // simpan perubahan
+            Route::delete('/{repository}', 'destroy')->name('destroy'); // hapus repository
         });
     });
 
@@ -36,7 +36,14 @@ Route::middleware(['auth', 'role:Pengajar|Admin|Wakur'])
         Route::delete('{repository}/delete-destroy-file', 'destroy')->name('destroyFile'); // Hapus file
     });
 
+
+
 // ==========================
-//  HALAMAN PUBLIK (TANPA LOGIN)
+// HALAMAN PUBLIK (TANPA LOGIN)
 // ==========================
-Route::get('/repository-public', [RepositoryController::class, 'public'])->name('repository.public');
+Route::get('/repository-public', [RepositoryController::class, 'public'])
+    ->name('repository.public');
+
+Route::get('/repository-public/{repository}', [RepositoryController::class, 'show'])
+    ->name('repository.showPublic');
+

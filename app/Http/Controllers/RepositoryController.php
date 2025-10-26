@@ -24,9 +24,7 @@ class RepositoryController extends Controller
     public function show(Repository $repository)
     {
         // Pastikan hanya pemilik atau admin bisa lihat detail
-        if (auth()->id() !== $repository->user_id && !auth()->user()->hasRole('Pengajar')) {
-            abort(403, 'Kamu tidak punya izin untuk melihat repository ini.');
-        }
+      
 
         return view('menu.repository.show', compact('repository'));
     }
