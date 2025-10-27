@@ -73,13 +73,13 @@
                     <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
                         <tr>
                             <td class="px-6 py-4 text-sm">1</td>
-                            <td class="px-6 py-4 text-sm">X IPA 1</td>
-                            <td class="px-6 py-4 text-sm">Matematika, Fisika, Kimia</td>
+                            <td class="px-6 py-4 text-sm">X TKJ 1</td>
+                            <td class="px-6 py-4 text-sm">K3LH,MIKROTIK</td>
                         </tr>
                         <tr>
                             <td class="px-6 py-4 text-sm">2</td>
-                            <td class="px-6 py-4 text-sm">X IPA 2</td>
-                            <td class="px-6 py-4 text-sm">Matematika, Biologi</td>
+                            <td class="px-6 py-4 text-sm">X TKJ 2 </td>
+                            <td class="px-6 py-4 text-sm">K3LH,MIKROTIK</td>
                         </tr>
                     </tbody>
                 </table>

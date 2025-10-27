@@ -47,7 +47,7 @@ class MapelResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(), // 🧹 Tambahkan ini untuk hapus massal
+                Tables\Actions\DeleteBulkAction::make(), // 
             ]);
     }
 
