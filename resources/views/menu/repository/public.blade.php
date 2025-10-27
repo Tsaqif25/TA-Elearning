@@ -49,10 +49,12 @@
 
       <select id="filterJurusan" class="border border-gray-300 bg-white rounded-full px-4 py-2 text-sm text-gray-700 focus:ring-[#2B82FE]/30 focus:border-[#2B82FE]">
         <option value="">Semua Jurusan</option>
-        <option value="RPL">RPL</option>
-        <option value="TKJ">TKJ</option>
-        <option value="MM">Multimedia</option>
-        <option value="AKL">Akuntansi</option>
+        <option value="PPLG">Pengembangan Perangkat luank dan Gim</option>
+        <option value="TKJ">Teknik Jaringan Komputer dan Telekomunikasi</option>
+        <option value="ULW"> Usaha Layanan Wisata</option>
+        <option value="MPLB">Manajemen Perkantoran dan Layanan Bisnis</option>
+        <option value="AKL">Akuntansi dan Keuangan Lembaga</option>
+         <option value="BDR">Bisnis Digital dan Retail</option>
       </select>
     </div>
 

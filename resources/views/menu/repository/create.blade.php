@@ -55,12 +55,13 @@
           <div>
             <label class="block text-sm font-semibold text-gray-800 mb-2">Jurusan</label>
             <select name="jurusan" class="w-full border border-gray-200 rounded-xl p-3 bg-gray-50 focus:border-[#2B82FE] focus:ring focus:ring-[#2B82FE]/20">
-              <option value="">Pilih Jurusan</option>
-              <option value="RPL">RPL</option>
-              <option value="TKJ">TKJ</option>
-              <option value="Multimedia">Multimedia</option>
-              <option value="Akuntansi">Akuntansi</option>
-              <option value="Pemasaran">Pemasaran</option>
+           <option value="">Pilih Jurusan</option>
+        <option value="PPLG">Pengembangan Perangkat luank dan Gim</option>
+        <option value="TKJ">Teknik Jaringan Komputer dan Telekomunikasi</option>
+        <option value="ULW"> Usaha Layanan Wisata</option>
+        <option value="MPLB">Manajemen Perkantoran dan Layanan Bisnis</option>
+        <option value="AKL">Akuntansi dan Keuangan Lembaga</option>
+         <option value="BDR">Bisnis Digital dan Retail</option>
             </select>
           </div>
         </div>
