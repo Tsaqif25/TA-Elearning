@@ -7,8 +7,16 @@ use Illuminate\Support\Facades\Route;
 //  FILE HANDLER (AKSES FILE)
 // ==========================
 
-Route::controller(FileController::class)->group(function () {
-    Route::get('/getFile/{namaFile}', 'getFile')->middleware('auth')->name('getFile');
+ Route::controller(FileController::class)->group(function () {
+     Route::get('/getFile/{namaFile}', 'getFile')->middleware('auth')->name('getFile');
     Route::get('/getFileTugas/{namaFile}', 'getFileTugas')->middleware('auth')->name('getFileTugas');
     Route::get('/getFileUser/{namaFile}', 'getFileUser')->middleware('auth')->name('getFileUser');
-});
+ });
+
+
+
+// Route::get('/getFile/{path}', [FileController::class, 'getFile'])
+//     ->where('path', '.*')
+//     ->middleware('auth')
+//     ->name('getFile');
+

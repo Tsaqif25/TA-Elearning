@@ -86,44 +86,45 @@
         </div>
 
         {{-- File Repository --}}
-        <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-6">
-          <h2 class="text-lg font-semibold mb-4 text-[#0A090B]">File Repository</h2>
+    @foreach ($repository->files as $file)
+  @php
+    // Tentukan icon sesuai ekstensi
+    $ext = pathinfo($file->file, PATHINFO_EXTENSION);
+    $iconClass = match($ext) {
+      'pdf' => 'fa-file-pdf text-red-500',
+      'ppt', 'pptx' => 'fa-file-powerpoint text-orange-500',
+      'doc', 'docx' => 'fa-file-word text-blue-500',
+      'xls', 'xlsx' => 'fa-file-excel text-green-500',
+      'zip', 'rar' => 'fa-file-zipper text-yellow-500',
+      'mp4' => 'fa-file-video text-purple-500',
+      default => 'fa-file text-gray-500'
+    };
 
-          @if ($repository->files->count())
-            <div class="flex flex-col gap-3">
-              @foreach ($repository->files as $file)
-                @php
-                  $ext = pathinfo($file->file, PATHINFO_EXTENSION);
-                  $iconClass = match($ext) {
-                    'pdf' => 'fa-file-pdf text-red-500',
-                    'ppt', 'pptx' => 'fa-file-powerpoint text-orange-500',
-                    'doc', 'docx' => 'fa-file-word text-blue-500',
-                    'xls', 'xlsx' => 'fa-file-excel text-green-500',
-                    'zip', 'rar' => 'fa-file-zipper text-yellow-500',
-                    'mp4' => 'fa-file-video text-purple-500',
-                    default => 'fa-file text-gray-500'
-                  };
-                @endphp
+    // 🔹 Pastikan path lengkap, agar file lama & baru tetap terbaca
+    $filePath = Str::startsWith($file->file, 'repository/')
+        ? $file->file
+        : 'repository/' . $repository->id . '/' . $file->file;
+  @endphp
 
-                <div class="flex items-center justify-between bg-[#F9FAFB] border border-gray-100 rounded-xl px-5 py-3 hover:bg-gray-50 transition">
-                  <div class="flex items-center gap-3 overflow-hidden">
-                    <i class="fa-solid {{ $iconClass }} text-xl flex-shrink-0"></i>
-                    <a href="{{ asset('storage/' . $file->file) }}" target="_blank"
-                       class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
-                      {{ basename($file->file) }}
-                    </a>
-                  </div>
-                  <a href="{{ asset('storage/' . $file->file) }}" download
-                     class="text-[#7F8190] hover:text-[#2B82FE]">
-                    <i class="fa-solid fa-download"></i>
-                  </a>
-                </div>
-              @endforeach
-            </div>
-          @else
-            <p class="text-gray-500 text-sm">Belum ada file repository diunggah.</p>
-          @endif
-        </div>
+  <div class="flex items-center justify-between bg-[#F9FAFB] border border-gray-100 rounded-xl px-5 py-3 hover:bg-gray-50 transition">
+    <div class="flex items-center gap-3 overflow-hidden">
+      <i class="fa-solid {{ $iconClass }} text-xl flex-shrink-0"></i>
+
+      {{-- 🔹 Link buka file --}}
+      <a href="{{ asset('storage/' . $filePath) }}" target="_blank"
+         class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
+         {{ basename($file->file) }}
+      </a>
+    </div>
+
+    {{-- 🔹 Tombol download --}}
+    <a href="{{ asset('storage/' . $filePath) }}" download
+       class="text-[#7F8190] hover:text-[#2B82FE]">
+      <i class="fa-solid fa-download"></i>
+    </a>
+  </div>
+@endforeach
+
 
         {{-- Video Pembelajaran --}}
         @if ($repository->youtube_link)

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 class FileController extends Controller
 {
+    // 🔹 File Materi
 public function getFile($namaFile)
 {
     $path = storage_path('app/public/' . $namaFile);
@@ -14,26 +15,31 @@ public function getFile($namaFile)
         abort(404, 'File tidak ditemukan');
     }
 
-
-    // kalau mau paksa download pakai:
-     return response()->download($path, basename($path));
+    return response()->file($path);
 }
 
 
-
-    public function getFileUser($namaFile)
-    {
-        // $file = url('/file/tugas/user/' . $namaFile);
-        $file = storage_path('app/public/file/tugas/user/' . $namaFile);
-
-        return response()->download($file, $namaFile);
-    }
-
+    //  File Tugas
     public function getFileTugas($namaFile)
     {
-        // $file = url('/file/tugas/' . $namaFile);
-        $file = storage_path('app/public/file/tugas/' . $namaFile);
+        $path = storage_path('app/public/file/tugas/' . $namaFile);
 
-        return response()->download($file, $namaFile);
+        if (!file_exists($path)) {
+            abort(404, 'File tugas tidak ditemukan');
+        }
+
+        return response()->file($path);
+    }
+
+    // 🔹 File User (siswa)
+    public function getFileUser($namaFile)
+    {
+        $path = storage_path('app/public/file/tugas/user/' . $namaFile);
+
+        if (!file_exists($path)) {
+            abort(404, 'File user tidak ditemukan');
+        }
+
+        return response()->file($path);
     }
 }

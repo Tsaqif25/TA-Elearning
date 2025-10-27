@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\WakurResource\Pages;
 use App\Models\User;
 use App\Models\KelasMapel;
+use App\Models\EditorAccess;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -31,12 +32,6 @@ class WakurResource extends Resource
         return $form->schema([
             Forms\Components\Section::make('Data Wakur')
                 ->schema([
-                    // Forms\Components\FileUpload::make('gambar')
-                    //     ->label('Foto Profil')
-                    //     ->image()
-                    //     ->directory('foto_pengajar')
-                    //     ->imageEditor(),
-
                     Forms\Components\TextInput::make('name')
                         ->label('Nama Lengkap')
                         ->required(),
@@ -53,32 +48,65 @@ class WakurResource extends Resource
                         ->dehydrated(fn($state) => filled($state))
                         ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null)
                         ->afterStateHydrated(function (Forms\Components\TextInput $component, $state) {
-                            // Kosongkan field saat edit agar hash tidak muncul
                             $component->state('');
                         })
                         ->helperText('Biarkan kosong jika tidak ingin mengubah password.'),
                 ])
-                ->columns(2), // ✅ ini penutup Section pertama
+                ->columns(2),
 
-            /** ✳️ Kelas & Mapel seperti Pengajar */
-            Forms\Components\Section::make('Kelas & Mapel yang Diampu')
-                ->description('Pilih kombinasi kelas-mapel yang diajar oleh Wakur (opsional).')
+            // 🔹 Kelas & Mapel yang Dipantau / Diampu (dengan validasi seperti Pengajar)
+            Forms\Components\Section::make('Kelas & Mapel yang Dipantau')
+                ->description('Pilih kombinasi kelas-mapel yang diawasi oleh Wakur. Tidak boleh sama dengan pengajar lain.')
                 ->schema([
                     Forms\Components\Repeater::make('editorAccess')
                         ->relationship()
                         ->label(false)
                         ->schema([
+                            Forms\Components\Hidden::make('id'),
+
                             Forms\Components\Select::make('kelas_mapel_id')
                                 ->label('Kelas & Mapel')
                                 ->options(function () {
+                                    $used = EditorAccess::pluck('kelas_mapel_id')->toArray();
+
                                     return KelasMapel::with(['kelas', 'mapel'])
                                         ->get()
-                                        ->mapWithKeys(fn($km) => [
-                                            $km->id => "{$km->kelas->name} — {$km->mapel->name}"
-                                        ]);
+                                        ->mapWithKeys(function ($km) use ($used) {
+                                            $label = "{$km->kelas->name} — {$km->mapel->name}";
+                                            if (in_array($km->id, $used)) {
+                                                $label .= " (Sudah Diampu)";
+                                            }
+                                            return [$km->id => $label];
+                                        });
                                 })
                                 ->searchable()
-                                ->required(),
+                                ->required()
+                                ->rule(function ($get, $record) {
+                                    return function (string $attribute, $value, $fail) use ($record, $get) {
+                                        $userId = $record?->id;
+                                        $editorAccessId = $get('id');
+
+                                        $exists = EditorAccess::where('kelas_mapel_id', $value)
+                                            ->when($userId, fn($q) => $q->where('user_id', '!=', $userId))
+                                            ->when($editorAccessId, fn($q) => $q->where('id', '!=', $editorAccessId))
+                                            ->exists();
+
+                                        if ($exists) {
+                                            $fail('Kelas & Mapel ini sudah diampu oleh pengajar lain.');
+                                        }
+                                    };
+                                })
+                                ->disableOptionWhen(function ($value, $state, $get, $record) {
+                                    $userId = $record?->id;
+                                    $editorAccessId = $get('id');
+
+                                    $exists = EditorAccess::where('kelas_mapel_id', $value)
+                                        ->when($userId, fn($q) => $q->where('user_id', '!=', $userId))
+                                        ->when($editorAccessId, fn($q) => $q->where('id', '!=', $editorAccessId))
+                                        ->exists();
+
+                                    return $exists;
+                                }),
 
                             Forms\Components\TextInput::make('nip')
                                 ->label('NIP (Opsional)')
@@ -99,20 +127,20 @@ class WakurResource extends Resource
     {
         return $table
             ->columns([
-                // Tables\Columns\ImageColumn::make('gambar')
-                //     ->label('Foto')
-                //     ->circular()
-                //     ->defaultImageUrl('/asset/icons/profile-men.svg')
-                //     ->width(40)
-                //     ->height(40),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nama')
+                    ->searchable()
+                    ->sortable(),
 
-                Tables\Columns\TextColumn::make('name')->label('Nama')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('email')->label('Email')->limit(20),
+                Tables\Columns\TextColumn::make('email')
+                    ->label('Email')
+                    ->limit(25)
+                    ->copyable(),
 
                 Tables\Columns\TextColumn::make('editor_access_count')
                     ->counts('editorAccess')
-                    ->label('Mengajar')
-                    ->formatStateUsing(fn($state) => $state > 0 ? "{$state} Kelas" : 'Belum Ada')
+                    ->label('Dipantau')
+                    ->formatStateUsing(fn($state) => $state > 0 ? "{$state} Kelas" : 'Tidak Ada')
                     ->sortable(),
             ])
             ->actions([
@@ -127,7 +155,7 @@ class WakurResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListWakurs::route('/'), // ✅ tanpa “s”
+            'index' => Pages\ListWakurs::route('/'),
             'create' => Pages\CreateWakur::route('/create'),
             'edit' => Pages\EditWakur::route('/{record}/edit'),
         ];

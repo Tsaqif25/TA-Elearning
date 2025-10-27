@@ -32,10 +32,10 @@
       </div>
     </div>
 
-    <!-- 🔷 Card Form Utama -->
+    <!--  Card Form Utama -->
     <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-8 flex flex-col lg:flex-row gap-6">
 
-      <!-- 📝 Kolom Kiri -->
+      <!--  Kolom Kiri -->
       <div class="flex-1">
         <form id="formTugasUpdate" action="{{ route('updateTugas', $tugas->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
           @csrf
@@ -123,10 +123,12 @@
                   @else
                     <i class="fa-solid fa-file text-gray-400"></i>
                   @endif
-                  <a href="{{ route('getFileTugas', ['namaFile' => $key->file]) }}" 
-                     class="text-sm text-gray-700 truncate hover:text-[#2B82FE] hover:underline min-w-0">
-                    {{ Str::limit($key->file, 40) }}
-                  </a>
+             <a href="{{ asset('storage/' . $key->file) }}" 
+   class="text-sm text-gray-700 truncate hover:text-[#2B82FE] hover:underline min-w-0"
+   target="_blank">
+   {{ Str::limit($key->file, 40) }}
+</a>
+
                 </div>
                 <form id="formDeleteFile" action="{{ route('tugas.deleteFile', $tugas->id) }}" method="POST"
                       onsubmit="return confirm('Yakin ingin menghapus file ini?')">

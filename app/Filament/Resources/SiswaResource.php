@@ -27,14 +27,7 @@ class SiswaResource extends Resource
                 ->relationship('kelas', 'name')
                 ->required(),
 
-            //      Forms\Components\TextInput::make('no_telp') 
-            // ->label('Nomor Telepon')
-            // ->maxLength(15)
-            // ->default('-'), 
-            // Forms\Components\Toggle::make('punya_akun')
-            //     ->label('Sudah Punya Akun?')
-            //     ->onColor('success')
-            //     ->offColor('secondary'),
+          
         ]);
     }
 

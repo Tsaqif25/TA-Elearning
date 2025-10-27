@@ -26,7 +26,7 @@ class RepositoryFileController extends Controller
 
             // Simpan nama file di tabel repository_files
             $repository->files()->create([
-                'file' => basename($path),
+              'file' => $path,
             ]);
 
             // Respon JSON untuk Dropzone

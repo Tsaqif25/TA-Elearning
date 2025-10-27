@@ -26,6 +26,14 @@
       </div>
 
       <!-- Form -->
+      @if ($errors->any())
+  <div class="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-sm">
+    @foreach ($errors->all() as $error)
+      <p>{{ $error }}</p>
+    @endforeach
+  </div>
+@endif
+
       <form method="POST" action="{{ route('validate') }}" class="w-full max-w-md mt-10">
         @csrf
         <h2 class="text-3xl font-extrabold text-[#0A090B] mb-2 text-center">Sign Up</h2>

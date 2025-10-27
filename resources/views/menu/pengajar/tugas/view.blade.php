@@ -84,7 +84,7 @@
 
   @if ($tugas->files->isNotEmpty())
     @foreach ($tugas->files as $key)
-      <a href="{{ route('getFileTugas', ['namaFile' => $key->file]) }}" 
+     <a href="{{ asset('storage/' . $key->file) }}" 
          class="flex items-center justify-between bg-[#F9FAFB] border border-gray-100 rounded-xl px-5 py-3 hover:bg-gray-50 transition mb-2" 
          target="_blank">
          

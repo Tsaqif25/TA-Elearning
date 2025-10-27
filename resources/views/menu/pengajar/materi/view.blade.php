@@ -17,7 +17,7 @@
       </a>
     </div>
 
-    {{-- 🔷 Header Biru --}}
+    {{--  Header Biru --}}
     <div class="bg-[#2B82FE] text-white rounded-2xl p-6 sm:p-8 mb-8 shadow-sm">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -37,7 +37,7 @@
       </div>
     </div>
 
-    {{-- 🔹 Statistik Dummy --}}
+    {{-- Statistik Dummy --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
       <div class="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm">
         <p class="text-[#7F8190] text-xs font-medium mb-1">Total Views</p>
@@ -57,7 +57,7 @@
       </div>
     </div>
 
-    {{-- 🔸 Konten & Sidebar --}}
+    {{--  Konten & Sidebar --}}
     <div class="grid lg:grid-cols-3 gap-8">
       {{-- Kolom Kiri --}}
       <div class="lg:col-span-2 flex flex-col gap-6">
@@ -92,10 +92,23 @@
                 <div class="flex items-center justify-between bg-[#F9FAFB] border border-gray-100 rounded-xl px-5 py-3 hover:bg-gray-50 transition">
                   <div class="flex items-center gap-3 overflow-hidden">
                     <i class="fa-solid {{ $iconClass }} text-xl flex-shrink-0"></i>
-                    <a href="{{ asset('storage/' . $file->file) }}" target="_blank"
-                       class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
-                      {{ basename($file->file) }}
-                    </a>
+
+
+
+  <a href="{{ asset('storage/materi/' . $materi->id . '/' . basename($file->file)) }}"
+   target="_blank"
+   class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
+   {{ basename($file->file) }}
+</a> 
+
+{{-- <a href="{{ route('getFile', ['path' => 'materi/' . $materi->id . '/' . basename($file->file)]) }}"
+   target="_blank"
+   class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
+   {{ basename($file->file) }}
+</a> --}}
+
+
+
                   </div>
                   <button class="text-[#7F8190] hover:text-[#2B82FE]">
                     <i class="fa-solid fa-ellipsis-vertical"></i>

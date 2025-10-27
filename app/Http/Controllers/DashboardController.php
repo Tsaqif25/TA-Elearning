@@ -139,16 +139,48 @@ private function getMapelWithPengajar(Kelas $kelas)
 }
 
  
+
+
+// public function viewHome(): View|RedirectResponse
+// {
+//     $user = Auth::user();
+
+//     // Cek login dan role
+//     if (!$user) return redirect()->route('login');
+//     if (!$user->hasRole('Siswa')) return redirect()->route('dashboard');
+
+//     // Cek apakah siswa sudah punya kelas
+//     if (!$user->kelas_id) {
+//         return view('menu.siswa.home.home', [
+//             'title' => 'Home',
+//             'roles' => 'Siswa',
+//             'user' => $user,
+//             'kelas' => null,
+//             'mapelKelas' => [],
+//         ])->with('warning', 'Anda belum terdaftar di kelas manapun');
+//     }
+
+//     // Jika sudah ada kelas
+//     $kelas = Kelas::find($user->kelas_id);
+//     $mapelKelas = $this->getMapelWithPengajar($kelas);
+
+//     return view('menu.siswa.home.home', compact('user', 'kelas', 'mapelKelas') + [
+//         'title' => 'Home',
+//         'roles' => 'Siswa',
+//     ]);
+// } 
+
+
 public function viewHome(): View|RedirectResponse
 {
-    $user = Auth::user();
+     $user = Auth::user();
 
-    // Cek login dan role
     if (!$user) return redirect()->route('login');
     if (!$user->hasRole('Siswa')) return redirect()->route('dashboard');
 
-    // Cek apakah siswa sudah punya kelas
-    if (!$user->kelas_id) {
+    $dataSiswa = $user->dataSiswa;
+
+    if (!$dataSiswa || !$dataSiswa->kelas) {
         return view('menu.siswa.home.home', [
             'title' => 'Home',
             'roles' => 'Siswa',
@@ -158,8 +190,7 @@ public function viewHome(): View|RedirectResponse
         ])->with('warning', 'Anda belum terdaftar di kelas manapun');
     }
 
-    // Jika sudah ada kelas
-    $kelas = Kelas::find($user->kelas_id);
+    $kelas = $dataSiswa->kelas;
     $mapelKelas = $this->getMapelWithPengajar($kelas);
 
     return view('menu.siswa.home.home', compact('user', 'kelas', 'mapelKelas') + [
@@ -167,6 +198,7 @@ public function viewHome(): View|RedirectResponse
         'roles' => 'Siswa',
     ]);
 }
+
 
 
   

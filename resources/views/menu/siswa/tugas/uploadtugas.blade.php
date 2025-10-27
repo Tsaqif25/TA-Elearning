@@ -67,7 +67,7 @@
       @if ($tugas->files->count())
         <div class="flex flex-col gap-3">
           @foreach ($tugas->files as $file)
-            <a href="{{ route('getFileTugas', ['namaFile' => $file->file]) }}"
+              <a href="{{ asset('storage/' . $file->file) }}" 
                class="flex items-center justify-between bg-[#F9FAFB] border border-[#EEEEEE] rounded-xl px-5 py-3 hover:bg-gray-50 shadow-sm transition">
               <div class="flex items-center gap-3 overflow-hidden">
                 <i class="fa-solid fa-file text-[#6C63FF] text-xl"></i>

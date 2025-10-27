@@ -123,9 +123,25 @@
                 elseif (Str::endsWith($file->file, ['.mp3'])) $icon = 'fa-music';
               @endphp
               <i class="fa-solid {{ $icon }} text-[#2B82FE] text-lg flex-shrink-0"></i>
-              <a href="{{ route('getFile', $file->file) }}" target="_blank" class="text-sm text-gray-700 truncate hover:text-[#2B82FE] hover:underline min-w-0">
+              {{-- <a href="{{ route('getFile', $file->file) }}" target="_blank" class="text-sm text-gray-700 truncate hover:text-[#2B82FE] hover:underline min-w-0">
                 {{ Str::limit($file->file, 60) }}
-              </a>
+              </a> --}}
+                          {{-- <a href="{{ route('getFile', ['namaFile' => $file->file]) }}"
+   target="_blank"
+   class="text-sm text-gray-700 truncate hover:text-[#2B82FE] hover:underline">
+   {{ Str::limit($file->file, 60) }}
+</a> --}}
+                 {{-- <a href="{{ asset('storage/materi/' . $materi->id . '/' . basename($file->file)) }}"
+   target="_blank"
+   class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
+   {{ basename($file->file) }}
+</a> --}}
+ <a href="{{ asset('storage/materi/' . $materi->id . '/' . basename($file->file)) }}"
+   target="_blank"
+   class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
+   {{ basename($file->file) }}
+</a> 
+
             </div>
             <form action="{{ route('materi.destroyFile', $materi->id) }}" method="POST" onsubmit="event.preventDefault(); handleDeleteMateri(this);" class="ml-4 flex-shrink-0">
               @csrf
