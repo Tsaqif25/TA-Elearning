@@ -18,7 +18,6 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->string('name');
             $table->dateTime('due');
-            $table->bigInteger('time');
             $table->timestamps();
         });
     }

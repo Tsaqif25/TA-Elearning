@@ -10,7 +10,7 @@ class Ujian extends Model
 use HasFactory;
 
 
-protected $fillable = ['kelas_mapel_id','name','due','time'];
+protected $fillable = ['kelas_mapel_id','name','due'];
 
 
 // Konvensi nama method relasi (lowerCamelCase)

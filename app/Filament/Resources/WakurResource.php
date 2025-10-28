@@ -20,7 +20,7 @@ class WakurResource extends Resource
     protected static ?string $navigationGroup = 'Data Pengguna';
     protected static ?string $navigationLabel = 'Wakur';
 
-    /** 🔹 tampilkan hanya user dengan role “Wakur” */
+    /** tampilkan hanya user dengan role “Wakur” */
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
@@ -54,9 +54,9 @@ class WakurResource extends Resource
                 ])
                 ->columns(2),
 
-            // 🔹 Kelas & Mapel yang Dipantau / Diampu (dengan validasi seperti Pengajar)
-            Forms\Components\Section::make('Kelas & Mapel yang Dipantau')
-                ->description('Pilih kombinasi kelas-mapel yang diawasi oleh Wakur. Tidak boleh sama dengan pengajar lain.')
+            //  Kelas & Mapel yang Diampu oleh Wakur
+            Forms\Components\Section::make('Kelas & Mapel yang Diampu')
+                ->description('Pilih kombinasi kelas-mapel yang diajar oleh Wakur. Tidak boleh sama dengan pengajar lain.')
                 ->schema([
                     Forms\Components\Repeater::make('editorAccess')
                         ->relationship()
@@ -139,7 +139,7 @@ class WakurResource extends Resource
 
                 Tables\Columns\TextColumn::make('editor_access_count')
                     ->counts('editorAccess')
-                    ->label('Dipantau')
+                    ->label('Mengajar')
                     ->formatStateUsing(fn($state) => $state > 0 ? "{$state} Kelas" : 'Tidak Ada')
                     ->sortable(),
             ])

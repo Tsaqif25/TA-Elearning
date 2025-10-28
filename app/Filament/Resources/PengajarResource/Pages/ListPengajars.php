@@ -19,12 +19,12 @@ return [
 Actions\CreateAction::make(),
 
 
-// 🔹 Tombol Import Excel custom
-// Actions\Action::make('import')
-// ->label('Import Excel')
-// ->icon('heroicon-o-arrow-up-tray')
-// ->color('success')
-// ->url(route('filament.admin.pages.import-pengajar')),
+//  Tombol Import Excel custom
+ Actions\Action::make('import')
+ ->label('Import Excel')
+ ->icon('heroicon-o-arrow-up-tray')
+ ->color('success')
+ ->url(route('filament.admin.pages.import-pengajar')),
 ];
 }
 }
