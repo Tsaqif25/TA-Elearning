@@ -67,7 +67,7 @@
       @if ($tugas->files->count())
         <div class="flex flex-col gap-3">
           @foreach ($tugas->files as $file)
-              <a href="{{ asset('storage/' . $file->file) }}" 
+              <a href="{{ asset('storage/' . $file->file) }}"   target="_blank"
                class="flex items-center justify-between bg-[#F9FAFB] border border-[#EEEEEE] rounded-xl px-5 py-3 hover:bg-gray-50 shadow-sm transition">
               <div class="flex items-center gap-3 overflow-hidden">
                 <i class="fa-solid fa-file text-[#6C63FF] text-xl"></i>
@@ -102,11 +102,13 @@
           <h6 class="text-md font-semibold mb-2">File Anda:</h6>
           @foreach ($userTugas->UserTugasFile as $f)
             <div class="flex justify-between items-center border border-[#EEEEEE] rounded-xl p-3 mb-2 shadow-sm hover:shadow-md transition">
-              <a href="{{ route('getFileUser', ['namaFile' => $f->file]) }}" 
-                 class="flex items-center gap-2 text-[#0A090B] hover:text-[#6C63FF] transition">
-                <i class="fa-solid fa-file"></i>
-                <span>{{ $f->file }}</span>
-              </a>
+           <a href="{{ route('getFileUser', ['namaFile' => $f->file]) }}" 
+   target="_blank"
+   class="flex items-center gap-2 text-[#0A090B] hover:text-[#6C63FF] transition">
+  <i class="fa-solid fa-file"></i>
+  <span>{{ $f->file }}</span>
+</a>
+
               <form action="{{ route('destroyFileSubmit') }}" method="POST" onsubmit="return confirm('Yakin hapus file ini?')">
                 @csrf
                 @method('DELETE')

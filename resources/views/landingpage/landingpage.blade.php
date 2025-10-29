@@ -149,16 +149,22 @@
   </section>
 
   <!--  FOOTER -->
-  <footer class="bg-[#0A0A0A] text-center text-white/80 py-6 text-sm border-t border-white/10">
-    <p class="flex items-center justify-center gap-2 mb-2">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="#2B82FE" class="w-5 h-5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422A12.083 12.083 0 0118 10.5V17a2 2 0 01-2 2H8a2 2 0 01-2-2v-6.5a12.083 12.083 0 01-.16.078L12 14z" />
-      </svg>
-      <span>E-Learning SMK 2 Padang</span>
-    </p>
-    <p>© 2025 SMK 2 Padang. All rights reserved.</p>
-  </footer>
+<footer class="bg-[#0A0A0A] text-center text-white/80 py-6 text-sm border-t border-white/10">
+  <p class="flex items-center justify-center gap-2 mb-2">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="#2B82FE" class="w-5 h-5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422A12.083 12.083 0 0118 10.5V17a2 2 0 01-2 2H8a2 2 0 01-2-2v-6.5a12.083 12.083 0 01-.16.078L12 14z" />
+    </svg>
+    <span>E-Learning SMK 2 Padang</span>
+  </p>
+
+  <p class="mb-1">Dosen Pembimbing: <span class="font-semibold text-white">Dr. Titi Sriwahyuni, S.Pd., M.Eng</span></p>
+  <p class="mb-1">Pengembang: <span class="font-semibold text-white">Tsaqif Luthfan</span></p>
+  <p class="mb-3">Universitas Negeri Padang</p>
+
+  <p>© 2025 SMK 2 Padang. All rights reserved.</p>
+</footer>
+
 
 </body>
 </html>

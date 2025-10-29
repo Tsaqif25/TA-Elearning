@@ -13,7 +13,7 @@
       </a>
     </div>
 
-    {{-- 🔷 Header Biru --}}
+    {{--  Header Biru --}}
     <div class="bg-[#2B82FE] text-white rounded-2xl p-6 sm:p-8 mb-8 shadow-sm">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -151,7 +151,7 @@
                     <td class="py-3 px-4">
                       @if ($userTugas && $userTugas->userTugasFile->count())
                         @foreach ($userTugas->userTugasFile as $file)
-                          <a href="{{ route('getFileUser', ['namaFile' => $file->file]) }}" class="text-[#2B82FE] font-semibold hover:underline cursor-pointer block">Lihat File</a>
+                          <a href="{{ route('getFileUser', ['namaFile' => $file->file]) }}" class="text-[#2B82FE] font-semibold hover:underline cursor-pointer block" target="_blank">Lihat File</a>
                         @endforeach
                       @else
                         <span class="text-gray-500 italic">Belum upload</span>

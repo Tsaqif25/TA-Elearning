@@ -47,3 +47,11 @@ Route::get('/repository-public', [RepositoryController::class, 'public'])
 Route::get('/repository-public/{repository}', [RepositoryController::class, 'show'])
     ->name('repository.showPublic');
 
+
+    // ==========================
+// AKSES FILE REPOSITORY TANPA DOWNLOAD
+// ==========================
+Route::get('/repository/file/{repository}/{filename}', [RepositoryFileController::class, 'viewFile'])
+    ->where('filename', '.*') // agar nama file dengan titik (.) tidak error
+    ->name('repository.viewFile');
+

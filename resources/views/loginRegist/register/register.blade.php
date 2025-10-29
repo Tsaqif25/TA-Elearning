@@ -26,7 +26,19 @@
       </div>
 
       <!-- Form -->
-      @if ($errors->any())
+ @if (session('register-success'))
+  <div class="bg-green-100 text-green-700 p-3 rounded-lg mb-4 text-sm">
+    {{ session('register-success') }}
+  </div>
+@endif
+
+@if (session('nis-error'))
+  <div class="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-sm">
+    {{ session('nis-error') }}
+  </div>
+@endif
+
+@if ($errors->any())
   <div class="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-sm">
     @foreach ($errors->all() as $error)
       <p>{{ $error }}</p>
@@ -34,7 +46,9 @@
   </div>
 @endif
 
-      <form method="POST" action="{{ route('validate') }}" class="w-full max-w-md mt-10">
+
+      <form method="POST" action="{{ route('register.store') }}" class="w-full max-w-md mt-10">
+
         @csrf
         <h2 class="text-3xl font-extrabold text-[#0A090B] mb-2 text-center">Sign Up</h2>
         <p class="text-sm text-center text-[#7F8190] mb-8">Buat akun baru untuk mengakses platform pembelajaran</p>

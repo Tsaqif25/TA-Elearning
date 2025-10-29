@@ -27,7 +27,7 @@
           </div>
 
           <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight">{{ $materi->name }}</h1>
-          <p class="text-sm opacity-90 mt-1">Dasar-dasar HTML, CSS, dan JavaScript untuk membangun website modern</p>
+          <p class="text-sm opacity-90 mt-1">  {{ $materi->content }}</p>
           @if($materi->pengajar)
             <p class="text-sm mt-3">Oleh <span class="font-semibold">{{ $materi->pengajar->name ?? '' }}</span></p>
           @endif
@@ -51,10 +51,10 @@
         <p class="text-[#7F8190] text-xs font-medium mb-1">Total Size</p>
         <p class="text-lg font-bold text-[#0A090B]">2.4 MB</p>
       </div>
-      <div class="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm">
+      {{-- <div class="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm">
         <p class="text-[#7F8190] text-xs font-medium mb-1">Rata-rata Size</p>
         <p class="text-lg font-bold text-[#0A090B]">2.4 MB</p>
-      </div>
+      </div> --}}
     </div>
 
     {{--  Konten & Sidebar --}}
@@ -94,12 +94,30 @@
                     <i class="fa-solid {{ $iconClass }} text-xl flex-shrink-0"></i>
 
 
-
-  <a href="{{ asset('storage/materi/' . $materi->id . '/' . basename($file->file)) }}"
+                {{-- <a href="{{ asset('storage/materi/' . $materi->id . '/' . basename($file->file)) }}"
+                target="_blank"
+                class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
+                {{ basename($file->file) }}
+              </a>  --}}
+<a href="{{ route('materi.previewFile', ['materi' => $materi->id, 'filename' => basename($file->file)]) }}"
    target="_blank"
    class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
    {{ basename($file->file) }}
-</a> 
+</a>
+
+{{-- @php
+  $fileUrl = route('materi.previewFile', ['materi' => $materi->id, 'filename' => basename($file->file)]);
+  $ext = pathinfo($file->file, PATHINFO_EXTENSION);
+  $isOffice = in_array($ext, ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx']);
+@endphp
+
+<a href="{{ $isOffice ? 'https://docs.google.com/viewer?url=' . urlencode($fileUrl) . '&embedded=true' : $fileUrl }}"
+   target="_blank"
+   class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
+   {{ basename($file->file) }}
+</a> --}}
+
+
 
 {{-- <a href="{{ route('getFile', ['path' => 'materi/' . $materi->id . '/' . basename($file->file)]) }}"
    target="_blank"
@@ -154,19 +172,19 @@
 
       </div>
 
-      {{-- Sidebar Kanan --}}
+      {{-- Sidebar Kanan
       <div class="flex flex-col gap-6">
         <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-6">
           <h3 class="font-semibold mb-3 text-[#0A090B]">Informasi</h3>
           <div class="text-sm text-[#7F8190] space-y-2">
-            <p><span class="font-medium text-[#0A090B]">Pengajar:</span> {{ $materi->pengajar->name ?? 'Dr. Budi Santoso' }}</p>
+            <p><span class="font-medium text-[#0A090B]">Pengajar:</span> {{ $user->pengajar->name ?? 'Dr. Budi Santoso' }}</p>
             <p><span class="font-medium text-[#0A090B]">Diunggah:</span> {{ $materi->created_at->format('d/m/Y') }}</p>
             <p><span class="font-medium text-[#0A090B]">Tipe:</span> PDF</p>
           </div>
         </div>
 
        
-      </div>
+      </div> --}}
     </div>
   </div>
 </div>

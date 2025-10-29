@@ -43,14 +43,14 @@ class UjianManagementController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'time' => 'required|integer',
+           
             'due' => 'required|date',
         ]);
 
         $ujian = Ujian::create([
             'kelas_mapel_id' => $kelasMapel->id,
             'name' => $validated['name'],
-            'time' => $validated['time'],
+          
             'due' => $validated['due'],
         ]);
 
@@ -81,13 +81,13 @@ class UjianManagementController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'time' => 'required|integer',
+       
             'due' => 'required|date',
         ]);
 
         $ujian->update([
             'name' => $validated['name'],
-            'time' => $validated['time'],
+         
             'due' => $validated['due'],
         ]);
 

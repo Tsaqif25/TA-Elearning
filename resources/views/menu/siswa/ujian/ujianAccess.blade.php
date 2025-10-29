@@ -57,10 +57,7 @@
         @endif
       </div>
 
-      <div class="flex justify-between">
-        <p class="text-[#7F8190] font-medium">Durasi</p>
-        <p class="font-semibold text-[#0A090B]">{{ $ujian->time }} Menit</p>
-      </div>
+    
 
       <div class="flex justify-between">
         <p class="text-[#7F8190] font-medium">Deadline</p>

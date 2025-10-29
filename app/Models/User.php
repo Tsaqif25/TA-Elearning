@@ -24,7 +24,6 @@ class User extends Authenticatable
         'email',
         'kelas_id',
         'password',
-        'gambar',
         'deskripsi',
     ];
 

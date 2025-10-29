@@ -47,6 +47,22 @@ class MateriFileController extends Controller
     }
 
     /**
+ * Menampilkan file materi langsung di browser (tanpa download)
+ */
+public function showFile(Materi $materi, $filename)
+{
+    $path = storage_path("app/public/materi/{$materi->id}/{$filename}");
+
+    if (!file_exists($path)) {
+        abort(404, 'File tidak ditemukan.');
+    }
+
+    // Tampilkan langsung di tab baru (tidak download)
+    return response()->file($path);
+}
+
+
+    /**
      * Hapus file materi
      */
     public function destroy(Request $request, Materi $materi)

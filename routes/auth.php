@@ -26,7 +26,13 @@ Route::controller(LoginRegistController::class)->group(function () {
     )->name('authenticate.get');
 
     // Aksi POST
-    Route::post('/vallidate-register', 'register')->middleware('guest')->name('validate');
-    Route::post('/authenticate', [LoginRegistController::class, 'authenticate'])->middleware('guest')->name('authenticate');
-    Route::post('/logout', 'logout')->middleware('auth')->name('logout');
+    // Route::post('/vallidate-register', 'register')->middleware('guest')->name('validate');
+    // Route::post('/authenticate', [LoginRegistController::class, 'authenticate'])->middleware('guest')->name('authenticate');
+    // Route::post('/logout', 'logout')->middleware('auth')->name('logout');
+
+    // Aksi POST
+Route::post('/register', 'register')->middleware('guest')->name('register.store');
+Route::post('/authenticate', 'authenticate')->middleware('guest')->name('authenticate');
+Route::post('/logout', 'logout')->middleware('auth')->name('logout');
+
 });

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Repository;
-use App\Models\RepositoryFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -26,7 +25,7 @@ class RepositoryFileController extends Controller
 
             // Simpan nama file di tabel repository_files
             $repository->files()->create([
-              'file' => $path,
+                'file' => basename($path)
             ]);
 
             // Respon JSON untuk Dropzone
@@ -42,6 +41,21 @@ class RepositoryFileController extends Controller
                 'message' => 'Gagal upload file: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * 🔹 Menampilkan file repository langsung di browser (tanpa download)
+     */
+    public function viewFile(Repository $repository, $filename)
+    {
+        $path = storage_path("app/public/repository/{$repository->id}/{$filename}");
+
+        if (!file_exists($path)) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        // ✅ Sama seperti MateriFileController
+        return response()->file($path);
     }
 
     /**

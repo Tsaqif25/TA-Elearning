@@ -55,6 +55,7 @@
         <option value="MPLB">Manajemen Perkantoran dan Layanan Bisnis</option>
         <option value="AKL">Akuntansi dan Keuangan Lembaga</option>
          <option value="BDR">Bisnis Digital dan Retail</option>
+          <option value="umum">umum</option>
       </select>
     </div>
 

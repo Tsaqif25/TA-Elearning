@@ -95,6 +95,10 @@
                                         {{ old('jurusan', $repository->jurusan ?? '') == 'BDR' ? 'selected' : '' }}>
                                         Bisnis Digital dan Ritel (BDR)
                                     </option>
+                                         <option value="umum"
+                                        {{ old('umum', $repository->jurusan ?? '') == 'umum' ? 'selected' : '' }}>
+                                        Bisnis Digital dan Ritel (BDR)
+                                    </option>
                                 </select>
 
 
@@ -168,9 +172,13 @@
                                         } elseif (Str::endsWith($file->file, ['.mp4'])) {
                                             $icon = 'fa-video';
                                         }
+                                        
                                     @endphp
                                     <i class="fa-solid {{ $icon }} text-[#2B82FE] text-lg flex-shrink-0"></i>
-                                    <a href="{{ asset('storage/' . $file->file) }}" target="_blank"
+                                    {{-- <a href="{{ asset('storage/' . $file->file) }}" target="_blank" --}}
+                                        {{-- <a href="{{ asset('storage/' . $file->file) }}" target="_blank" --}}
+                                            <a href="{{ route('repository.viewFile', ['repository' => $repository->id, 'filename' => basename($file->file)]) }}" target="_blank"
+
                                         class="text-sm text-gray-700 truncate hover:text-[#2B82FE] hover:underline min-w-0">
                                         {{ Str::limit($file->file, 60) }}
                                     </a>

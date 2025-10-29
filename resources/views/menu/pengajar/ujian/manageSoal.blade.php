@@ -25,7 +25,6 @@
 
     <div class="flex items-center gap-4 sm:flex-row flex-col sm:text-right text-center">
       <div class="flex flex-col">
-        <p class="text-sm font-medium text-[#7F8190]">Durasi: <span class="text-[#0A090B] font-semibold">{{ $ujian->time }} Menit</span></p>
         <p class="text-sm font-medium text-[#7F8190]">Deadline: <span class="text-[#0A090B] font-semibold">{{ \Carbon\Carbon::parse($ujian->due)->format('d M Y') }}</span></p>
       </div>
       <div class="w-[70px] h-[70px] bg-gradient-to-r from-[#2B82FE] to-[#1E3A8A] rounded-2xl flex items-center justify-center shadow">

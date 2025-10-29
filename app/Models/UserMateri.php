@@ -5,27 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserMateri extends Model
-{
-    use HasFactory;
+// class UserMateri extends Model
+// {
+//     use HasFactory;
 
-    protected $fillable = [
-        'materi_id',
-        'user_id',
-        'status',
-    ];
+//     protected $fillable = [
+//         'materi_id',
+//         'user_id',
+//         'status',
+//     ];
 
-    // protected $guarded = [
-    //     'id',
-    // ];
+//     // protected $guarded = [
+//     //     'id',
+//     // ];
 
-    protected function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+//     protected function user()
+//     {
+//         return $this->belongsTo(User::class);
+//     }
 
-    protected function materi()
-    {
-        return $this->belongsTo(Materi::class);
-    }
-}
+//     protected function materi()
+//     {
+//         return $this->belongsTo(Materi::class);
+//     }
+// }

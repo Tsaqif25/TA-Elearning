@@ -31,20 +31,14 @@
                 {{ $ujians->name }}
               </h3>
 
-              <p class="text-sm text-[#7F8190] leading-relaxed mb-2">
-                {{ Str::words(strip_tags($ujians->description ?? 'Tidak ada deskripsi untuk quiz ini.'), 7, '...') }}
-              </p>
+             
 
               <p class="text-sm text-[#7F8190]">
                 <span class="inline-flex items-center gap-1">
                   <i class="fa-solid fa-calendar-days text-xs"></i>
                   {{ \Carbon\Carbon::parse($ujians->due)->format('d/m/Y H:i') }}
                 </span>
-                <span class="mx-2 text-gray-300">•</span>
-                <span class="inline-flex items-center gap-1">
-                  <i class="fa-solid fa-clock text-xs"></i>
-                  {{ $ujians->time ?? '-' }} menit
-                </span>
+              
                 <span class="mx-2 text-gray-300">•</span>
                 <span class="inline-flex items-center gap-1">
                   <i class="fa-solid fa-list-check text-xs"></i>

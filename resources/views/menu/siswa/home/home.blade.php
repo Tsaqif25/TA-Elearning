@@ -55,7 +55,7 @@
     </div>
 
     {{-- 📊 INFORMASI RINGKAS --}}
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+    {{-- <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
       <div class="bg-white border border-[#EEEEEE] rounded-2xl p-5 flex items-center justify-between shadow-sm">
         <div>
           <p class="text-sm text-[#7F8190] font-medium">Total Mapel</p>
@@ -85,7 +85,7 @@
           <i class="fa-solid fa-clipboard-question text-lg"></i>
         </div>
       </div>
-    </div>
+    </div> --}}
 
     {{-- 📚 KELAS & MAPEL --}}
     <div class="bg-white border border-[#EEEEEE] rounded-2xl shadow-sm p-6">

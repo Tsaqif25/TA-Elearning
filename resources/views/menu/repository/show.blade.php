@@ -101,9 +101,11 @@
     };
 
     // 🔹 Pastikan path lengkap, agar file lama & baru tetap terbaca
-    $filePath = Str::startsWith($file->file, 'repository/')
-        ? $file->file
-        : 'repository/' . $repository->id . '/' . $file->file;
+    // $filePath = Str::startsWith($file->file, 'repository/')
+    //     ? $file->file
+    //     : 'repository/' . $repository->id . '/' . $file->file;
+
+     $filename = basename($file->file);
   @endphp
 
   <div class="flex items-center justify-between bg-[#F9FAFB] border border-gray-100 rounded-xl px-5 py-3 hover:bg-gray-50 transition">
@@ -111,17 +113,27 @@
       <i class="fa-solid {{ $iconClass }} text-xl flex-shrink-0"></i>
 
       {{-- 🔹 Link buka file --}}
-      <a href="{{ asset('storage/' . $filePath) }}" target="_blank"
+      {{-- <a href="{{ asset('storage/' . $filePath) }}" target="_blank"
          class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
          {{ basename($file->file) }}
+      </a> --}}
+
+      <a href="{{ route('repository.viewFile', ['repository' => $repository->id, 'filename' => $filename]) }}"
+         target="_blank"
+         class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
+         {{ $filename }}
       </a>
     </div>
 
     {{-- 🔹 Tombol download --}}
-    <a href="{{ asset('storage/' . $filePath) }}" download
+    {{-- <a href="{{ asset('storage/' . $filePath) }}" download
        class="text-[#7F8190] hover:text-[#2B82FE]">
       <i class="fa-solid fa-download"></i>
-    </a>
+    </a> --}}
+
+    {{-- 🔹 Tombol buka file di tab baru --}}
+
+
   </div>
 @endforeach
 
@@ -160,7 +172,7 @@
       </div>
 
       {{-- Sidebar Kanan --}}
-      <div class="flex flex-col gap-6">
+      {{-- <div class="flex flex-col gap-6">
         <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-6">
           <h3 class="font-semibold mb-3 text-[#0A090B]">Informasi Repository</h3>
           <div class="text-sm text-[#7F8190] space-y-2">
@@ -171,7 +183,7 @@
             <p><span class="font-medium text-[#0A090B]">Total File:</span> {{ $repository->files->count() }}</p>
           </div>
         </div>
-      </div>
+      </div> --}}
 
     </div>
   </div>

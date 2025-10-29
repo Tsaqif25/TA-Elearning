@@ -80,7 +80,7 @@ class LoginRegistController extends Controller
             $request->session()->regenerate();
             $user = Auth::user();
 
-            if ($user->hasRole('Admin') || $user->hasRole('Pengajar')) {
+            if ($user->hasRole('Admin') || $user->hasRole('Pengajar' ) || $user->hasRole('Wakur' )) {
                 return redirect()->intended('/dashboard');
             } elseif ($user->hasRole('Siswa')) {
                 return redirect()->intended('/home');
@@ -105,8 +105,8 @@ class LoginRegistController extends Controller
         return redirect(route('login'));
     }
 
-    public function viewForgotPassword()
-    {
-        return view('loginRegist/forgot-password/forgotPassword', ['title' => 'Forgot Password']);
-    }
+    // public function viewForgotPassword()
+    // {
+    //     return view('loginRegist/forgot-password/forgotPassword', ['title' => 'Forgot Password']);
+    // }
 }
