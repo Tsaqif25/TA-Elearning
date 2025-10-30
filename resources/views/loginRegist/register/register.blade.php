@@ -188,3 +188,20 @@
   </section>
 </body>
 </html>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if (session('login-success'))
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    Swal.fire({
+      title: 'Login Berhasil!',
+      text: '{{ session('login-success') }}',
+      icon: 'success',
+      confirmButtonColor: '#2B82FE',
+      confirmButtonText: 'OK'
+    });
+  });
+</script>
+@endif

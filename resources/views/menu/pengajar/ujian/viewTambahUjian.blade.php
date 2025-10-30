@@ -54,7 +54,7 @@
           <!-- Judul Ujian -->
           <div class="mb-5">
             <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
-              Judul Ujian <span class="text-red-500">*</span>
+              Judul Quiz<span class="text-red-500">*</span>
             </label>
             <input type="text" id="name" name="name" placeholder="Masukkan judul ujian..." value="{{ old('name') }}" required
               class="w-full rounded-xl border border-gray-200 bg-[#F9FAFB] focus:border-[#2B82FE] focus:ring-2 focus:ring-[#2B82FE]/20 p-3 outline-none transition placeholder:text-gray-400">
@@ -90,7 +90,7 @@
             </a>
             <button type="submit"
               class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#2B82FE] to-[#1a5fd4] text-white font-semibold shadow hover:opacity-90 transition">
-              <i class="fa-solid fa-paper-plane"></i> Simpan Ujian
+              <i class="fa-solid fa-paper-plane"></i> Simpan Quiz
             </button>
           </div>
         </form>

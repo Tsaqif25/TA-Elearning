@@ -9,7 +9,7 @@
     </button>
 
     <!-- Kolom Pencarian -->
-    <form class="hidden md:flex items-center w-[300px] h-[45px] p-[10px_16px] rounded-full border border-[#EEEEEE] bg-white">
+    {{-- <form class="hidden md:flex items-center w-[300px] h-[45px] p-[10px_16px] rounded-full border border-[#EEEEEE] bg-white">
       <input type="text"
         class="font-semibold placeholder:text-[#7F8190] placeholder:font-normal w-full outline-none bg-transparent"
         placeholder="Cari materi, quiz, tugas...">
@@ -20,7 +20,7 @@
             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </button>
-    </form>
+    </form> --}}
   </div>
 
   <!-- Bagian Kanan -->

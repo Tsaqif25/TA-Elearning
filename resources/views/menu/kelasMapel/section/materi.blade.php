@@ -2,7 +2,7 @@
   <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-3">
     <h2 class="text-xl font-bold text-[#0A090B]">Daftar Materi</h2>
 
-    @if (Auth::user()->hasRole('Pengajar'))
+    @if (Auth::user()->hasRole('Pengajar|Wakur'))
       <a href="{{ route('materi.create', ['kelasMapel' => $kelasMapel->id]) }}"
          class="flex items-center gap-2 bg-[#2B82FE] text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:bg-[#1a6ae0] transition">
         <i class="fa-solid fa-plus"></i> Tambah Materi
@@ -50,7 +50,7 @@
               <i class="fa-solid fa-eye text-[12px]"></i> Lihat
             </a>
 
-            @if (Auth::user()->hasRole('Pengajar'))
+            @if (Auth::user()->hasRole('Pengajar|Wakur'))
               <a href="{{ route('materi.edit', $materis->id) }}"
                  class="flex items-center gap-1 bg-amber-100 text-amber-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-amber-200 transition">
                 <i class="fa-solid fa-pen text-[12px]"></i> Edit

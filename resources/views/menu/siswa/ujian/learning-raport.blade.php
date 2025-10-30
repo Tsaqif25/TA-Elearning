@@ -13,7 +13,7 @@
       Kembali ke Daftar Quiz
     </a>
   <div class="w-full max-w-5xl mb-8 text-center">
-    <h1 class="text-2xl sm:text-3xl font-extrabold text-[#0A090B]">Hasil Ujian</h1>
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-[#0A090B]">Hasil  Quiz</h1>
     <p class="text-sm text-[#7F8190] mt-1">Ringkasan jawaban dan status pengerjaan</p>
   </div>
 

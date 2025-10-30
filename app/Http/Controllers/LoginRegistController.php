@@ -63,7 +63,8 @@ class LoginRegistController extends Controller
                 'no_telp' => $request->noTelp ?? $dataSiswa->no_telp,
             ]);
 
-            return redirect('/login')->with('register-success', 'Registrasi Berhasil');
+          return redirect()->route('dashboard')->with('login-success', 'Selamat datang di E-Learning SMK 2 Padang!');
+
         } catch (\Exception $e) {
             return back()->with('nis-error', 'Terjadi kesalahan dalam proses registrasi: ' . $e->getMessage());
         }

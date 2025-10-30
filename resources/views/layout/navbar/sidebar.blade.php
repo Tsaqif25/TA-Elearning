@@ -2,7 +2,9 @@
   class="sidebar w-[270px] flex flex-col shrink-0 min-h-screen justify-between p-[30px] border-r border-[#EEEEEE] bg-[#FBFBFB]">
   <div class="w-full flex flex-col gap-[30px]">
     <div class="flex items-center justify-between">
+        @if (Auth::user()->hasRole('Pengajar|Siswa'))
       <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+        @endif
   <!--  Logo Buku -->
   <div class="w-9 h-9 bg-[#2B82FE] rounded-lg flex items-center justify-center">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -28,6 +30,7 @@
       </li>
 
       {{-- OVERVIEW --}}
+       @if (Auth::user()->hasRole('Pengajar'))
       <li>
         <a href="{{ route('dashboard') }}"
           class="p-[10px_16px] flex items-center gap-[14px] rounded-full h-11 transition-all duration-300
@@ -43,7 +46,7 @@
             Overview</p>
         </a>
       </li>
-
+   @endif
       {{-- ANALYTIC (Wakur only) --}}
       @if (Auth::user()->hasRole('Wakur'))
         <li>
@@ -81,7 +84,7 @@
       </li>
 
       {{-- REPOSITORY --}}
-      @if (Auth::user()->hasRole('Wakur|Pengajar'))
+      @if (Auth::user()->hasRole('Pengajar'))
         <li>
           <a href="{{ route('repository.index') }}"
             class="p-[10px_16px] flex items-center gap-[14px] rounded-full h-11 transition-all duration-300

@@ -3,6 +3,7 @@
 @section('title', 'Dashboard ')
 
 @section('container')
+  @if (Auth::user()->hasRole('Pengajar'))
 <div class="flex flex-col px-5 mt-5 gap-6">
   <!-- Header -->
   <div>
@@ -101,4 +102,5 @@
   </div>
 
 </div>
+@endif
 @endsection

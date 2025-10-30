@@ -13,7 +13,7 @@ Route::middleware('auth')
     ->name('repository.')
     ->group(function () {
 
-        Route::middleware('role:Pengajar|Admin|Wakur')->group(function () {
+        Route::middleware('role:Pengajar|Admin')->group(function () {
             Route::get('/', 'index')->name('index');               
             Route::get('/create', 'create')->name('create');       
             Route::post('/', 'store')->name('store');              // simpan data baru
@@ -27,7 +27,7 @@ Route::middleware('auth')
 // ==========================
 //  MODUL FILE REPOSITORY (UPLOAD / HAPUS)
 // ==========================
-Route::middleware(['auth', 'role:Pengajar|Admin|Wakur'])
+Route::middleware(['auth', 'role:Pengajar|Admin'])
     ->prefix('repository')
     ->name('repository.')
     ->controller(RepositoryFileController::class)
