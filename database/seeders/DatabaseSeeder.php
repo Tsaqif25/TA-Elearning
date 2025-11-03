@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             $admin = User::create([
                 'name' => 'Super Admin',
                 'email' => 'admin@example.com',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('loremipsum25'),
             ]);
 
             // Assign role Admin
@@ -27,14 +27,13 @@ class DatabaseSeeder extends Seeder
         }
 
         // Tambah user wakur default
-if (!User::where('email', 'wakur@example.com')->exists()) {
-    $wakur = User::create([
-        'name' => 'Wakil Kurikulum',
-        'email' => 'wakur@example.com',
-        'password' => Hash::make('password'),
-    ]);
-    $wakur->assignRole('Wakur');
-}
-
+        if (!User::where('email', 'wakur@example.com')->exists()) {
+            $wakur = User::create([
+                'name' => 'Wakil Kurikulum',
+                'email' => 'wakur@example.com',
+                'password' => Hash::make('ipsumlorem25'),
+            ]);
+            $wakur->assignRole('Wakur');
+        }
     }
 }

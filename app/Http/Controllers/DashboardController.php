@@ -35,26 +35,26 @@ class DashboardController extends Controller
     }
 
  
-    private function adminDashboard(): View
-    {
-        $stats = [
-            'totalSiswa' => DataSiswa::count(),
-            'totalUserSiswa' => User::role('Siswa')->count(),
-            'totalPengajar' => User::role('Pengajar')->count(),
-            'totalKelas' => Kelas::count(),
-            'totalMapel' => Mapel::count(),
-            'totalMateri' => Materi::count(),
-            'totalTugas' => Tugas::count(),
-            'totalUjian' => Ujian::count(),
-        ];
+    // private function adminDashboard(): View
+    // {
+    //     $stats = [
+    //         'totalSiswa' => DataSiswa::count(),
+    //         'totalUserSiswa' => User::role('Siswa')->count(),
+    //         'totalPengajar' => User::role('Pengajar')->count(),
+    //         'totalKelas' => Kelas::count(),
+    //         'totalMapel' => Mapel::count(),
+    //         'totalMateri' => Materi::count(),
+    //         'totalTugas' => Tugas::count(),
+    //         'totalUjian' => Ujian::count(),
+    //     ];
 
-        return view('menu.admin.dashboard.dashboard', [
-            'materi' => Materi::latest()->take(5)->get(),
-            'title' => 'Dashboard Admin',
-            'roles' => 'Admin',
-            'data' => $stats,
-        ]);
-    }
+    //     return view('menu.admin.dashboard.dashboard', [
+    //         'materi' => Materi::latest()->take(5)->get(),
+    //         'title' => 'Dashboard Admin',
+    //         'roles' => 'Admin',
+    //         'data' => $stats,
+    //     ]);
+    // }
 
    
 private function pengajarDashboard(): View

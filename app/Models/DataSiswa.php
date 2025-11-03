@@ -18,9 +18,7 @@ class DataSiswa extends Model
         'user_id',
     ];
 
-    // protected $guarded = [
-    //     'id',
-    // ];
+  
 
     public function user()
     {

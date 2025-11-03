@@ -8,31 +8,32 @@ use App\Http\Controllers\LoginRegistController;
 // LOGIN,REGISTER,LOGOUT
 // ==========================
 
-
-
-
-
-
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 
+// ==========================
+// LOGIN, REGISTER, LOGOUT
+// ==========================
 
-Route::controller(LoginRegistController::class)->group(function () {
-    // Halaman GET
-    Route::get('/login', 'viewLogin')->middleware('guest')->name('login');
-    Route::get('/register', 'viewRegister')->middleware('guest')->name('register');
-    Route::get('/forgot-password', 'viewForgotPassword')->middleware('guest')->name('forgotPassword');
-    Route::get('/authenticate', fn() =>
-        redirect()->route('login')->with('login-error', 'Sesi login telah berakhir, silakan login kembali')
-    )->name('authenticate.get');
+//  ROUTE UNTUK PENGGUNA YANG BELUM LOGIN (GUEST)
+Route::middleware('guest')
+    ->controller(LoginRegistController::class)
+    ->group(function () {
+        Route::get('/login', 'viewLogin')->name('login');
+        Route::get('/register', 'viewRegister')->name('register');
 
-    // Aksi POST
-    // Route::post('/vallidate-register', 'register')->middleware('guest')->name('validate');
-    // Route::post('/authenticate', [LoginRegistController::class, 'authenticate'])->middleware('guest')->name('authenticate');
-    // Route::post('/logout', 'logout')->middleware('auth')->name('logout');
+        // Saat sesi login berakhir
+        Route::get('/authenticate', fn() =>
+            redirect()->route('login')->with('login-error', 'Sesi login telah berakhir, silakan login kembali')
+        )->name('authenticate.get');
 
-    // Aksi POST
-Route::post('/register', 'register')->middleware('guest')->name('register.store');
-Route::post('/authenticate', 'authenticate')->middleware('guest')->name('authenticate');
-Route::post('/logout', 'logout')->middleware('auth')->name('logout');
+        Route::post('/register', 'register')->name('register.store');
+        Route::post('/authenticate', 'authenticate')->name('authenticate');
+    });
 
-});
+//  ROUTE UNTUK PENGGUNA YANG SUDAH LOGIN (AUTH)
+Route::middleware('auth')
+    ->controller(LoginRegistController::class)
+    ->group(function () {
+        Route::post('/logout', 'logout')->name('logout');
+    });
+

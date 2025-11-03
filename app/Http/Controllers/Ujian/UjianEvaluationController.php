@@ -12,8 +12,6 @@ class UjianEvaluationController extends Controller
     public function listStudent(Ujian $ujian)
     {
             $kelasMapel = $ujian->kelasMapel;
-    
-
         // 🔹 Ambil hanya siswa dari kelas yang ikut ujian
         $students = $ujian->kelasMapel->kelas->users()
             ->orderBy('id', 'DESC')

@@ -9,10 +9,10 @@ Route::middleware('auth')
     ->name('pengumuman.')
     ->group(function () {
 
-        // 🔹 Semua user (Wakur, Pengajar, Siswa)
+        //  Semua user (Wakur, Pengajar, Siswa)
         Route::get('/', 'index')->name('index');
 
-        // 🔹 Hanya WAKUR
+        //  Hanya WAKUR
         Route::middleware('role:Wakur')->group(function () {
             Route::get('/create', 'create')->name('create');
             Route::post('/', 'store')->name('store');
@@ -21,6 +21,6 @@ Route::middleware('auth')
             Route::delete('/{pengumuman}', 'destroy')->name('destroy');
         });
 
-        // 🔹 HARUS DITARUH PALING BAWAH
+        //  HARUS DITARUH PALING BAWAH
         Route::get('/{pengumuman}', 'show')->name('show');
     });

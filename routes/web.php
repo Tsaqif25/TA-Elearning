@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Route;
 //  ROUTE UTAMA APLIKASI
 // ==========================
 
-Route::get('/', function () {
-    return redirect('/dashboard');
-});
+// Route::get('/', function () {
+//     return redirect('/dashboard');
+// });
 require __DIR__.'/auth.php';
 require __DIR__.'/dashboard.php';
 require __DIR__.'/kelasMapel.php';

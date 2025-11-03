@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <!-- 🔷 Card Form Utama -->
+    <!--  Card Form Utama -->
     <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-8 flex flex-col lg:flex-row gap-6">
 
       <!-- Kiri: Form -->
