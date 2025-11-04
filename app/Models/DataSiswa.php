@@ -9,21 +9,21 @@ class DataSiswa extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'nis',
-        'kelas_id',
-         'no_telp',
-        'punya_akun',
-        'user_id',
-    ];
+protected $fillable = [
+    'name',
+    'nis',
+    'kelas_id',
+    'no_telp',
+    'user_id',
+];
 
   
 
-    public function user()
-    {
-        return $this->hasOne(User::class);
-    }
+public function user()
+{
+    return $this->hasOne(User::class, 'id', 'user_id');
+}
+
 
     public function kelas()
     {

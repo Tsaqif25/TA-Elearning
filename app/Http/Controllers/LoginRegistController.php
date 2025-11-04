@@ -3,73 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataSiswa;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class LoginRegistController extends Controller
 {
+    /**
+     * 🔹 Tampilkan halaman login utama
+     */
     public function viewLogin()
     {
-        $adminAvailability = User::role('Admin')->first();
-        $checker = $adminAvailability ? 1 : 0;
-
         return view('loginRegist/login/login', [
             'title' => 'Login',
-            'hasAdmin' => $checker,
         ]);
     }
 
-    public function viewRegister()
-    {
-        return view('loginRegist/register/register', ['title' => 'Register']);
-    }
-
-    public function register(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-            'confirm-password' => 'required|min:8|same:password',
-            'nis' => 'required',
-        ]);
-
-        try {
-            $dataSiswa = DataSiswa::where('nis', $request->nis)->first();
-
-            if (!$dataSiswa) {
-                return back()->with('nis-error', 'NIS (Nomor Induk Siswa) Tidak ditemukan');
-            }
-
-            if ($dataSiswa->punya_akun == 1) {
-                return back()->with('nis-error', 'NIS (Nomor Induk Siswa) Sudah digunakan.');
-            }
-
-            $user = User::create([
-                'name' => $dataSiswa->name,
-                'kelas_id' => $dataSiswa->kelas_id,
-                'gambar' => null,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
-
-            $user->assignRole('Siswa');
-
-            // Update DataSiswa: tandai sudah punya akun + isi no_telp jika ada
-            $dataSiswa->update([
-                'user_id' => $user->id,
-                'punya_akun' => 1,
-                'no_telp' => $request->noTelp ?? $dataSiswa->no_telp,
-            ]);
-
-          return redirect()->route('dashboard')->with('login-success', 'Selamat datang di E-Learning SMK 2 Padang!');
-
-        } catch (\Exception $e) {
-            return back()->with('nis-error', 'Terjadi kesalahan dalam proses registrasi: ' . $e->getMessage());
-        }
-    }
-
+    /**
+     * 🔹 Proses autentikasi login
+     */
     public function authenticate(Request $request)
     {
         $credentials = $request->validate([
@@ -77,37 +28,63 @@ class LoginRegistController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            $user = Auth::user();
+        if (!Auth::attempt($credentials)) {
+            return back()->with('login-error', 'Email atau Kata Sandi salah!');
+        }
 
-            if ($user->hasRole('Admin') || $user->hasRole('Pengajar' ) || $user->hasRole('Wakur' )) {
-                return redirect()->intended('/dashboard');
-            } elseif ($user->hasRole('Siswa')) {
-                return redirect()->intended('/home');
+        $request->session()->regenerate();
+        $user = Auth::user();
+
+        // 🔸 Sinkron kelas otomatis untuk siswa (jika belum ada)
+        if ($user->hasRole('Siswa') && !$user->kelas_id) {
+            $dataSiswa = DataSiswa::where('user_id', $user->id)->first();
+            if ($dataSiswa) {
+                $user->update(['kelas_id' => $dataSiswa->kelas_id]);
             }
+        }
 
+        // 🔸 Redirect sesuai role
+        if ($user->hasRole('Admin')) {
             return redirect()->intended('/dashboard');
         }
 
-        return back()->with('login-error', 'Email atau Kata Sandi salah!');
+        if ($user->hasRole('Pengajar')) {
+            return redirect()->intended('/dashboard');
+        }
+
+        if ($user->hasRole('Wakur')) {
+            return redirect()->intended('/dashboard');
+        }
+
+        if ($user->hasRole('Siswa')) {
+            return redirect()->intended('/home');
+        }
+
+        // Jika role tidak dikenali
+        Auth::logout();
+        return redirect()->route('login')->with('login-error', 'Role pengguna tidak dikenali.');
     }
 
+    /**
+     * 🔹 Logout user dari sistem
+     */
     public function logout(Request $request)
     {
-        if (auth()->check()) {
+        if (Auth::check()) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-
-            return redirect(route('login'))->with('logout-success', 'Berhasil keluar!');
         }
 
-        return redirect(route('login'));
+        return redirect()->route('login')->with('logout-success', 'Berhasil keluar!');
     }
 
-    // public function viewForgotPassword()
-    // {
-    //     return view('loginRegist/forgot-password/forgotPassword', ['title' => 'Forgot Password']);
-    // }
+    /**
+     * 🔹 Jika sesi login berakhir
+     */
+    public function expiredSession()
+    {
+        return redirect()->route('login')
+            ->with('login-error', 'Sesi login telah berakhir, silakan login kembali.');
+    }
 }

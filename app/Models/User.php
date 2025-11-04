@@ -49,8 +49,9 @@ class User extends Authenticatable
 
 public function dataSiswa()
 {
-    return $this->hasOne(DataSiswa::class);
+    return $this->belongsTo(DataSiswa::class, 'user_id', 'id');
 }
+
 
 
 

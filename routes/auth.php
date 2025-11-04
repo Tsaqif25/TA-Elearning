@@ -19,21 +19,14 @@ Route::middleware('guest')
     ->controller(LoginRegistController::class)
     ->group(function () {
         Route::get('/login', 'viewLogin')->name('login');
-        Route::get('/register', 'viewRegister')->name('register');
 
-        // Saat sesi login berakhir
-        Route::get('/authenticate', fn() =>
-            redirect()->route('login')->with('login-error', 'Sesi login telah berakhir, silakan login kembali')
-        )->name('authenticate.get');
+        Route::get('/authenticate', 'expiredSession')->name('authenticate.get');
 
-        Route::post('/register', 'register')->name('register.store');
         Route::post('/authenticate', 'authenticate')->name('authenticate');
     });
 
-//  ROUTE UNTUK PENGGUNA YANG SUDAH LOGIN (AUTH)
 Route::middleware('auth')
     ->controller(LoginRegistController::class)
     ->group(function () {
         Route::post('/logout', 'logout')->name('logout');
     });
-

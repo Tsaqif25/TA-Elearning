@@ -140,35 +140,66 @@
         </div>
 
         {{-- Video Pembelajaran --}}
-        @if ($materi->youtube_link)
-          <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-6">
-            <h2 class="text-lg font-semibold mb-4 text-[#0A090B]">Video Pembelajaran</h2>
-            @php
-              $links = preg_split("/(\r\n|\r|\n)/", trim($materi->youtube_link));
-              $links = array_filter($links);
-              function toEmbed($url) {
-                  $url = trim($url);
-                  $url = preg_replace('/\?.*/', '', $url);
-                  $url = rtrim($url, '/');
-                  if (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)/', $url, $m)) return 'https://www.youtube.com/embed/' . $m[1];
-                  if (preg_match('/v=([a-zA-Z0-9_-]+)/', $url, $m)) return 'https://www.youtube.com/embed/' . $m[1];
-                  if (preg_match('/shorts\/([a-zA-Z0-9_-]+)/', $url, $m)) return 'https://www.youtube.com/embed/' . $m[1];
-                  if (str_contains($url, 'embed/')) return $url;
-                  return $url;
-              }
-            @endphp
-            @foreach ($links as $link)
-              @php $embedLink = toEmbed($link); @endphp
-              <div class="aspect-video rounded-xl overflow-hidden mb-5">
-                <iframe class="w-full h-full rounded-xl"
-                        src="{{ $embedLink }}"
-                        title="YouTube video player" frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen></iframe>
-              </div>
-            @endforeach
-          </div>
-        @endif
+@if ($materi->youtube_link)
+  <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-6">
+    <h2 class="text-lg font-semibold mb-4 text-[#0A090B]">Video Pembelajaran</h2>
+
+    @php
+        // Pisahkan tiap baris jadi array link
+        $links = preg_split("/(\r\n|\r|\n)/", trim($materi->youtube_link));
+        $links = array_filter($links);
+
+        function toEmbed($url) {
+            $url = trim($url);
+
+            // 🔹 Ambil ID dari berbagai bentuk link YouTube
+            if (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)/', $url, $m)) {
+                return "https://www.youtube.com/embed/{$m[1]}";
+            }
+
+            if (preg_match('/v=([a-zA-Z0-9_-]+)/', $url, $m)) {
+                return "https://www.youtube.com/embed/{$m[1]}";
+            }
+
+            if (preg_match('/shorts\/([a-zA-Z0-9_-]+)/', $url, $m)) {
+                return "https://www.youtube.com/embed/{$m[1]}";
+            }
+
+            if (preg_match('/live\/([a-zA-Z0-9_-]+)/', $url, $m)) {
+                return "https://www.youtube.com/embed/{$m[1]}";
+            }
+
+            // 🔸 Jika link sudah embed, langsung gunakan
+            if (str_contains($url, 'embed/')) {
+                return $url;
+            }
+
+            // 🔸 Jika gagal deteksi, bersihkan parameter & coba ulang
+            $cleanUrl = preg_replace('/\?.*/', '', $url);
+            if (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)/', $cleanUrl, $m)) {
+                return "https://www.youtube.com/embed/{$m[1]}";
+            }
+
+            return $cleanUrl;
+        }
+    @endphp
+
+    @foreach ($links as $link)
+      @php $embedLink = toEmbed($link); @endphp
+      <div class="aspect-video rounded-xl overflow-hidden mb-5">
+        <iframe class="w-full h-full rounded-xl"
+                src="{{ $embedLink }}"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+        </iframe>
+      </div>
+    @endforeach
+  </div>
+@endif
+
+
 
       </div>
 

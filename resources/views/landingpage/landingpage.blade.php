@@ -143,7 +143,7 @@
     <h2 class="text-3xl font-extrabold mb-4">Siap Memulai Perjalanan Belajar Anda?</h2>
     <p class="text-white/70 mb-10">Bergabunglah dengan ribuan siswa lain yang telah merasakan pengalaman belajar yang lebih baik</p>
     <div class="flex flex-col sm:flex-row justify-center gap-4">
-      <a href="{{ route('register') }}" class="bg-[#2B82FE] px-8 py-3 rounded-lg font-semibold hover:bg-[#1E66E1] transition">Daftar Sekarang</a>
+      {{-- <a href="{{ route('register') }}" class="bg-[#2B82FE] px-8 py-3 rounded-lg font-semibold hover:bg-[#1E66E1] transition">Daftar Sekarang</a> --}}
       <a href="{{ route('repository.public') }}" class="border border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-[#0A090B] transition">Lihat Repository</a>
     </div>
   </section>

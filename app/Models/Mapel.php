@@ -10,14 +10,12 @@ class Mapel extends Model
     use HasFactory;
 
     protected $fillable = [
-        'gambar',
+   
         'name',
         'deskripsi',
     ];
 
-//    protected $guarded = [
-//     'id'
-//    ];
+
 
     public function kelasMapel()
     {

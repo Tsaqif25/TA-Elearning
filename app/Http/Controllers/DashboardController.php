@@ -173,14 +173,16 @@ private function getMapelWithPengajar(Kelas $kelas)
 
 public function viewHome(): View|RedirectResponse
 {
-     $user = Auth::user();
+    $user = Auth::user();
 
     if (!$user) return redirect()->route('login');
     if (!$user->hasRole('Siswa')) return redirect()->route('dashboard');
 
-    $dataSiswa = $user->dataSiswa;
+    // 🔹 Ambil kelas langsung dari relasi user
+    $kelas = $user->kelas;
 
-    if (!$dataSiswa || !$dataSiswa->kelas) {
+    // 🔹 Jika belum ada kelas, tampilkan peringatan
+    if (!$kelas) {
         return view('menu.siswa.home.home', [
             'title' => 'Home',
             'roles' => 'Siswa',
@@ -190,7 +192,7 @@ public function viewHome(): View|RedirectResponse
         ])->with('warning', 'Anda belum terdaftar di kelas manapun');
     }
 
-    $kelas = $dataSiswa->kelas;
+    // 🔹 Ambil mapel & pengajar untuk kelas ini
     $mapelKelas = $this->getMapelWithPengajar($kelas);
 
     return view('menu.siswa.home.home', compact('user', 'kelas', 'mapelKelas') + [

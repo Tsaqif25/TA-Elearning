@@ -87,10 +87,10 @@
           Sign In to my Account
         </button>
 
-        <p class="text-sm text-center mt-6 text-[#7F8190]">
+        {{-- <p class="text-sm text-center mt-6 text-[#7F8190]">
           Don't have an account?
           <a href="{{ route('register') }}" class="text-[#2B82FE] font-semibold hover:underline">Sign Up</a>
-        </p>
+        </p> --}}
       </form>
     </div>
 
