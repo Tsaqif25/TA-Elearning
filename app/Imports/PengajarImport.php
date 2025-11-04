@@ -12,97 +12,94 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
-use Maatwebsite\Excel\Concerns\SkipsEmptyRows; //  Tambahkan ini
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 
 class PengajarImport implements ToModel, WithStartRow, SkipsEmptyRows
 {
     public function model(array $row)
     {
+        // Abaikan baris kosong
+        if ($this->isRowEmpty($row)) return null;
+
+        DB::beginTransaction();
         try {
-            //  Filter baris yang semua kolomnya null/kosong
-            if ($this->isRowEmpty($row)) {
+            // [0] No | [1] Nama | [2] Email | [3] Password | [4] No. Telp | [5] NIP | [6] Kelas | [7] Mapel
+            $nama     = trim($row[1] ?? '');
+            $email    = strtolower(trim($row[2] ?? ''));
+            $password = trim($row[3] ?? '');
+            $noTelp   = trim($row[4] ?? '');
+            $nip      = trim($row[5] ?? '');
+            $kelasNm  = trim($row[6] ?? '');
+            $mapelNm  = trim($row[7] ?? '');
+
+            // Validasi dasar
+            if ($nama === '' || $email === '' || $kelasNm === '' || $mapelNm === '') {
+                Log::warning("⚠️ Baris dilewati karena kolom wajib kosong: {$nama} / {$email}");
                 return null;
             }
 
-            DB::beginTransaction();
-
-            //  Periksa jumlah kolom minimal
-            if (count($row) < 8) {
-                Log::warning('⚠️ Jumlah kolom tidak sesuai. Ditemukan: ' . count($row));
-                return null;
-            }
-
-            //  Periksa nama & email
-            $nama = trim($row[1] ?? '');
-            $email = trim($row[2] ?? '');
-
-            if ($nama === '' || $email === '') {
-                Log::warning('⚠️ Baris dilewati karena kolom nama/email kosong.');
-                return null;
-            }
-
-            //  Ambil semua kolom
-            $data = [
-                'nama'     => $nama,
-                'email'    => $email,
-                'password' => trim($row[3] ?? ''),
-                'no_telp'  => trim($row[4] ?? ''),
-                'nip'      => trim($row[5] ?? ''),
-                'kelas'    => trim($row[6] ?? ''),
-                'mapel'    => trim($row[7] ?? ''),
-            ];
-
-            //  Buat / update user
-            $user = User::updateOrCreate(
-                ['email' => $data['email']],
-                [
-                    'name' => $data['nama'],
-                    'password' => Hash::make($data['password'] ?: 'password123'),
-                ]
-            );
-            $user->assignRole('Pengajar');
-
-            //  Buat relasi kelas_mapel jika ada
-            $kelasMapelId = null;
-
-            if (!empty($data['kelas']) && !empty($data['mapel'])) {
-                $kelas = Kelas::firstOrCreate(['name' => $data['kelas']]);
-                $mapel = Mapel::firstOrCreate(['name' => $data['mapel']]);
-
-                $kelasMapel = KelasMapel::firstOrCreate([
-                    'kelas_id' => $kelas->id,
-                    'mapel_id' => $mapel->id,
+            // 🔹 Pastikan user unik berdasarkan email
+            $user = User::where('email', $email)->first();
+            if (!$user) {
+                $user = User::create([
+                    'name' => $nama,
+                    'email' => $email,
+                    'password' => Hash::make($password ?: 'password123'),
                 ]);
-
-                $kelasMapelId = $kelasMapel->id;
+                $user->assignRole('Pengajar');
+            } else {
+                // Update nama kalau berubah
+                $user->update(['name' => $nama]);
             }
 
-            //  Buat editor access
-            EditorAccess::updateOrCreate(
-                [
+            // 🔹 Pastikan kelas dan mapel sudah ada
+            $kelas = Kelas::firstOrCreate(['name' => $kelasNm]);
+            $mapel = Mapel::firstOrCreate(['name' => $mapelNm]);
+
+            // 🔹 Pastikan kombinasi kelas–mapel unik
+            $kelasMapel = KelasMapel::firstOrCreate([
+                'kelas_id' => $kelas->id,
+                'mapel_id' => $mapel->id,
+            ]);
+
+            // 🔹 Cek apakah guru ini sudah punya akses ke kombinasi ini
+            $exists = EditorAccess::where('user_id', $user->id)
+                ->where('kelas_mapel_id', $kelasMapel->id)
+                ->exists();
+
+            if (!$exists) {
+                EditorAccess::create([
                     'user_id' => $user->id,
-                    'kelas_mapel_id' => $kelasMapelId,
-                ],
-                [
-                    'no_telp' => $data['no_telp'] ?: null,
-                    'nip' => $data['nip'] ?: null,
-                ]
-            );
+                    'kelas_mapel_id' => $kelasMapel->id,
+                    'nip' => $nip ?: null,
+                    'no_telp' => $noTelp ?: null,
+                ]);
+            } else {
+                // Kalau sudah ada, update data tambahan saja (tidak duplikat)
+                EditorAccess::where('user_id', $user->id)
+                    ->where('kelas_mapel_id', $kelasMapel->id)
+                    ->update([
+                        'nip' => $nip ?: DB::raw('nip'),
+                        'no_telp' => $noTelp ?: DB::raw('no_telp'),
+                    ]);
+            }
+
+            // Simpan ID hasil import (opsional untuk notifikasi)
+            $importedIds = session('imported_ids', []);
+            $importedIds[] = $user->id;
+            session(['imported_ids' => array_unique($importedIds)]);
 
             DB::commit();
-            Log::info(' Import berhasil untuk: ' . $data['email']);
-
-            return $user;
-        } catch (\Exception $e) {
+            Log::info("✅ Import berhasil: {$email}");
+        } catch (\Throwable $e) {
             DB::rollBack();
-            Log::error('❌ Import gagal: ' . $e->getMessage());
+            Log::error("❌ Import gagal: " . $e->getMessage());
             throw $e;
         }
+
+        return null;
     }
 
-    /**
-     *  Helper untuk cek apakah baris benar-benar kosong
-     */
     private function isRowEmpty(array $row): bool
     {
         foreach ($row as $cell) {
@@ -115,6 +112,6 @@ class PengajarImport implements ToModel, WithStartRow, SkipsEmptyRows
 
     public function startRow(): int
     {
-        return 2;
+        return 2; // Lewati header Excel
     }
 }

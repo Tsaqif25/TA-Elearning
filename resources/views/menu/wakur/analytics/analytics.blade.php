@@ -39,7 +39,7 @@
 </div>
 
 <!-- Tabel Materi Per Guru -->
-<!-- Tabel Materi Per Guru -->
+
 <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 mt-8">
   <h2 class="text-lg font-bold text-[#0A090B] mb-4">Materi Per Guru</h2>
 

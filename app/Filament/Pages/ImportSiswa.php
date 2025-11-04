@@ -20,6 +20,7 @@ class ImportSiswa extends Page implements Forms\Contracts\HasForms
     protected static ?string $title = 'Import Data Siswa';
     protected static string $view = 'filament.pages.import-siswa';
     protected static bool $shouldRegisterNavigation = false;
+
     public $file;
 
     public function mount(): void
@@ -32,22 +33,22 @@ class ImportSiswa extends Page implements Forms\Contracts\HasForms
         return [
             Forms\Components\FileUpload::make('file')
                 ->label('Upload File Excel')
-                ->disk('local') // Penting: simpan di local disk
-                ->directory('imports') // Folder tempat upload
+                ->disk('local')
+                ->directory('imports')
                 ->acceptedFileTypes([
                     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                     'application/vnd.ms-excel',
                     'text/csv'
                 ])
-                ->maxSize(5120) // Max 5MB
+                ->maxSize(5120)
                 ->required()
-                ->helperText('Format: .xlsx, .xls, atau .csv (Max 5MB)'),
+                ->helperText('Format: .xlsx, .xls, atau .csv (maksimal 5MB).'),
         ];
     }
 
     public function submit()
     {
-        // Validasi form
+        // 🔸 Validasi input file
         $data = $this->form->getState();
 
         if (empty($data['file'])) {
@@ -55,47 +56,50 @@ class ImportSiswa extends Page implements Forms\Contracts\HasForms
                 ->title('Error!')
                 ->body('File belum dipilih. Silakan upload file Excel terlebih dahulu.')
                 ->danger()
+                ->duration(5000)
                 ->send();
             return;
         }
 
         try {
-            // Reset session imported_ids
+            // Reset session untuk menyimpan ID hasil import
             session()->forget('imported_ids');
             session(['imported_ids' => []]);
 
-            // Ambil path file yang sudah diupload
+            // Ambil path dari file upload
             $filePath = storage_path('app/' . $data['file']);
 
-            // Import Excel
+            // Jalankan proses import
             Excel::import(new SiswaImport, $filePath);
 
-            // Ambil jumlah data yang berhasil di-import
+            // Hitung jumlah data yang berhasil diimport
             $count = count(session('imported_ids', []));
 
-            // Hapus file setelah import
+            // Hapus file setelah import selesai
             if (file_exists($filePath)) {
                 unlink($filePath);
             }
 
-            // Reset form
+            // Reset form upload
             $this->file = null;
             $this->form->fill();
 
+            // Kirim notifikasi sukses
             Notification::make()
                 ->title('Berhasil! 🎉')
-                ->body("Berhasil mengimport {$count} siswa dari file Excel.")
+                ->body("Berhasil mengimpor {$count} data siswa beserta akun pengguna.")
                 ->success()
                 ->duration(5000)
                 ->send();
 
-            // Redirect ke list kelas
+            // Redirect ke halaman daftar siswa (Filament Resource)
             return redirect()->route('filament.admin.resources.siswas.index');
 
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            // 🔸 Menangkap error validasi Excel (jika pakai WithValidation)
             $failures = $e->failures();
             $errorMessages = [];
-            
+
             foreach ($failures as $failure) {
                 $errorMessages[] = "Baris {$failure->row()}: " . implode(', ', $failure->errors());
             }
@@ -108,8 +112,9 @@ class ImportSiswa extends Page implements Forms\Contracts\HasForms
                 ->send();
 
         } catch (\Exception $e) {
+            // 🔸 Tangani semua error umum (kelas tidak ditemukan, duplikat email, dsb.)
             Notification::make()
-                ->title('Gagal mengimport data! ❌')
+                ->title('Gagal Mengimpor Data! ❌')
                 ->body($e->getMessage())
                 ->danger()
                 ->duration(10000)

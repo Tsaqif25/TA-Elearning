@@ -79,10 +79,10 @@ public function dataSiswa()
         return $this->hasMany(UserTugas::class);
     }
 
-    public function userMateri()
-    {
-        return $this->hasMany(UserMateri::class);
-    }
+    // public function userMateri()
+    // {
+    //     return $this->hasMany(UserMateri::class);
+    // }
 
     public function userJawaban()
     {

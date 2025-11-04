@@ -37,7 +37,16 @@
 
             <form wire:submit.prevent="submit">
                 {{ $this->form }}
-
+                        <div>
+            <x-filament::button
+                tag="a"
+                color="info"
+                href="{{ asset('storage/templates/template_siswa.xlsx') }}"
+                icon="heroicon-o-arrow-down-tray"
+            >
+                Download Template
+            </x-filament::button>
+        </div>
                 <div class="mt-6 flex justify-end gap-3">
                     <x-filament::button
                         type="button"
