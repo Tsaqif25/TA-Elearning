@@ -61,15 +61,7 @@
               class="w-full rounded-xl border border-gray-200 bg-[#F9FAFB] focus:border-[#2B82FE] focus:ring-2 focus:ring-[#2B82FE]/20 p-3 outline-none transition placeholder:text-gray-400">
           </div>
 
-          <!-- Durasi -->
-          {{-- <div>
-            <label for="time" class="block text-sm font-semibold text-gray-800 mb-2">
-              Durasi (menit) <span class="text-red-500">*</span>
-            </label>
-            <input type="number" id="time" name="time" value="{{ old('time', $ujian->time) }}" required
-              placeholder="Masukkan durasi ujian..."
-              class="w-full rounded-xl border border-gray-200 bg-[#F9FAFB] focus:border-[#2B82FE] focus:ring-2 focus:ring-[#2B82FE]/20 p-3 outline-none transition placeholder:text-gray-400">
-          </div> --}}
+  
 
           <!-- Tanggal Jatuh Tempo -->
           <div>

@@ -4,7 +4,7 @@
     <h2 class="text-xl font-bold text-[#0A090B]">Daftar Quiz</h2>
 
     {{-- Tombol Buat Quiz hanya untuk Pengajar --}}
-    @if (Auth::user()->hasRole('Pengajar|Wakur'))
+    @if (Auth::user()->hasRole('Pengajar'))
       <a href="{{ route('ujian.create', ['kelasMapel' => $kelasMapel->id]) }}" 
          class="flex items-center gap-2 bg-[#2B82FE] text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:bg-[#1a6ae0] transition">
         <i class="fa-solid fa-plus"></i> Tambah Quiz
@@ -51,7 +51,7 @@
           <!-- Kanan -->
           <div class="flex flex-wrap gap-2 mt-4 sm:mt-0">
             {{-- Untuk Pengajar --}}
-            @if (Auth::user()->hasRole('Pengajar|Wakur'))
+            @if (Auth::user()->hasRole('Pengajar'))
               <a href="{{ route('ujian.soal.manage', ['ujian' => $ujians->id]) }}"
                  class="flex items-center gap-1 bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-gray-200 transition">
                 <i class="fa-solid fa-eye text-[12px]"></i> Detail

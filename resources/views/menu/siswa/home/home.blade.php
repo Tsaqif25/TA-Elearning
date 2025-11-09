@@ -59,34 +59,46 @@
     </div>
 
     {{-- 📚 KELAS & MAPEL --}}
-    <div class="bg-white border border-[#EEEEEE] rounded-2xl shadow-sm p-6">
-      <h2 class="text-lg font-bold text-[#0A090B] mb-5">Kelas & Mata Pelajaran</h2>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        @if ($kelas && count($mapelKelas))
-          @foreach ($mapelKelas as $mapelKelasItem)
-            <a href="{{ route('viewKelasMapel', ['mapel' => $mapelKelasItem['mapel_id'], 'kelas' => $kelas->id]) }}"
-              class="p-5 border border-[#E0E7FF] rounded-2xl hover:-translate-y-1 transition bg-[#EEF2FF] shadow-sm">
-              <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 bg-[#4338CA] text-white flex items-center justify-center rounded-xl font-bold">
-                  {{ strtoupper(substr($mapelKelasItem['mapel_name'], 0, 2)) }}
-                </div>
-                <div>
-                  <h3 class="font-semibold text-[#0A090B]">{{ $mapelKelasItem['mapel_name'] }}</h3>
-                  <p class="text-sm text-[#7F8190]">Pengajar: {{ $mapelKelasItem['pengajar_name'] ?? '-' }}</p>
-                </div>
+<div class="bg-white border border-[#EEEEEE] rounded-2xl shadow-sm p-6">
+  <h2 class="text-lg font-bold text-[#0A090B] mb-5">Kelas & Mata Pelajaran</h2>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    @if ($kelas && count($mapelKelas))
+      @foreach ($mapelKelas as $mapelKelasItem)
+        <a href="{{ route('viewKelasMapel', ['mapel' => $mapelKelasItem['mapel_id'], 'kelas' => $kelas->id]) }}"
+          class="flex flex-col justify-between h-full p-5 border border-[#E0E7FF] rounded-2xl 
+                 hover:-translate-y-1 transition bg-[#EEF2FF] shadow-sm">
+          
+          {{-- Header Mapel --}}
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-[#4338CA] text-white flex items-center justify-center rounded-xl font-bold">
+                {{ strtoupper(substr($mapelKelasItem['mapel_name'], 0, 2)) }}
               </div>
-              <button class="mt-3 w-full bg-[#2B82FE] text-white py-2 rounded-full font-semibold text-sm hover:bg-[#1E68CC] transition">
-                Lihat Detail
-              </button>
-            </a>
-          @endforeach
-        @else
-          <div class="col-span-3 text-center text-gray-500 p-6">
-            Belum ada mata pelajaran untuk kelas ini.
+              <div>
+                <h3 class="font-semibold text-[#0A090B]">{{ $mapelKelasItem['mapel_name'] }}</h3>
+                <p class="text-sm text-[#7F8190]">
+                  Pengajar: {{ $mapelKelasItem['pengajar_name'] ?? '-' }}
+                </p>
+              </div>
+            </div>
           </div>
-        @endif
+
+          {{-- Tombol --}}
+          <button
+            class="mt-3 w-full bg-[#2B82FE] text-white py-2 rounded-full font-semibold text-sm 
+                   hover:bg-[#1E68CC] transition">
+            Lihat Detail
+          </button>
+        </a>
+      @endforeach
+    @else
+      <div class="col-span-3 text-center text-gray-500 p-6">
+        Belum ada mata pelajaran untuk kelas ini.
       </div>
-    </div>
+    @endif
+  </div>
+</div>
 
   </div>
 </div>

@@ -6,7 +6,7 @@
 <div class="flex flex-col w-full bg-[#FAFAFA] font-poppins min-h-screen">
   <div class="max-w-[1200px] w-full mx-auto px-5 sm:px-6 lg:px-10 mt-8 mb-16">
 
-    <!-- 🔹 Tombol Back -->
+    <!--  Tombol Back -->
     <a href="{{ route('viewKelasMapel', [
         'mapel' => $kelasMapel->mapel->id,
         'kelas' => $kelasMapel->kelas->id,
@@ -17,7 +17,7 @@
       Kembali ke Daftar Materi
     </a>
 
-    <!-- 🔸 Header Informasi -->
+    <!--  Header Informasi -->
     <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 mb-8 flex items-start sm:items-center justify-between flex-wrap gap-4">
       <div class="flex items-start sm:items-center gap-3">
         <div class="w-1.5 h-8 rounded-full bg-[#2B82FE]"></div>

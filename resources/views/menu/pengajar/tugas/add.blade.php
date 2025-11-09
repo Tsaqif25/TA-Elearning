@@ -15,7 +15,7 @@
       Kembali ke Daftar Tugas
     </a>
 
-    <!-- 🔸 Header Informasi -->
+    <!--  Header Informasi -->
     <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 mb-8 flex items-start sm:items-center justify-between flex-wrap gap-4">
       <div class="flex items-start sm:items-center gap-3">
         <div class="w-1.5 h-8 rounded-full bg-[#2B82FE]"></div>
@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <!-- 🧩 Card Form -->
+    <!-- Card Form -->
     <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-6 sm:p-8 flex flex-col lg:flex-row gap-8">
 
       <!-- Kolom Kiri -->

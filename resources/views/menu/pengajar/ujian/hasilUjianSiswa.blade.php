@@ -38,7 +38,7 @@
   </div>
 
 
-  <!-- 📋 DAFTAR SISWA -->
+  <!--  DAFTAR SISWA -->
   <div class="mt-6 space-y-5">
 
     @forelse ($students as $student)

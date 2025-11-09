@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    
     public function viewDashboard(): View|RedirectResponse
     {
         $user = Auth::user();
@@ -20,9 +19,7 @@ class DashboardController extends Controller
         }
         // Arahkan ke dashboard sesuai role
 
-        if ($user->hasRole('Admin')) {
-            return $this->adminDashboard();
-                } elseif ($user->hasRole('Wakur')) {
+                if ($user->hasRole('Wakur')) {
             return $this->pengajarDashboard(); 
         } elseif ($user->hasRole('Pengajar')) {
             return $this->pengajarDashboard();
@@ -34,34 +31,11 @@ class DashboardController extends Controller
 
     }
 
- 
-    // private function adminDashboard(): View
-    // {
-    //     $stats = [
-    //         'totalSiswa' => DataSiswa::count(),
-    //         'totalUserSiswa' => User::role('Siswa')->count(),
-    //         'totalPengajar' => User::role('Pengajar')->count(),
-    //         'totalKelas' => Kelas::count(),
-    //         'totalMapel' => Mapel::count(),
-    //         'totalMateri' => Materi::count(),
-    //         'totalTugas' => Tugas::count(),
-    //         'totalUjian' => Ujian::count(),
-    //     ];
 
-    //     return view('menu.admin.dashboard.dashboard', [
-    //         'materi' => Materi::latest()->take(5)->get(),
-    //         'title' => 'Dashboard Admin',
-    //         'roles' => 'Admin',
-    //         'data' => $stats,
-    //     ]);
-    // }
-
-   
 private function pengajarDashboard(): View
 {
     // Ambil data user yang login
     $user = Auth::user();
-
     // Ambil semua data kelas-mapel yang diajar guru ini
     $dataAkses = EditorAccess::where('user_id', $user->id)
         ->with(['kelasMapel.kelas', 'kelasMapel.mapel'])
@@ -138,38 +112,6 @@ private function getMapelWithPengajar(Kelas $kelas)
     return $hasil;
 }
 
- 
-
-
-// public function viewHome(): View|RedirectResponse
-// {
-//     $user = Auth::user();
-
-//     // Cek login dan role
-//     if (!$user) return redirect()->route('login');
-//     if (!$user->hasRole('Siswa')) return redirect()->route('dashboard');
-
-//     // Cek apakah siswa sudah punya kelas
-//     if (!$user->kelas_id) {
-//         return view('menu.siswa.home.home', [
-//             'title' => 'Home',
-//             'roles' => 'Siswa',
-//             'user' => $user,
-//             'kelas' => null,
-//             'mapelKelas' => [],
-//         ])->with('warning', 'Anda belum terdaftar di kelas manapun');
-//     }
-
-//     // Jika sudah ada kelas
-//     $kelas = Kelas::find($user->kelas_id);
-//     $mapelKelas = $this->getMapelWithPengajar($kelas);
-
-//     return view('menu.siswa.home.home', compact('user', 'kelas', 'mapelKelas') + [
-//         'title' => 'Home',
-//         'roles' => 'Siswa',
-//     ]);
-// } 
-
 
 public function viewHome(): View|RedirectResponse
 {
@@ -178,10 +120,13 @@ public function viewHome(): View|RedirectResponse
     if (!$user) return redirect()->route('login');
     if (!$user->hasRole('Siswa')) return redirect()->route('dashboard');
 
-    // 🔹 Ambil kelas langsung dari relasi user
-    $kelas = $user->kelas;
+    // Ambil data siswa berdasarkan user_id
+    $dataSiswa = DataSiswa::where('user_id', $user->id)->first();
 
-    // 🔹 Jika belum ada kelas, tampilkan peringatan
+    // Ambil kelas dari relasi model DataSiswa
+    $kelas = $dataSiswa ? $dataSiswa->kelas : null;
+
+    // 🚨 Jika belum ada kelas, beri peringatan
     if (!$kelas) {
         return view('menu.siswa.home.home', [
             'title' => 'Home',
@@ -192,7 +137,7 @@ public function viewHome(): View|RedirectResponse
         ])->with('warning', 'Anda belum terdaftar di kelas manapun');
     }
 
-    // 🔹 Ambil mapel & pengajar untuk kelas ini
+    //  Ambil mapel & pengajar untuk kelas ini
     $mapelKelas = $this->getMapelWithPengajar($kelas);
 
     return view('menu.siswa.home.home', compact('user', 'kelas', 'mapelKelas') + [
@@ -200,7 +145,6 @@ public function viewHome(): View|RedirectResponse
         'roles' => 'Siswa',
     ]);
 }
-
 
 
   

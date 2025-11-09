@@ -24,9 +24,6 @@ use Illuminate\Validation\ValidationException;
 
 class UjianManagementController extends Controller
 {
-
-
-
     // FORM TAMBAH UJIAN
     public function create(KelasMapel $kelasMapel, Request $request)
     {
@@ -43,14 +40,12 @@ class UjianManagementController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-           
             'due' => 'required|date',
         ]);
 
         $ujian = Ujian::create([
             'kelas_mapel_id' => $kelasMapel->id,
             'name' => $validated['name'],
-          
             'due' => $validated['due'],
         ]);
 
@@ -81,7 +76,6 @@ class UjianManagementController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-       
             'due' => 'required|date',
         ]);
 
@@ -99,8 +93,6 @@ class UjianManagementController extends Controller
 
     }
 
-
-
     public function destroy(Ujian $ujian)
     {
 
@@ -117,13 +109,5 @@ class UjianManagementController extends Controller
         ])->with('success', 'Materi berhasil ditambahkan!');
     }
 
-
-
-
-
-
 }
-
-
-
 ?>

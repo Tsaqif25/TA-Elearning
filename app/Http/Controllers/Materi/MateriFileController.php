@@ -13,38 +13,41 @@ class MateriFileController extends Controller
     /**
      * Upload file materi (via Dropzone / AJAX)
      */
-    public function store(Request $request, Materi $materi)
-    {
-        //  Validasi input
-        $request->validate([
-            'file' => 'required|file|max:10240', // max 10 MB
+public function store(Request $request, Materi $materi)
+{
+    //  Validasi input
+    $request->validate([
+        'file' => 'required|file|max:10240', // max 10 MB
+    ]);
+
+    try {
+        $file = $request->file('file');
+        
+        // 🔹 Ambil nama asli file
+        $originalName = $file->getClientOriginalName();
+
+        // 🔹 Simpan file pakai nama asli
+        $path = $file->storeAs("materi/{$materi->id}", $originalName, 'public');
+
+        // 🔹 Simpan ke database (nama file asli juga)
+        $materi->files()->create([
+            'file' => $originalName
         ]);
 
-        try {
-            // Simpan file ke storage/public/materi/{id_materi}
-            $file = $request->file('file');
-            $path = $file->store("materi/{$materi->id}", 'public');
+        return response()->json([
+            'success' => true,
+            'message' => 'File berhasil diunggah!',
+            'path' => $path
+        ], 200);
 
-            //  Simpan nama file ke tabel materi_files via relasi
-            $materi->files()->create([
-                'file' => basename($path)
-            ]);
-
-            //  Response untuk Dropzone
-            return response()->json([
-                'success' => true,
-                'message' => 'File berhasil diunggah!',
-                'path' => $path
-            ], 200);
-
-        } catch (\Throwable $e) {
-            //  Tangani error upload
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal upload file: ' . $e->getMessage(),
-            ], 500);
-        }
+    } catch (\Throwable $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal upload file: ' . $e->getMessage(),
+        ], 500);
     }
+}
+
 
     /**
  * Menampilkan file materi langsung di browser (tanpa download)

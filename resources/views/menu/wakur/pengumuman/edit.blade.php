@@ -11,7 +11,6 @@
       Kembali ke Daftar Pengumuman
     </a>
   </div>
-
   <!-- Header -->
   <div class="flex items-center gap-4 mb-8">
     
@@ -20,7 +19,6 @@
       <p class="text-sm text-[#7F8190]">Perbarui isi dan lampiran pengumuman ini</p>
     </div>
   </div>
-
   <!-- Form Container -->
   <div class="bg-white border border-[#E5E7EB] rounded-2xl shadow-sm p-8 max-w-3xl">
     <h2 class="font-bold text-lg mb-6 text-[#0A090B]">Detail Pengumuman</h2>
@@ -88,5 +86,4 @@
     </form>
   </div>
 </div>
-
 @endsection

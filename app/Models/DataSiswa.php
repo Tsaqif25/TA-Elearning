@@ -25,6 +25,7 @@ public function user()
 }
 
 
+
     public function kelas()
     {
         return $this->belongsTo(Kelas::class);

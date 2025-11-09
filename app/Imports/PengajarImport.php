@@ -38,7 +38,7 @@ class PengajarImport implements ToModel, WithStartRow, SkipsEmptyRows
                 return null;
             }
 
-            // 🔹 Pastikan user unik berdasarkan email
+            //  Pastikan user unik berdasarkan email
             $user = User::where('email', $email)->first();
             if (!$user) {
                 $user = User::create([
@@ -52,17 +52,17 @@ class PengajarImport implements ToModel, WithStartRow, SkipsEmptyRows
                 $user->update(['name' => $nama]);
             }
 
-            // 🔹 Pastikan kelas dan mapel sudah ada
+            //  Pastikan kelas dan mapel sudah ada
             $kelas = Kelas::firstOrCreate(['name' => $kelasNm]);
             $mapel = Mapel::firstOrCreate(['name' => $mapelNm]);
 
-            // 🔹 Pastikan kombinasi kelas–mapel unik
+            //  Pastikan kombinasi kelas–mapel unik
             $kelasMapel = KelasMapel::firstOrCreate([
                 'kelas_id' => $kelas->id,
                 'mapel_id' => $mapel->id,
             ]);
 
-            // 🔹 Cek apakah guru ini sudah punya akses ke kombinasi ini
+            //  Cek apakah guru ini sudah punya akses ke kombinasi ini
             $exists = EditorAccess::where('user_id', $user->id)
                 ->where('kelas_mapel_id', $kelasMapel->id)
                 ->exists();

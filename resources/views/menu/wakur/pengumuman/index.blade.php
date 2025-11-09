@@ -39,8 +39,6 @@
 
       <!-- Footer: info user dan tanggal -->
       <div class="flex items-center gap-3 text-xs text-[#7F8190] mt-2">
-        {{-- <i class="fa-solid fa-user"></i> --}}
-        {{-- <span>{{ $item->user->name ?? 'Admin Sekolah' }}</span> --}}
         <i class="fa-solid fa-calendar-days ml-3"></i>
         <span>
           {{ \Carbon\Carbon::parse($item->published_at)->translatedFormat('d F Y \p\u\u\k\u\l H:i') }}

@@ -27,7 +27,7 @@
     }
     .btn-purple:hover {
       box-shadow: 0 4px 15px rgba(100,54,241,.3);
-      color: #fff;
+      color: #010935;
     }
   </style>
 </head>

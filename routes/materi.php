@@ -26,13 +26,13 @@ Route::middleware('auth')->controller(MateriController::class)
 // File Materi (upload / hapus)
 Route::prefix('materi')->name('materi.')->controller(MateriFileController::class)->group(function () {
 
-    // 🔹 Hanya Pengajar yang boleh upload dan hapus
+    //  Hanya Pengajar yang boleh upload dan hapus
     Route::middleware(['auth', 'role:Pengajar'])->group(function () {
         Route::post('{materi}/upload-file', 'store')->name('uploadFile');
         Route::delete('{materi}/delete-destroy-file', 'destroy')->name('destroyFile');
     });
 
-    // 🔹 Semua user login (Siswa, Pengajar, Admin, Wakur) boleh preview file
+    //  Semua user login (Siswa, Pengajar, Admin, Wakur) boleh preview file
     Route::middleware('auth')->group(function () {
         Route::get('{materi}/file/{filename}', 'showFile')
             ->where('filename', '.*')

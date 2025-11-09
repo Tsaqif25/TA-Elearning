@@ -22,11 +22,8 @@ Route::middleware('auth')->controller(TugasController::class)->group(function ()
         Route::delete('/tugas/{tugas}', 'destroyTugas')->name('tugas.destroy');
     });
 
-    Route::middleware('role:Admin')->group(function () {
-        Route::get('/tugasAdmin', 'viewTugasAdmin')->name('viewTugasAdmin');
-    });
+   
 });
-
 // File Tugas
 Route::middleware(['auth', 'role:Pengajar'])
     ->prefix('tugas')->name('tugas.')
@@ -35,7 +32,6 @@ Route::middleware(['auth', 'role:Pengajar'])
         Route::post('{tugas}/upload-file', 'store')->name('uploadFile');
         Route::delete('{tugas}/delete-file', 'destroy')->name('deleteFile');
     });
-
 // Submit Tugas (Siswa)
 Route::middleware('auth')->controller(TugasSubmitController::class)->group(function () {
     Route::get('/lihat-tugas/{tugas}', 'viewTugasSiswa')->name('lihatTugas');

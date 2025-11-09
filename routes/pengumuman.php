@@ -21,6 +21,6 @@ Route::middleware('auth')
             Route::delete('/{pengumuman}', 'destroy')->name('destroy');
         });
 
-        //  HARUS DITARUH PALING BAWAH
+        
         Route::get('/{pengumuman}', 'show')->name('show');
     });

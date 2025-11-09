@@ -63,7 +63,7 @@ $materiPerGuru = User::role('Pengajar')
     )
     ->groupBy('users.id', 'users.name')
     ->orderByDesc('total_upload')
-    ->get();
+    ->paginate(10);
 
 
         //  Kirim ke view
