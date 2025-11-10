@@ -2,22 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Ujian extends Model
 {
-use HasFactory;
+    use HasFactory;
 
+    protected $fillable = ['kelas_mapel_id', 'name', 'due'];
 
-protected $fillable = ['kelas_mapel_id','name','due'];
+    public function kelasMapel()
+    {
+        return $this->belongsTo(KelasMapel::class);
+    }
 
-
-// Konvensi nama method relasi (lowerCamelCase)
-public function kelasMapel() { return $this->belongsTo(KelasMapel::class); }
-public function soalUjianMultiple() { return $this->hasMany(SoalUjianMultiple::class); }
-
-
-
-public function user() { return $this->belongsTo(User::class); }
+    public function soalMultiples()
+    {
+        return $this->hasMany(SoalUjianMultiple::class);
+    }
 }

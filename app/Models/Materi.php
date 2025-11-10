@@ -2,38 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Materi extends Model
 {
-use HasFactory;
+    use HasFactory;
 
-protected $fillable = [
-    'kelas_mapel_id',
-    'name',
-    'content',
-    'youtube_link'
-];
+    protected $fillable = ['kelas_mapel_id', 'name', 'konten', 'youtube_link'];
 
+    public function kelasMapel()
+    {
+        return $this->belongsTo(KelasMapel::class);
+    }
 
-
-public function kelasMapel()
-{
-    return $this->belongsTo(KelasMapel::class);
-}
-
-public function files()
-{
-return $this->hasMany(MateriFile::class);
-}
-
-
-
-
-
-public function userMateri()
-{
-    return $this->hasMany(UserMateri::class);
-}
+    public function files()
+    {
+        return $this->hasMany(MateriFile::class);
+    }
 }

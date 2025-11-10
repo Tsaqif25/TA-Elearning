@@ -23,11 +23,11 @@ class MapelResource extends Resource
             Forms\Components\TextInput::make('name')
                 ->label('Nama Mapel')
                 ->required(),
-
             Forms\Components\Textarea::make('deskripsi')
                 ->label('Deskripsi')
                 ->rows(3)
-                ->maxLength(500),
+                ->maxLength(500)
+                ->helperText('Tambahkan deskripsi singkat tentang mata pelajaran ini.'),
         ]);
     }
 
@@ -35,19 +35,13 @@ class MapelResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Nama Mapel')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('deskripsi')
-                    ->label('Deskripsi')
-                    ->limit(50),
+                Tables\Columns\TextColumn::make('name')->label('Nama Mapel')->searchable(),
+                Tables\Columns\TextColumn::make('deskripsi')->label('Deskripsi')->limit(50),
+                Tables\Columns\TextColumn::make('created_at')->label('Dibuat')->date('d M Y'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(), // 
             ]);
     }
 

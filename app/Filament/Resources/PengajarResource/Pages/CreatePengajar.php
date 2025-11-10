@@ -4,6 +4,8 @@ namespace App\Filament\Resources\PengajarResource\Pages;
 
 use App\Filament\Resources\PengajarResource;
 use Filament\Resources\Pages\CreateRecord;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class CreatePengajar extends CreateRecord
 {
@@ -11,13 +13,24 @@ class CreatePengajar extends CreateRecord
 
     protected function afterCreate(): void
     {
-        //  Tambahkan role "Pengajar" secara otomatis
-        $this->record->assignRole('Pengajar');
+        //  Buat akun user baru
+        $user = User::create([
+            'name' => $this->record->name,
+            'email' => $this->record->email,
+            'password' => Hash::make($this->data['password']),
+        ]);
+
+        //  Tambahkan role "Pengajar"
+        $user->assignRole('Pengajar');
+
+        //  Hubungkan guru dengan user-nya
+        $this->record->update([
+            'user_id' => $user->id,
+        ]);
     }
 
     protected function getRedirectUrl(): string
     {
-        //  Redirect kembali ke index, bukan ke edit
         return $this->getResource()::getUrl('index');
     }
 }

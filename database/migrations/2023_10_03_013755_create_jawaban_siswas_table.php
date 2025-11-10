@@ -11,19 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_jawabans', function (Blueprint $table) {
+        Schema::create('jawaban_siswas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('multiple_id')
                 ->constrained('soal_ujian_multiples')
                 ->onDelete('cascade');
-            $table->foreignId('user_id')
-                ->constrained('users')
-                ->onDelete('cascade');
+           $table->foreignId('siswa_id')->constrained('data_siswas')->onDelete('cascade');
             $table->foreignId('soal_ujian_answer_id')
                 ->nullable()
                 ->constrained('soal_ujian_answers')
                 ->onDelete('set null');
-            $table->string('user_jawaban')->nullable(); // dipakai oleh getJawabanMultiple & simpanJawabanMultiple
+            // $table->string('user_jawaban')->nullable(); // dipakai oleh getJawabanMultiple & simpanJawabanMultiple
             $table->decimal('nilai', 6, 2)->nullable(); // dipakai saat penilaian
             $table->timestamps();
         });
@@ -34,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_jawabans');
+        Schema::dropIfExists('jawaban_siswas');
     }
 };

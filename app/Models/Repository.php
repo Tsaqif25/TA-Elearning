@@ -3,19 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Repository extends Model
 {
-      protected $fillable = [
-        'judul',
-        'deskripsi',
-        'kelas',
-        'jurusan',
-        'user_id',
-        
-    ];
+    use HasFactory, SoftDeletes;
 
-      public function user()
+    protected $fillable = ['user_id', 'judul', 'deskripsi', 'kelas', 'jurusan', 'youtube_link'];
+
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

@@ -26,8 +26,13 @@ class KelasResource extends Resource
                 ->required()
                 ->unique(ignoreRecord: true),
 
+            // Forms\Components\TextInput::make('jurusan')
+            //     ->label('Jurusan')
+            //     ->placeholder('Contoh: PPLG, TKJ, AKL, dsb.')
+            //     ->nullable(),
+
             Forms\Components\Select::make('mapels')
-                ->label('Pilih Mata Pelajaran')
+                ->label('Mata Pelajaran')
                 ->relationship('mapels', 'name')
                 ->multiple()
                 ->preload()
@@ -39,44 +44,27 @@ class KelasResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Nama Kelas')
-                    ->searchable()
-                    ->sortable(),
-
-                Tables\Columns\BadgeColumn::make('mapels_count')
-                    ->counts('mapels')
-                    ->label('Jumlah Mapel'),
-
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->date('d M Y'),
+                Tables\Columns\TextColumn::make('name')->label('Nama Kelas')->searchable()->sortable(),
+                // Tables\Columns\TextColumn::make('jurusan')->label('Jurusan')->sortable(),
+                Tables\Columns\BadgeColumn::make('mapels_count')->counts('mapels')->label('Jumlah Mapel'),
+                Tables\Columns\TextColumn::make('created_at')->label('Dibuat')->date('d M Y'),
             ])
-            ->filters([
-                Tables\Filters\SelectFilter::make('jurusan')
-                    ->label('Filter Jurusan')
-                    ->options([
-                        'TKJ' => 'Teknik Komputer & Jaringan (TKJ)',
-                        'PPLG' => 'Pengembangan Perangkat Lunak & Gim (PPLG)',
-                        'MPLB' => 'Manajemen Perkantoran & Layanan Bisnis (MPLB)',
-                        'ULW' => 'Usaha Layanan Wisata (ULW)',
-                        'BR'  => 'Bisnis Ritel(BR)',
-                        'BD'  => 'Bisnis Digital (BD)',
-                        'AKL' => 'Akuntansi & Keuangan Lembaga (AKL)',
-                    ])
-                    ->query(function ($query, array $data) {
-                        if ($data['value']) {
-                            $query->where('name', 'like', '%' . $data['value'] . '%');
-                        }
-                    })
-                    ->placeholder('Semua Jurusan'),
-            ])
+            // ->filters([
+            //     Tables\Filters\SelectFilter::make('jurusan')
+            //         ->label('Filter Jurusan')
+            //         ->options([
+            //             'TKJ' => 'Teknik Komputer & Jaringan (TKJ)',
+            //             'PPLG' => 'Pengembangan Perangkat Lunak & Gim (PPLG)',
+            //             'MPLB' => 'Manajemen Perkantoran & Layanan Bisnis (MPLB)',
+            //             'ULW' => 'Usaha Layanan Wisata (ULW)',
+            //             'BR'  => 'Bisnis Ritel (BR)',
+            //             'BD'  => 'Bisnis Digital (BD)',
+            //             'AKL' => 'Akuntansi & Keuangan Lembaga (AKL)',
+            //         ]),
+            // ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 

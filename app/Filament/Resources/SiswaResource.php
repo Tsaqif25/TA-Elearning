@@ -2,15 +2,14 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SiswaResource\Pages;
-use App\Models\DataSiswa;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Hash;
+use Filament\Resources\Resource;
+use App\Models\DataSiswa;
+use App\Models\Kelas;
+use App\Filament\Resources\SiswaResource\Pages;
 
 class SiswaResource extends Resource
 {
@@ -22,32 +21,40 @@ class SiswaResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\TextInput::make('name')
-                ->label('Nama Siswa')
-                ->required(),
+            // 🧩 Data Utama Siswa
+            Forms\Components\Section::make('Data Siswa')
+                ->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->label('Nama Lengkap')
+                        ->required(),
 
-            Forms\Components\TextInput::make('nis')
-                ->label('NIS')
-                ->required(),
+                    Forms\Components\TextInput::make('nis')
+                        ->label('NIS')
+                        ->unique(ignoreRecord: true)
+                        ->required(),
 
-            Forms\Components\Select::make('kelas_id')
-                ->label('Kelas')
-                ->relationship('kelas', 'name')
-                ->required(),
+                    Forms\Components\Select::make('kelas_id')
+                        ->label('Kelas')
+                        ->relationship('kelas', 'name')
+                        ->required(),
 
-            Forms\Components\TextInput::make('email')
-                ->label('Email Akun')
-                ->required()
-                ->email(),
+                    Forms\Components\TextInput::make('no_telp')
+                        ->label('Nomor Telepon')
+                        ->tel()
+                        ->nullable(),
 
-            Forms\Components\TextInput::make('no_telp')
-                ->label('No. Telepon')
-                ->nullable(),
+                    Forms\Components\TextInput::make('email')
+                        ->label('Email Akun')
+                        ->email()
+                        ->required(),
 
-            Forms\Components\TextInput::make('password')
-                ->label('Password Awal')
-                ->required()
-                ->password(),
+                    Forms\Components\TextInput::make('password')
+                        ->label('Password Akun')
+                        ->password()
+                        ->required(fn (string $context) => $context === 'create')
+                        ->helperText('Password ini digunakan untuk login akun siswa.'),
+                ])
+                ->columns(2),
         ]);
     }
 
@@ -55,17 +62,25 @@ class SiswaResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('Nama Siswa')->searchable(),
-                Tables\Columns\TextColumn::make('nis')->label('NIS'),
-                Tables\Columns\TextColumn::make('kelas.name')->label('Kelas'),
-                Tables\Columns\TextColumn::make('user.email')->label('Email Akun'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nama Siswa')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('nis')
+                    ->label('NIS')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('kelas.name')
+                    ->label('Kelas'),
+
+                Tables\Columns\TextColumn::make('email')
+                    ->label('Email Akun')
+                    ->limit(25),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 

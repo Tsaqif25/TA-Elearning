@@ -12,18 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');                  // default Laravel
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('nip')->nullable();       // NIP/NIS opsional
-            $table->string('no_telp')->nullable();   // nomor telepon opsional
-            $table->foreignId('kelas_id')            // relasi opsional ke kelas
-                  ->nullable()
-                  ->constrained('kelas')
-                  ->nullOnDelete();
-            // $table->foreignId('roles_id');
-            $table->timestamps();
+         $table->id();
+    $table->string('name');
+    $table->string('email')->unique();
+    $table->string('password');
+    $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

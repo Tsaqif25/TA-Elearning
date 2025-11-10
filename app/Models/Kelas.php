@@ -2,39 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Kelas extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-    ];
+    protected $fillable = ['name'];
 
-
-
-    public function users()
-    {
-        return $this->hasMany(User::class);
-    }
-
-    public function dataSiswa()
+    public function dataSiswas()
     {
         return $this->hasMany(DataSiswa::class);
     }
 
-    public function kelasMapel()
+    public function kelasMapels()
     {
         return $this->hasMany(KelasMapel::class);
     }
 
     public function mapels()
-{
-    return $this->belongsToMany(Mapel::class, 'kelas_mapels', 'kelas_id', 'mapel_id');
-}
-
-
-   
+    {
+        return $this->belongsToMany(Mapel::class, 'kelas_mapels', 'kelas_id', 'mapel_id');
+    }
 }

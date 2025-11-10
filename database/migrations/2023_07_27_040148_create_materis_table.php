@@ -12,18 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('materis', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('kelas_mapel_id')
+             $table->id();
+     $table->foreignId('kelas_mapel_id')
                 ->constrained('kelas_mapels')
                 ->onDelete('cascade');
-
-            $table->string('name');
-            $table->longText('content');
-            
-            // 🔹 Tambahkan kolom YouTube langsung di sini
-            $table->longText('youtube_link')->nullable();
-
-            $table->timestamps();
+    $table->string('name');
+    $table->longText('konten');
+    $table->string('youtube_link')->nullable();
+    $table->timestamps();
         });
     }
 

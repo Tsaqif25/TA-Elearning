@@ -9,22 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-      public function up(): void
+    public function up(): void
     {
         Schema::create('tugas_files', function (Blueprint $table) {
-            $table->id(); // Primary key
-
-            // Tambahkan kolom tugas_id lalu jadikan foreign key
-            $table->foreignId('tugas_id')
-                  ->constrained('tugas') // sesuaikan dengan nama tabel utama
-                  ->onDelete('cascade');
-
+           $table->id();
+    $table->foreignId('tugas_id')->constrained('tugas')->onDelete('cascade');
             $table->string('file');
             $table->timestamps();
         });
     }
-
-    
 
     /**
      * Reverse the migrations.

@@ -9,42 +9,22 @@ class KelasMapel extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'kelas_id',
-        'mapel_id',
-    ];
+    protected $fillable = ['kelas_id', 'mapel_id'];
 
+    public function kelas() { return $this->belongsTo(Kelas::class); }
+    public function mapel() { return $this->belongsTo(Mapel::class); }
 
-public function editorAccess()
-{
-    return $this->hasOne(EditorAccess::class);  
-}
-    public function kelas()
+    public function pengajarKelasMapels()
     {
-        return $this->belongsTo(Kelas::class);
+        return $this->hasMany(PengajarKelasMapel::class);
     }
 
-    public function mapel()
+    public function gurus()
     {
-        return $this->belongsTo(Mapel::class);
+        return $this->belongsToMany(Guru::class, 'pengajar_kelas_mapels', 'kelas_mapel_id', 'guru_id');
     }
 
-    public function materi()
-    {
-        return $this->hasMany(Materi::class);
-    }
-
-    public function tugas()
-    {
-        return $this->hasMany(Tugas::class);
-    }
-
-    public function ujian()
-    {
-        return $this->hasMany(Ujian::class);
-    }
-
-    
-
-
+    public function materis() { return $this->hasMany(Materi::class); }
+    public function tugas()   { return $this->hasMany(Tugas::class); }
+    public function ujians()  { return $this->hasMany(Ujian::class); }
 }
