@@ -1,38 +1,31 @@
 <div id="content-tugas" class="tab-content block p-6">
-  <!-- Header -->
   <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-3">
     <h2 class="text-xl font-bold text-[#0A090B]">Daftar Tugas</h2>
 
     @if (Auth::user()->hasRole('Pengajar'))
       <a href="{{ route('viewCreateTugas', $kelasMapel->id) }}" 
-         class="flex items-center gap-2 bg-[#2B82FE] text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:bg-[#1a6ae0] transition">
+         class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:opacity-90 transition">
         <i class="fa-solid fa-plus"></i> Tambah Tugas
       </a>
     @endif
   </div>
 
-  {{-- Jika belum ada tugas --}}
   @if ($tugas->isEmpty())
     <p class="text-center text-[#7F8190] py-6">Belum ada tugas yang ditambahkan.</p>
   @else
     <div class="flex flex-col gap-3">
       @foreach ($tugas as $tugass)
-        <div class="bg-white border border-gray-100 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-sm hover:shadow-md transition hover:-translate-y-0.5 duration-200">
-          <!-- Kiri -->
+        <div class="bg-white border border-gray-100 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-sm hover:shadow-md hover:border-blue-200 transition">
           <div class="flex items-start gap-4">
-            <div class="w-10 h-10 flex items-center justify-center bg-indigo-100 text-[#2B82FE] rounded-lg flex-shrink-0">
+            <div class="w-10 h-10 flex items-center justify-center bg-indigo-100 text-indigo-600 rounded-lg flex-shrink-0">
               <i class="fa-solid fa-clipboard-list text-lg"></i>
             </div>
 
             <div>
-              <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1 leading-snug">
-                {{ $tugass->name }}
-              </h3>
-
+              <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1 leading-snug">{{ $tugass->name }}</h3>
               <p class="text-sm text-[#7F8190] leading-relaxed mb-2">
-                {{ Str::words(strip_tags($tugass->content?? 'Belum ada deskripsi untuk tugas ini.'), 7, '...') }}
+                {{ Str::words(strip_tags($tugass->content ?? 'Belum ada deskripsi untuk tugas ini.'), 7, '...') }}
               </p>
-
               <p class="text-sm text-[#7F8190]">
                 <span class="inline-flex items-center gap-1">
                   <i class="fa-solid fa-calendar-days text-xs"></i>
@@ -46,9 +39,7 @@
             </div>
           </div>
 
-          <!-- Kanan -->
           <div class="flex flex-wrap gap-2 mt-4 sm:mt-0">
-            {{-- Tombol Lihat --}}
             @if (Auth::user()->hasRole('Siswa'))
               <a href="{{ route('lihatTugas', $tugass->id) }}"
                  class="flex items-center gap-1 bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-gray-200 transition">
@@ -79,6 +70,8 @@
     </div>
   @endif
 </div>
+
+{{-- script lama tetap --}}
 
 {{-- SweetAlert Delete Confirmation --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

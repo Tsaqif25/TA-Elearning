@@ -53,9 +53,9 @@ class DashboardController extends Controller
                 'title' => 'Dashboard Pengajar',
                 'user' => $user,
                 'kelasDanMapel' => [],
-                'totalKelas' => 0,
-                'totalMapel' => 0,
-                'totalSiswa' => 0,
+                // 'totalKelas' => 0,
+                // 'totalMapel' => 0,
+                // 'totalSiswa' => 0,
                 'warning' => 'Data guru belum terhubung dengan user ini.',
             ]);
         }
@@ -85,17 +85,17 @@ class DashboardController extends Controller
             }
         }
 
-        $totalKelas = count(array_unique($kelasIds));
-        $totalMapel = count(array_unique($mapelIds));
-        $totalSiswa = DataSiswa::whereIn('kelas_id', $kelasIds)->count();
+        // $totalKelas = count(array_unique($kelasIds));
+        // $totalMapel = count(array_unique($mapelIds));
+        // $totalSiswa = DataSiswa::whereIn('kelas_id', $kelasIds)->count();
 
         return view('menu.pengajar.dashboard.dashboard', [
             'title' => 'Dashboard Pengajar',
             'user' => $user,
             'kelasDanMapel' => $kelasDanMapel,
-            'totalKelas' => $totalKelas,
-            'totalMapel' => $totalMapel,
-            'totalSiswa' => $totalSiswa,
+            // 'totalKelas' => $totalKelas,
+            // 'totalMapel' => $totalMapel,
+            // 'totalSiswa' => $totalSiswa,
         ]);
     }
 

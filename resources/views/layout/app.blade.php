@@ -4,63 +4,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@yield('title', 'Dashboard')</title>
+<style>
+  /* Tab aktif dengan garis bawah gradient */
+  .tab-active {
+    color: #2B82FE;
+    font-weight: 600;
+    border-bottom-width: 3px;
+    border-image: linear-gradient(to right, #3B82F6, #22C55E) 1;
+    border-image-slice: 1;
+  }
 
-  {{-- Head Partial cdn tailwind,font,dll --}}
+  .tab-inactive {
+    color: #7F8190;
+    border-bottom: 3px solid transparent;
+  }
+
+  .tab-inactive:hover {
+    color: #2B82FE;
+  }
+</style>
+
+  {{-- ✅ Partial untuk head --}}
   @include('partials.head')
 
-  {{-- Style Inline (CSS Global) --}}
-  <style>
-    body { font-family: 'Poppins', sans-serif; }
-    .sidebar { transition: transform 0.3s ease-in-out; }
+  {{-- ✅ CSS Global --}}
 
-    /* Mobile */
-    @media (max-width: 1024px) {
-      #sidebar {
-        position: fixed; left: 0; top: 0; height: 100vh; width: 270px;
-        z-index: 50; transform: translateX(-100%);
-      }
-      #sidebar.active { transform: translateX(0); }
-    }
-
-    /* Desktop */
-    @media (min-width: 1025px) {
-      #sidebar { transform: translateX(0) !important; }
-    }
-
-    /* Tab Style */
-    .tab-active {
-      color: #2B82FE;
-      border-bottom: 2px solid #2B82FE;
-    }
-    .tab-inactive {
-      color: #7F8190;
-    }
-  </style>
 </head>
 
-<body class="text-[#0A090B] bg-[#FAFAFA]">
-  <!-- Overlay for mobile sidebar -->
+<body class="text-[#0A090B] bg-[#FAFAFA] min-h-screen flex flex-col">
+
+  {{-- Overlay untuk sidebar mobile (kalau nanti dipakai) --}}
   <div id="overlay"
        class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"
        onclick="toggleSidebar()"></div>
 
-  <!-- Layout utama -->
-  <section class="flex">
-    {{-- Sidebar --}}
-    @include('layout.navbar.sidebar')
+  {{-- 🌐 Layout Utama --}}
+  <section class="flex flex-col flex-grow">
 
-    <div class="flex flex-col w-full pb-[30px]">
-      {{-- Topbar --}}
-      @include('layout.navbar.topbar')
+    {{-- ✅ TOPBAR --}}
+    @include('layout.navbar.topbar')
 
-      {{-- Konten dinamis --}}
-      <main class="p-6">
-        @yield('container')
-      </main>
-    </div>
+    {{-- ✅ KONTEN --}}
+    <main class="flex-grow p-6">
+      @yield('container')
+    </main>
+
   </section>
+ @include('layout.navbar.footer')
+  {{-- ✅ FOOTER (Letakkan di bawah konten, sebelum </body>) --}}
 
-  {{-- Script Global --}}
+
+  {{-- ✅ SCRIPT --}}
   @include('partials.scripts')
+
+  
+
 </body>
 </html>

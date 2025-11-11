@@ -4,7 +4,7 @@
 
     @if (Auth::user()->hasRole('Pengajar'))
       <a href="{{ route('materi.create', ['kelasMapel' => $kelasMapel->id]) }}"
-         class="flex items-center gap-2 bg-[#2B82FE] text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:bg-[#1a6ae0] transition">
+         class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:opacity-90 transition">
         <i class="fa-solid fa-plus"></i> Tambah Materi
       </a>
     @endif
@@ -15,25 +15,21 @@
   @else
     <div class="flex flex-col gap-3">
       @foreach ($materi as $materis)
-        <div class="bg-white border border-gray-100 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-sm hover:shadow-md transition hover:-translate-y-0.5 duration-200">
-          <!-- Kiri -->
+        <div class="bg-white border border-gray-100 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-sm hover:shadow-md hover:border-blue-200 transition">
+          <!-- kiri -->
           <div class="flex items-start gap-4">
-            <div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-[#2B82FE] rounded-lg flex-shrink-0">
+            <div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-blue-600 rounded-lg flex-shrink-0">
               <i class="fa-solid fa-file-lines text-lg"></i>
             </div>
 
             <div>
-              <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1 leading-snug">
-                {{ $materis->name }}
-              </h3>
-          <p class="text-sm text-[#7F8190] leading-relaxed mb-2">
-            {{ Str::words(strip_tags($materis->content), 7, '...') ?? 'Belum ada deskripsi untuk materi ini.' }}
-          </p>
-
+              <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1 leading-snug">{{ $materis->name }}</h3>
+              <p class="text-sm text-[#7F8190] leading-relaxed mb-2">
+                {{ Str::words(strip_tags($materis->content), 7, '...') ?? 'Belum ada deskripsi untuk materi ini.' }}
+              </p>
               <p class="text-sm text-[#7F8190]">
                 <span class="inline-flex items-center gap-1">
-                  <i class="fa-solid fa-calendar-days text-xs"></i>
-                  {{ $materis->created_at->format('d/m/Y') }}
+                  <i class="fa-solid fa-calendar-days text-xs"></i> {{ $materis->created_at->format('d/m/Y') }}
                 </span>
                 <span class="mx-2 text-gray-300">•</span>
                 <span class="inline-flex items-center gap-1">
@@ -43,7 +39,7 @@
             </div>
           </div>
 
-          <!-- Kanan -->
+          <!-- kanan -->
           <div class="flex flex-wrap gap-2 mt-4 sm:mt-0">
             <a href="{{ route('materi.show', $materis->id) }}"
                class="flex items-center gap-1 bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-gray-200 transition">
@@ -68,7 +64,6 @@
     </div>
   @endif
 </div>
-
 
 {{-- SweetAlert Delete Confirmation --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -1,112 +1,66 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
-<div class="flex flex-col w-full bg-[#FAFAFA] min-h-screen">
-  <div class="flex flex-col px-6 lg:px-10 mt-6 pb-12">
+<div class="min-h-screen bg-slate-50 text-slate-800 font-sans fade-in">
 
-    {{-- ✅ ALERT SUCCESS --}}
-    @if (session()->has('success'))
-      <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-lg flex justify-between items-center mb-6">
-        <span>{{ session('success') }}</span>
-        <button onclick="this.parentElement.remove()" class="text-green-600 hover:text-green-800">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+  {{-- 🎓 Hero Section --}}
+  <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+    <div class="bg-gradient-to-tr from-blue-500 to-green-500 text-white rounded-2xl p-6 sm:p-8 shadow-md">
+      <h1 class="text-2xl sm:text-4xl font-bold mb-3">
+        Selamat Datang, <span class="underline decoration-white/40">{{ Auth::user()->name }}</span>! 👋
+      </h1>
+      <p class="text-white/90 max-w-2xl mb-6 text-sm sm:text-base">
+        Akses semua mata pelajaran, tugas, dan materi pembelajaran dalam satu platform.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a href="{{ route('dashboard') }}"
+           class="px-5 sm:px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition">
+          Lanjutkan Belajar
+        </a>
+        <a href="#jadwal"
+           class="px-5 sm:px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition">
+          Lihat Jadwal
+        </a>
       </div>
-    @endif
-
-    {{-- 🧑‍🎓 HERO PROFIL --}}
-    <div class="bg-white border border-[#EEEEEE] rounded-2xl shadow-sm p-6 flex flex-col sm:flex-row justify-between items-center mb-8">
-      <div>
-        <h1 class="text-2xl font-extrabold text-[#0A090B]">
-          {{ $kelas?->name ?? 'Belum ada kelas terdaftar' }}
-        </h1>
-        <p class="text-sm text-[#7F8190]">
-          @if ($kelas)
-            Selamat datang di kelasmu! Semangat belajar 🎓
-          @else
-            Silakan hubungi admin untuk didaftarkan ke kelas.
-          @endif
-        </p>
-
-        {{-- 📋 Toggle View Siswa --}}
-        @if ($kelas)
-          <div x-data="{ open: false }" class="mt-4">
-            <button 
-              @click="open = !open"
-              class="bg-[#F4F4F4] hover:bg-[#E5E7EB] text-[#0A090B] font-medium px-4 py-2 rounded-full transition flex items-center gap-2">
-              <i class="fa-solid fa-users"></i>
-              <span x-text="open ? 'Tutup Daftar Siswa' : 'View Siswa'"></span>
-            </button>
-
-            <div x-show="open" x-transition class="bg-white border border-[#EEEEEE] rounded-xl p-6 shadow-sm mt-3">
-              <h2 class="text-lg font-bold text-[#0A090B] mb-3">Daftar Siswa di {{ $kelas->name }}</h2>
-              
-              @php
-                $daftarSiswa = \App\Models\DataSiswa::where('kelas_id', $kelas->id)->with('user')->get();
-              @endphp
-
-              @forelse ($daftarSiswa as $index => $siswa)
-                <div class="flex justify-between items-center border-b border-gray-200 py-2">
-                  <div class="flex items-center gap-3">
-                    <span class="font-semibold text-gray-700">{{ $index + 1 }}.</span>
-                    <span class="font-medium text-[#0A090B]">{{ $siswa->name }}</span>
-                  </div>
-                  <span class="text-sm text-gray-500">{{ $siswa->user?->email ?? '-' }}</span>
-                </div>
-              @empty
-                <p class="text-gray-500 italic text-center py-4">Belum ada siswa di kelas ini.</p>
-              @endforelse
-            </div>
-          </div>
-        @endif
-      </div>
-      <img src="https://cdn-icons-png.flaticon.com/512/4931/4931645.png" class="w-[140px]" alt="Student Illustration">
     </div>
+  </header>
 
-    {{-- 📚 KELAS & MAPEL --}}
-    <div class="bg-white border border-[#EEEEEE] rounded-2xl shadow-sm p-6">
-      <h2 class="text-lg font-bold text-[#0A090B] mb-5">Kelas & Mata Pelajaran</h2>
+  {{-- 📚 Mata Pelajaran Section --}}
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h2 class="text-lg sm:text-xl font-semibold text-slate-800 mb-6">Mata Pelajaran Saya</h2>
 
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        @if ($kelas && count($mapelKelas))
-          @foreach ($mapelKelas as $mapelKelasItem)
-            <a href="{{ route('viewKelasMapel', ['mapel' => $mapelKelasItem['mapel_id'], 'kelas' => $kelas->id]) }}"
-              class="flex flex-col justify-between h-full p-5 border border-[#E0E7FF] rounded-2xl 
-                     hover:-translate-y-1 transition bg-[#EEF2FF] shadow-sm">
-              
-              {{-- Header Mapel --}}
-              <div>
-                <div class="flex items-center gap-3 mb-3">
-                  <div class="w-10 h-10 bg-[#4338CA] text-white flex items-center justify-center rounded-xl font-bold">
-                    {{ strtoupper(substr($mapelKelasItem['mapel_name'], 0, 2)) }}
-                  </div>
-                  <div>
-                    <h3 class="font-semibold text-[#0A090B]">{{ $mapelKelasItem['mapel_name'] }}</h3>
-                    <p class="text-sm text-[#7F8190]">
-                      Pengajar: {{ $mapelKelasItem['pengajar_name'] ?? '-' }}
-                    </p>
-                  </div>
-                </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      @if ($kelas && count($mapelKelas))
+        @foreach ($mapelKelas as $mapel)
+          <a href="{{ route('viewKelasMapel', ['mapel' => $mapel['mapel_id'], 'kelas' => $kelas->id]) }}"
+             class="bg-white rounded-xl p-5 sm:p-6 shadow-sm hover:shadow-md cursor-pointer transition border border-transparent hover:border-blue-200 flex flex-col justify-between">
+
+            {{-- Icon + Nama --}}
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl
+                          {{ $loop->index % 2 == 0 ? 'bg-green-600' : 'bg-blue-600' }}">
+                {{ strtoupper(substr($mapel['mapel_name'], 0, 2)) }}
               </div>
+            </div>
 
-              {{-- Tombol --}}
-              <button
-                class="mt-3 w-full bg-[#2B82FE] text-white py-2 rounded-full font-semibold text-sm 
-                       hover:bg-[#1E68CC] transition">
-                Lihat Detail
-              </button>
-            </a>
-          @endforeach
-        @else
-          <div class="col-span-3 text-center text-gray-500 p-6">
-            Belum ada mata pelajaran untuk kelas ini.
-          </div>
-        @endif
-      </div>
+            {{-- Detail Mapel --}}
+            <div>
+              <h3 class="text-base sm:text-lg font-semibold mb-1">{{ $mapel['mapel_name'] }}</h3>
+              <p class="text-sm text-gray-500 mb-4">Pengajar: {{ $mapel['pengajar_name'] ?? '-' }}</p>
+              <div class="mt-3 flex items-center justify-between">
+                <span class="text-sm text-gray-500">Jumlah Materi:</span>
+                <span class="font-semibold text-green-600">{{ $mapel['materi_count'] ?? 0 }} Materi</span>
+              </div>
+            </div>
+          </a>
+        @endforeach
+      @else
+        <div class="col-span-4 text-center text-gray-500 py-10">
+          Belum ada mata pelajaran untuk kelas ini.
+        </div>
+      @endif
     </div>
-
-  </div>
+    
+  </main>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 @endsection
