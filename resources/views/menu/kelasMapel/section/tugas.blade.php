@@ -1,75 +1,95 @@
 <div id="content-tugas" class="tab-content block p-6">
-  <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-3">
-    <h2 class="text-xl font-bold text-[#0A090B]">Daftar Tugas</h2>
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-3">
+    <h2 class="text-2xl font-extrabold text-[#0A090B] tracking-tight">📋 Daftar Tugas</h2>
 
     @if (Auth::user()->hasRole('Pengajar'))
       <a href="{{ route('viewCreateTugas', $kelasMapel->id) }}" 
-         class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:opacity-90 transition">
+         class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2.5 rounded-full font-semibold text-sm shadow-md hover:scale-[1.03] hover:shadow-lg transition duration-300 ease-in-out">
         <i class="fa-solid fa-plus"></i> Tambah Tugas
       </a>
     @endif
   </div>
 
+  <!-- Jika belum ada tugas -->
   @if ($tugas->isEmpty())
-    <p class="text-center text-[#7F8190] py-6">Belum ada tugas yang ditambahkan.</p>
+    <div class="flex flex-col items-center justify-center py-10 text-center">
+      <div class="w-14 h-14 flex items-center justify-center bg-[#EEF4FF] rounded-2xl text-[#2B82FE] mb-4 shadow-sm">
+        <i class="fa-solid fa-clipboard-list text-xl"></i>
+      </div>
+      <p class="text-[#7F8190] text-sm">Belum ada tugas yang ditambahkan.</p>
+    </div>
   @else
-    <div class="flex flex-col gap-3">
-      @foreach ($tugas as $tugass)
-        <div class="bg-white border border-gray-100 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-sm hover:shadow-md hover:border-blue-200 transition">
+
+  <!-- Daftar Tugas -->
+  <div class="flex flex-col gap-4">
+    @foreach ($tugas as $tugass)
+      <div class="group bg-white border border-gray-100 p-5 rounded-2xl shadow-sm hover:shadow-lg hover:border-[#2B82FE]/40 transition-all duration-300 ease-in-out">
+
+        <!-- Isi Tugas -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+
+          <!-- Kiri -->
           <div class="flex items-start gap-4">
-            <div class="w-10 h-10 flex items-center justify-center bg-indigo-100 text-indigo-600 rounded-lg flex-shrink-0">
+            <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-tr from-indigo-500 to-blue-500 text-white rounded-xl shadow-sm flex-shrink-0 group-hover:scale-110 transition">
               <i class="fa-solid fa-clipboard-list text-lg"></i>
             </div>
 
             <div>
-              <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1 leading-snug">{{ $tugass->name }}</h3>
-              <p class="text-sm text-[#7F8190] leading-relaxed mb-2">
+              <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1 leading-snug group-hover:text-[#2B82FE] transition">
+                {{ $tugass->name }}
+              </h3>
+              <p class="text-sm text-[#555] leading-relaxed mb-2">
                 {{ Str::words(strip_tags($tugass->content ?? 'Belum ada deskripsi untuk tugas ini.'), 7, '...') }}
               </p>
-              <p class="text-sm text-[#7F8190]">
+              <p class="text-xs text-[#7F8190]">
                 <span class="inline-flex items-center gap-1">
-                  <i class="fa-solid fa-calendar-days text-xs"></i>
+                  <i class="fa-solid fa-calendar-days text-[10px]"></i>
                   Deadline: {{ \Carbon\Carbon::parse($tugass->due ?? '2025-10-20')->format('d/m/Y') }}
                 </span>
                 <span class="mx-2 text-gray-300">•</span>
                 <span class="inline-flex items-center gap-1">
-                  <i class="fa-solid fa-book text-xs"></i> Tugas
+                  <i class="fa-solid fa-book text-[10px]"></i> Tugas
                 </span>
               </p>
             </div>
           </div>
 
-          <div class="flex flex-wrap gap-2 mt-4 sm:mt-0">
+          <!-- Kanan -->
+          <div class="flex flex-wrap gap-2">
             @if (Auth::user()->hasRole('Siswa'))
               <a href="{{ route('lihatTugas', $tugass->id) }}"
-                 class="flex items-center gap-1 bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-gray-200 transition">
+                 class="flex items-center gap-1 bg-[#F8FAFC] text-[#0A090B] text-xs px-3 py-1.5 rounded-full font-medium border border-gray-200 hover:bg-[#EEF4FF] hover:text-[#2B82FE] transition duration-200">
                 <i class="fa-solid fa-eye text-[12px]"></i> Lihat
               </a>
             @endif
 
             @if (Auth::user()->hasRole('Pengajar'))
               <a href="{{ route('viewTugas', $tugass->id) }}"
-                 class="flex items-center gap-1 bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-gray-200 transition">
+                 class="flex items-center gap-1 bg-[#F8FAFC] text-[#0A090B] text-xs px-3 py-1.5 rounded-full font-medium border border-gray-200 hover:bg-[#EEF4FF] hover:text-[#2B82FE] transition duration-200">
                 <i class="fa-solid fa-eye text-[12px]"></i> Lihat
               </a>
 
               <a href="{{ route('viewUpdateTugas', $tugass->id) }}"
-                 class="flex items-center gap-1 bg-amber-100 text-amber-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-amber-200 transition">
+                 class="flex items-center gap-1 bg-amber-50 text-amber-700 text-xs px-3 py-1.5 rounded-full font-medium border border-amber-200 hover:bg-amber-100 transition duration-200">
                 <i class="fa-solid fa-pen text-[12px]"></i> Edit
               </a>
 
               <a href="#"
                  onclick="event.preventDefault(); handleDeleteTugas('{{ route('tugas.destroy', $tugass->id) }}');"
-                 class="flex items-center gap-1 bg-rose-100 text-rose-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-rose-200 transition">
+                 class="flex items-center gap-1 bg-rose-50 text-rose-700 text-xs px-3 py-1.5 rounded-full font-medium border border-rose-200 hover:bg-rose-100 transition duration-200">
                 <i class="fa-solid fa-trash text-[12px]"></i> Hapus
               </a>
             @endif
           </div>
         </div>
-      @endforeach
-    </div>
+      </div>
+    @endforeach
+  </div>
   @endif
 </div>
+
 
 {{-- script lama tetap --}}
 

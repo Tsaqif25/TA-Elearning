@@ -31,7 +31,7 @@ class MateriController extends Controller
         //  Validasi input dari form tambah materi
         $validated = $request->validate(rules: [
             'name' => 'required|string',   
-            'content' => 'required|string',
+            'konten' => 'required|string',
             'youtube_link' => 'nullable',  
         ]);
 
@@ -39,7 +39,7 @@ class MateriController extends Controller
         $materi = Materi::create([
             'kelas_mapel_id' => $kelasMapel->id,         
             'name' => $validated['name'],                  
-            'content' => $validated['content'],           
+            'konten' => $validated['konten'],           
             'youtube_link' => $validated['youtube_link'] ?? null,
         ]);
 
@@ -82,7 +82,7 @@ class MateriController extends Controller
      
         $validated = $request->validate([
             'name' => 'required|string|max:255', 
-            'content' => 'required|string',      
+            'konten' => 'required|string',      
             'youtube_link' => 'nullable|string',
         ]);
 

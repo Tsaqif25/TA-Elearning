@@ -1,69 +1,87 @@
 <div id="content-materi" class="tab-content block p-6">
-  <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-3">
-    <h2 class="text-xl font-bold text-[#0A090B]">Daftar Materi</h2>
+
+  <!-- Header Section -->
+  <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-3">
+    <h2 class="text-2xl font-extrabold text-[#0A090B] tracking-tight">📘 Daftar Materi</h2>
 
     @if (Auth::user()->hasRole('Pengajar'))
       <a href="{{ route('materi.create', ['kelasMapel' => $kelasMapel->id]) }}"
-         class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:opacity-90 transition">
+         class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2.5 rounded-full font-semibold text-sm shadow-md hover:scale-[1.03] hover:shadow-lg transition duration-300 ease-in-out">
         <i class="fa-solid fa-plus"></i> Tambah Materi
       </a>
     @endif
   </div>
 
+  <!-- Jika kosong -->
   @if ($materi->isEmpty())
-    <p class="text-center text-[#7F8190] py-6">Belum ada materi yang ditambahkan.</p>
+    <div class="flex flex-col items-center justify-center py-10 text-center">
+      <div class="w-14 h-14 flex items-center justify-center bg-[#EEF4FF] rounded-2xl text-[#2B82FE] mb-4 shadow-sm">
+        <i class="fa-solid fa-folder-open text-xl"></i>
+      </div>
+      <p class="text-[#7F8190] text-sm">Belum ada materi yang ditambahkan.</p>
+    </div>
   @else
-    <div class="flex flex-col gap-3">
-      @foreach ($materi as $materis)
-        <div class="bg-white border border-gray-100 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-sm hover:shadow-md hover:border-blue-200 transition">
-          <!-- kiri -->
+
+  <!-- Daftar Materi -->
+  <div class="flex flex-col gap-4">
+    @foreach ($materi as $materis)
+      <div class="group bg-white border border-gray-100 p-5 rounded-2xl shadow-sm hover:shadow-lg hover:border-[#2B82FE]/40 transition-all duration-300 ease-in-out">
+
+        <!-- Baris utama -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+
+          <!-- Kiri -->
           <div class="flex items-start gap-4">
-            <div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-blue-600 rounded-lg flex-shrink-0">
+            <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-tr from-blue-500 to-green-500 text-white rounded-xl shadow-sm flex-shrink-0 group-hover:scale-110 transition">
               <i class="fa-solid fa-file-lines text-lg"></i>
             </div>
 
             <div>
-              <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1 leading-snug">{{ $materis->name }}</h3>
-              <p class="text-sm text-[#7F8190] leading-relaxed mb-2">
+              <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1 leading-snug group-hover:text-[#2B82FE] transition">
+                {{ $materis->name }}
+              </h3>
+              <p class="text-sm text-[#555] leading-relaxed mb-2">
                 {{ Str::words(strip_tags($materis->content), 7, '...') ?? 'Belum ada deskripsi untuk materi ini.' }}
               </p>
-              <p class="text-sm text-[#7F8190]">
+              <p class="text-xs text-[#7F8190]">
                 <span class="inline-flex items-center gap-1">
-                  <i class="fa-solid fa-calendar-days text-xs"></i> {{ $materis->created_at->format('d/m/Y') }}
+                  <i class="fa-solid fa-calendar-days text-[10px]"></i> {{ $materis->created_at->format('d/m/Y') }}
                 </span>
                 <span class="mx-2 text-gray-300">•</span>
                 <span class="inline-flex items-center gap-1">
-                  <i class="fa-solid fa-book text-xs"></i> Materi
+                  <i class="fa-solid fa-book text-[10px]"></i> Materi
                 </span>
               </p>
             </div>
           </div>
 
-          <!-- kanan -->
-          <div class="flex flex-wrap gap-2 mt-4 sm:mt-0">
+          <!-- Kanan -->
+          <div class="flex flex-wrap gap-2">
             <a href="{{ route('materi.show', $materis->id) }}"
-               class="flex items-center gap-1 bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-gray-200 transition">
-              <i class="fa-solid fa-eye text-[12px]"></i> Lihat
+               class="flex items-center gap-1 bg-[#F8FAFC] text-[#0A090B] text-xs px-3 py-1.5 rounded-full font-medium border border-gray-200 hover:bg-[#EEF4FF] hover:text-[#2B82FE] transition duration-200">
+              <i class="fa-solid fa-eye text-[12px]"></i>
             </a>
 
             @if (Auth::user()->hasRole('Pengajar'))
               <a href="{{ route('materi.edit', $materis->id) }}"
-                 class="flex items-center gap-1 bg-amber-100 text-amber-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-amber-200 transition">
-                <i class="fa-solid fa-pen text-[12px]"></i> Edit
+                 class="flex items-center gap-1 bg-amber-50 text-amber-700 text-xs px-3 py-1.5 rounded-full font-medium border border-amber-200 hover:bg-amber-100 transition duration-200">
+                <i class="fa-solid fa-pen text-[12px]"></i>
               </a>
 
               <a href="#"
                  onclick="event.preventDefault(); handleDeleteMateri('{{ route('materi.destroy', $materis->id) }}');"
-                 class="flex items-center gap-1 bg-rose-100 text-rose-700 text-xs px-3 py-1.5 rounded-full font-semibold hover:bg-rose-200 transition">
-                <i class="fa-solid fa-trash text-[12px]"></i> Hapus
+                 class="flex items-center gap-1 bg-rose-50 text-rose-700 text-xs px-3 py-1.5 rounded-full font-medium border border-rose-200 hover:bg-rose-100 transition duration-200">
+                <i class="fa-solid fa-trash text-[12px]"></i>
               </a>
             @endif
           </div>
         </div>
-      @endforeach
-    </div>
+      </div>
+    @endforeach
+  </div>
   @endif
 </div>
+
 
 {{-- SweetAlert Delete Confirmation --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

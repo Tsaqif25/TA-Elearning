@@ -31,7 +31,7 @@
                 <span class="mx-2 text-gray-300">•</span>
                 <span class="inline-flex items-center gap-1">
                   <i class="fa-solid fa-list-check text-xs"></i>
-                  {{ $ujians->soalUjianMultiple->count() ?? 0 }} Soal
+                  {{-- {{ $ujians->soalUjianMultiple->count() ?? 0 }} Soal --}}
                 </span>
               </p>
             </div>

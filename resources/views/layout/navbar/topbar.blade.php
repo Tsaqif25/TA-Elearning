@@ -1,15 +1,15 @@
-<nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50 backdrop-blur">
+<nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50 backdrop-blur-lg">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center h-16">
 
       <!-- Logo -->
       <div class="flex items-center space-x-3">
-        <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-          <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-tr from-blue-500 to-blue-400 rounded-lg text-white">
+        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
+          <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-tr from-blue-500 to-blue-400 rounded-xl text-white shadow-sm group-hover:scale-105 transition">
             📘
           </div>
           <div>
-            <h1 class="text-lg font-bold">E-Learning</h1>
+            <h1 class="text-lg font-bold text-gray-800">E-Learning</h1>
             <p class="text-xs text-gray-500">SMK 2 Padang</p>
           </div>
         </a>
@@ -17,43 +17,46 @@
 
       <!-- Menu Desktop -->
       <div class="hidden md:flex items-center space-x-2">
+
         {{-- BERANDA --}}
         <a href="{{ route('dashboard') }}"
-          class="px-4 py-2 text-sm font-medium rounded-lg transition
+          class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200
           {{ request()->routeIs('dashboard') 
-              ? 'bg-gradient-to-tr from-blue-500 to-blue-400 text-white shadow-md' 
+              ? 'bg-orange-50 text-orange-600 border border-orange-100 shadow-sm'
               : 'text-gray-600 hover:text-blue-600 hover:bg-slate-100' }}">
-          Beranda
+          <i class="fa-solid fa-house text-[15px]"></i> Beranda
         </a>
 
         {{-- PENGUMUMAN --}}
         <a href="{{ route('pengumuman.index') }}"
-          class="px-4 py-2 text-sm font-medium rounded-lg transition
+          class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200
           {{ request()->routeIs('pengumuman.*') 
-              ? 'bg-gradient-to-tr from-blue-500 to-blue-400 text-white shadow-md' 
+              ? 'bg-blue-50 text-blue-600 border border-blue-100 shadow-sm'
               : 'text-gray-600 hover:text-blue-600 hover:bg-slate-100' }}">
-          Pengumuman
+          <i class="fa-regular fa-bell text-[15px]"></i> 
+          <span>Pengumuman</span>
+          <span class="ml-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span>
         </a>
 
-        {{-- REPOSITORY (hanya pengajar) --}}
+        {{-- REPOSITORY --}}
         @if (Auth::user()->hasRole('Pengajar'))
           <a href="{{ route('repository.index') }}"
-            class="px-4 py-2 text-sm font-medium rounded-lg transition
+            class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200
             {{ request()->routeIs('repository.*') 
-                ? 'bg-gradient-to-tr from-blue-500 to-blue-400 text-white shadow-md' 
+                ? 'bg-green-50 text-green-600 border border-green-100 shadow-sm'
                 : 'text-gray-600 hover:text-blue-600 hover:bg-slate-100' }}">
-            Repository
+            <i class="fa-regular fa-bookmark text-[15px]"></i> Repository
           </a>
         @endif
 
-        {{-- ANALYTIC (hanya wakur) --}}
+        {{-- ANALYTIC --}}
         @if (Auth::user()->hasRole('Wakur'))
           <a href="{{ route('wakur.analytics') }}"
-            class="px-4 py-2 text-sm font-medium rounded-lg transition
+            class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200
             {{ request()->routeIs('wakur.analytics') 
-                ? 'bg-gradient-to-tr from-blue-500 to-blue-400 text-white shadow-md' 
+                ? 'bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-sm'
                 : 'text-gray-600 hover:text-blue-600 hover:bg-slate-100' }}">
-            Analytic
+            <i class="fa-solid fa-chart-line text-[15px]"></i> Analytic
           </a>
         @endif
       </div>
@@ -63,15 +66,15 @@
 
         <!-- Notifikasi -->
         <div class="relative cursor-pointer">
-          <div class="w-9 h-9 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition">
-            🔔
+          <div class="w-9 h-9 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition-all duration-200 shadow-sm">
+            <i class="fa-regular fa-bell text-gray-600 text-[16px]"></i>
           </div>
-          <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+          <span class="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold px-[5px] py-[1px] rounded-full shadow">3</span>
         </div>
 
-        <!-- Profil & Dropdown -->
+        <!-- Profil -->
         <div class="relative group">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-green-600 to-green-400 flex items-center justify-center text-white font-bold uppercase cursor-pointer">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-green-600 to-green-400 flex items-center justify-center text-white font-bold uppercase cursor-pointer shadow-sm">
             {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
           </div>
           <div
@@ -89,9 +92,9 @@
           </div>
         </div>
 
-        <!-- Hamburger Menu -->
+        <!-- Hamburger -->
         <button id="menuBtn" class="md:hidden p-2 rounded-lg hover:bg-slate-100 focus:outline-none">
-          ☰
+          <i class="fa-solid fa-bars text-lg text-gray-600"></i>
         </button>
       </div>
     </div>
@@ -111,6 +114,7 @@
     </div>
   </div>
 </nav>
+
 
 <script>
   const btn = document.getElementById('menuBtn');

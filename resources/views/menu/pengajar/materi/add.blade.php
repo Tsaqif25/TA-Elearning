@@ -58,12 +58,12 @@
 
           <!-- Deskripsi -->
           <div>
-            <label for="content" class="block text-sm font-semibold text-gray-800 mb-2">
+            <label for="konten" class="block text-sm font-semibold text-gray-800 mb-2">
               Deskripsi <span class="text-red-500">*</span>
             </label>
-            <textarea id="content" name="content" rows="5"
+            <textarea id="konten" name="konten" rows="5"
               placeholder="Jelaskan tentang materi ini..."
-              class="w-full rounded-xl border border-gray-200 bg-[#F9FAFB] focus:border-[#2B82FE] focus:ring-2 focus:ring-[#2B82FE]/20 p-3 outline-none transition resize-none placeholder:text-gray-400">{{ old('content') }}</textarea>
+              class="w-full rounded-xl border border-gray-200 bg-[#F9FAFB] focus:border-[#2B82FE] focus:ring-2 focus:ring-[#2B82FE]/20 p-3 outline-none transition resize-none placeholder:text-gray-400">{{ old('konten') }}</textarea>
           </div>
 
           <!-- Link YouTube -->

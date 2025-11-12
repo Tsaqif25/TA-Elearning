@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Materi;
 
 use App\Http\Controllers\Controller;
 use App\Models\Materi;
-use App\Models\MateriFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,93 +12,114 @@ class MateriFileController extends Controller
     /**
      * Upload file materi (via Dropzone / AJAX)
      */
-public function store(Request $request, Materi $materi)
-{
-    //  Validasi input
-    $request->validate([
-        'file' => 'required|file|max:10240', // max 10 MB
-    ]);
-
-    try {
-        $file = $request->file('file');
-        
-        // 🔹 Ambil nama asli file
-        $originalName = $file->getClientOriginalName();
-
-        // 🔹 Simpan file pakai nama asli
-        $path = $file->storeAs("materi/{$materi->id}", $originalName, 'public');
-
-        // 🔹 Simpan ke database (nama file asli juga)
-        $materi->files()->create([
-            'file' => $originalName
+    public function store(Request $request, Materi $materi)
+    {
+        $request->validate([
+            'file' => 'required|file|max:10240', // max 10 MB
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'File berhasil diunggah!',
-            'path' => $path
-        ], 200);
+        try {
+            $file = $request->file('file');
+            $originalName = $file->getClientOriginalName();
 
-    } catch (\Throwable $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Gagal upload file: ' . $e->getMessage(),
-        ], 500);
+            // 🔹 Pastikan folder materi/{id} selalu dibuat
+            Storage::disk('public')->makeDirectory("materi/{$materi->id}");
+
+            // 🔹 Simpan file di storage/app/public/materi/{id}/
+            $path = $file->storeAs("materi/{$materi->id}", $originalName, 'public');
+
+            // 🔹 Simpan ke database
+            $materi->files()->create([
+                'file' => $originalName
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'File berhasil diunggah!',
+                'path' => $path
+            ]);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal upload file: ' . $e->getMessage(),
+            ], 500);
+        }
     }
-}
-
 
     /**
- * Menampilkan file materi langsung di browser (tanpa download)
- */
-public function showFile(Materi $materi, $filename)
-{
-    $path = storage_path("app/public/materi/{$materi->id}/{$filename}");
+     * Download file materi (langsung download)
+     */
+    public function downloadFile($materiId, $filename)
+    {
+        $materi = \App\Models\Materi::findOrFail($materiId);
 
-    if (!file_exists($path)) {
-        abort(404, 'File tidak ditemukan.');
+        // 🔒 Validasi role user
+        if (!auth()->user()->hasAnyRole(['Admin', 'Pengajar', 'Siswa', 'Wakur'])) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $filePath = "materi/{$materiId}/{$filename}";
+
+        if (!Storage::disk('public')->exists($filePath)) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        // 🔹 Download file
+        return Storage::disk('public')->download($filePath);
     }
 
-    // Tampilkan langsung di tab baru (tidak download)
-    return response()->file($path);
-}
+    /**
+     * Preview file materi (tampil di browser, bukan download)
+     */
+    public function showFile(Materi $materi, $filename)
+    {
+        $path = storage_path("app/public/materi/{$materi->id}/{$filename}");
 
+        // 🔹 Jika file tidak ditemukan di lokasi utama
+        if (!file_exists($path)) {
+            // Coba di alternatif
+            $altPath = storage_path("app/public/file/materi/{$filename}");
+            if (file_exists($altPath)) {
+                $path = $altPath;
+            } else {
+                abort(404, 'File tidak ditemukan.');
+            }
+        }
+
+        return response()->file($path);
+    }
 
     /**
      * Hapus file materi
      */
     public function destroy(Request $request, Materi $materi)
     {
-        // Validasi ID file
         $request->validate([
             'file_id' => 'required|integer|exists:materi_files,id',
         ]);
 
-        //   Cari file yang terhubung dengan materi ini
         $file = $materi->files()->find($request->file_id);
 
-        //  Pastikan file benar-benar milik materi tersebut
         if (!$file) {
             return $this->responseError('File tidak ditemukan.');
         }
 
-        //  Hapus dari storage jika file ada
         $filePath = "materi/{$materi->id}/{$file->file}";
+
         if (Storage::disk('public')->exists($filePath)) {
             Storage::disk('public')->delete($filePath);
         }
 
-        //  Hapus dari database
         $file->delete();
 
-        //  Kembalikan respon sesuai jenis request
         return $request->ajax()
             ? response()->json(['success' => true, 'message' => 'File berhasil dihapus.'])
             : back()->with('success', 'File berhasil dihapus.');
     }
 
     /**
-     * Helper untuk respon error
+     * Helper respon error
      */
     private function responseError(string $message)
     {

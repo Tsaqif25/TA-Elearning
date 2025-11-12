@@ -3,7 +3,7 @@
     <h2 class="text-3xl font-bold mb-1">{{ $kelas->name }} - {{ $mapel->name }}</h2>
     <p class="text-sm text-white/90 mb-6">Kelola Materi, Tugas, dan Quiz di kelas ini</p>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    {{-- <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div class="bg-white/20 rounded-lg p-4 text-center backdrop-blur-sm">
         <div class="text-xl font-bold">{{ $materi->count() }}</div>
         <div class="text-sm">Total Materi</div>
@@ -16,6 +16,6 @@
         <div class="text-xl font-bold">{{ $ujian->count() }}</div>
         <div class="text-sm">Total Ujian</div>
       </div>
-    </div>
+    </div> --}}
   </div>
 </div>
