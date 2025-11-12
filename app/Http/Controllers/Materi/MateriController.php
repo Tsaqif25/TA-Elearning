@@ -6,7 +6,8 @@ use App\Models\Materi;
 use App\Models\KelasMapel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Notification;
+use App\Models\DataSiswa;
 
 
 class MateriController extends Controller
@@ -26,39 +27,52 @@ class MateriController extends Controller
         ]);
     }
 
-    public function store(Request $request, KelasMapel $kelasMapel)
-    {
-        //  Validasi input dari form tambah materi
-        $validated = $request->validate(rules: [
-            'name' => 'required|string',   
-            'konten' => 'required|string',
-            'youtube_link' => 'nullable',  
+ public function store(Request $request, KelasMapel $kelasMapel)
+{
+    $validated = $request->validate([
+        'name' => 'required|string',   
+        'konten' => 'required|string',
+        'youtube_link' => 'nullable',  
+    ]);
+
+    // Simpan materi baru
+    $materi = Materi::create([
+        'kelas_mapel_id' => $kelasMapel->id,         
+        'name' => $validated['name'],                  
+        'konten' => $validated['konten'],           
+        'youtube_link' => $validated['youtube_link'] ?? null,
+    ]);
+
+    // 🔔 Tambahkan Notifikasi ke Semua Siswa di Kelas Ini
+    $kelasId = $kelasMapel->kelas_id; // ambil ID kelas dari KelasMapel
+    $siswaList = DataSiswa::where('kelas_id', $kelasId)->get();
+
+    foreach ($siswaList as $siswa) {
+        Notification::create([
+            'user_id' => $siswa->user_id,
+            'title' => 'Materi Baru: ' . $materi->name,
+            'message' => 'Guru menambahkan materi baru di mapel ' . $kelasMapel->mapel->name,
+            'type' => 'materi',
         ]);
-
-    
-        $materi = Materi::create([
-            'kelas_mapel_id' => $kelasMapel->id,         
-            'name' => $validated['name'],                  
-            'konten' => $validated['konten'],           
-            'youtube_link' => $validated['youtube_link'] ?? null,
-        ]);
-
-
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Materi berhasil disimpan!',
-                'materi_id' => $materi->id 
-            ]);
-        }
-
-
-        return redirect()->route('viewKelasMapel', [
-            'mapel' => $kelasMapel->mapel_id, 
-            'kelas' => $kelasMapel->kelas_id, 
-            'tab'   => 'materi'            
-        ])->with('success', 'Materi berhasil ditambahkan!');
     }
+
+    // Jika request berasal dari AJAX (Dropzone / CKEditor)
+    if ($request->ajax()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Materi berhasil disimpan!',
+            'materi_id' => $materi->id 
+        ]);
+    }
+
+    // Redirect biasa jika bukan AJAX
+    return redirect()->route('viewKelasMapel', [
+        'mapel' => $kelasMapel->mapel_id, 
+        'kelas' => $kelasMapel->kelas_id, 
+        'tab'   => 'materi'            
+    ])->with('success', 'Materi berhasil ditambahkan & notifikasi dikirim.');
+}
+
 
     public function edit(Materi $materi)
     {

@@ -1,3 +1,14 @@
+@php
+    use App\Models\Notification;
+    use Illuminate\Support\Facades\Auth;
+
+    $notifCount = Notification::where(function ($query) {
+        $query->where('user_id', Auth::id())->orWhereNull('user_id');
+    })
+    ->where('is_read', false)
+    ->count();
+@endphp
+
 <nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50 backdrop-blur-lg">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center h-16">
@@ -17,7 +28,6 @@
 
       <!-- Menu Desktop -->
       <div class="hidden md:flex items-center space-x-2">
-
         {{-- BERANDA --}}
         <a href="{{ route('dashboard') }}"
           class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200
@@ -35,7 +45,6 @@
               : 'text-gray-600 hover:text-blue-600 hover:bg-slate-100' }}">
           <i class="fa-regular fa-bell text-[15px]"></i> 
           <span>Pengumuman</span>
-          <span class="ml-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span>
         </a>
 
         {{-- REPOSITORY --}}
@@ -64,12 +73,23 @@
       <!-- Right Section -->
       <div class="flex items-center space-x-3">
 
-        <!-- Notifikasi -->
-        <div class="relative cursor-pointer">
-          <div class="w-9 h-9 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition-all duration-200 shadow-sm">
-            <i class="fa-regular fa-bell text-gray-600 text-[16px]"></i>
+        {{-- 🔔 Notifikasi (ASLI, TANPA DIUBAH) --}}
+        <div class="relative" id="notif-wrapper">
+          <div id="notif-button" class="cursor-pointer">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition-all duration-200 shadow-sm">
+              <i class="fa-regular fa-bell text-gray-600 text-[16px]"></i>
+            </div>
+            @if($notifCount > 0)
+              <span class="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold px-[5px] py-[1px] rounded-full shadow">
+                {{ $notifCount }}
+              </span>
+            @endif
           </div>
-          <span class="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold px-[5px] py-[1px] rounded-full shadow">3</span>
+
+          {{-- Dropdown akan muncul di sini --}}
+          <div id="notif-dropdown" class="hidden absolute right-0 mt-2">
+            {{-- isi notifikasi akan dimuat di sini via AJAX --}}
+          </div>
         </div>
 
         <!-- Profil -->
@@ -115,9 +135,35 @@
   </div>
 </nav>
 
-
 <script>
   const btn = document.getElementById('menuBtn');
   const menu = document.getElementById('mobileMenu');
   btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+
+  // 🔔 Script Notifikasi (ASLI DARI KAMU)
+  document.addEventListener("DOMContentLoaded", function() {
+    const btn = document.getElementById('notif-button');
+    const dropdown = document.getElementById('notif-dropdown');
+    let isOpen = false;
+
+    btn.addEventListener('click', async () => {
+      if (!isOpen) {
+        const response = await fetch('{{ route('notifications.latest') }}');
+        const html = await response.text();
+        dropdown.innerHTML = html;
+        dropdown.classList.remove('hidden');
+        isOpen = true;
+      } else {
+        dropdown.classList.add('hidden');
+        isOpen = false;
+      }
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
+        isOpen = false;
+      }
+    });
+  });
 </script>

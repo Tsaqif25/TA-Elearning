@@ -19,3 +19,4 @@ require __DIR__.'/pengumuman.php';
 require __DIR__.'/analytics.php';
 require __DIR__.'/file.php';
 require __DIR__.'/repository.php';
+require __DIR__.'/notification.php';
