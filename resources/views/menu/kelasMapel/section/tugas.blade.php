@@ -41,7 +41,7 @@
                 {{ $tugass->name }}
               </h3>
               <p class="text-sm text-[#555] leading-relaxed mb-2">
-                {{ Str::words(strip_tags($tugass->content ?? 'Belum ada deskripsi untuk tugas ini.'), 7, '...') }}
+                {{ Str::words(strip_tags($tugass->deskripsi ?? 'Belum ada deskripsi untuk tugas ini.'), 7, '...') }}
               </p>
               <p class="text-xs text-[#7F8190]">
                 <span class="inline-flex items-center gap-1">

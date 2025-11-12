@@ -51,10 +51,10 @@
 
           <!-- Deskripsi -->
           <div class="mb-5">
-            <label for="content" class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi / Konten <span class="text-red-500">*</span></label>
-            <textarea id="content" name="content" rows="5" placeholder="Tuliskan instruksi atau penjelasan tugas..."
-              class="w-full rounded-xl border border-gray-200 bg-gray-50 focus:border-[#2B82FE] focus:ring focus:ring-[#2B82FE]/20 p-3 outline-none transition resize-none">{{ old('content') }}</textarea>
-            @error('content')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+            <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi / Konten <span class="text-red-500">*</span></label>
+            <textarea id="deskripsi" name="deskripsi" rows="5" placeholder="Tuliskan instruksi atau penjelasan tugas..."
+              class="w-full rounded-xl border border-gray-200 bg-gray-50 focus:border-[#2B82FE] focus:ring focus:ring-[#2B82FE]/20 p-3 outline-none transition resize-none">{{ old('deskripsi') }}</textarea>
+            @error('deskripsi')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
           </div>
 
           <!-- Deadline -->
@@ -139,7 +139,7 @@ $(document).ready(function () {
       url: $(this).attr('action'),
       data: formData,
       processData: false,
-      contentType: false,
+       contentType: false ,
       success: function (response) {
         savedTugasId = response.tugas_id;
 
