@@ -23,7 +23,7 @@ class DashboardController extends Controller
 
         // Arahkan dashboard sesuai role
         if ($user->hasRole('Wakur')) {
-            return $this->wakurDashboard();
+            return $this->pengajarDashboard($user);
         } elseif ($user->hasRole('Pengajar')) {
             return $this->pengajarDashboard($user);
         } elseif ($user->hasRole('Siswa')) {

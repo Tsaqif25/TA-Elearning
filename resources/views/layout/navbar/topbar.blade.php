@@ -2,11 +2,9 @@
     use App\Models\Notification;
     use Illuminate\Support\Facades\Auth;
 
-    $notifCount = Notification::where(function ($query) {
-        $query->where('user_id', Auth::id())->orWhereNull('user_id');
-    })
-    ->where('is_read', false)
-    ->count();
+  $notifCount = Notification::where('user_id',Auth::id())
+  ->where('is_read',false)
+  ->count();
 @endphp
 
 <nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50 backdrop-blur-lg">
@@ -73,24 +71,32 @@
       <!-- Right Section -->
       <div class="flex items-center space-x-3">
 
-        {{-- 🔔 Notifikasi (ASLI, TANPA DIUBAH) --}}
-        <div class="relative" id="notif-wrapper">
-          <div id="notif-button" class="cursor-pointer">
-            <div class="w-9 h-9 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition-all duration-200 shadow-sm">
-              <i class="fa-regular fa-bell text-gray-600 text-[16px]"></i>
-            </div>
-            @if($notifCount > 0)
-              <span class="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold px-[5px] py-[1px] rounded-full shadow">
-                {{ $notifCount }}
-              </span>
-            @endif
-          </div>
+        {{--  Notifikasi (ASLI, TANPA DIUBAH) --}}
+      <div class="relative" id="notif-wrapper">
+  <!-- tombol  dan badge -->
+  <div id="notif-button" class="cursor-pointer">
+    <div class="w-9 h-9 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition shadow-sm">
+      <i class="fa-regular fa-bell text-gray-600 text-[16px]"></i>
+    </div>
+    @if($notifCount > 0)
+      <span class="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold px-[5px] py-[1px] rounded-full shadow">
+        {{ $notifCount }}
+      </span>
+    @endif
+  </div>
 
-          {{-- Dropdown akan muncul di sini --}}
-          <div id="notif-dropdown" class="hidden absolute right-0 mt-2">
-            {{-- isi notifikasi akan dimuat di sini via AJAX --}}
-          </div>
-        </div>
+<!-- Dropdown Notifikasi -->
+<div id="notif-dropdown"
+     class="hidden sm:absolute sm:right-0 sm:top-12 fixed inset-x-0 top-14 mx-auto w-[92vw] sm:w-80 max-w-[92vw] sm:max-w-sm bg-white border border-gray-200 rounded-2xl shadow-xl z-50 sm:mx-0 sm:inset-x-auto sm:right-2">
+  <div class="max-h-[70vh] overflow-y-auto p-3 sm:p-4 text-sm text-gray-700">
+    Tidak ada notifikasi
+  </div>
+</div>
+
+
+
+</div>
+
 
         <!-- Profil -->
         <div class="relative group">
@@ -139,31 +145,30 @@
   const btn = document.getElementById('menuBtn');
   const menu = document.getElementById('mobileMenu');
   btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+</script>
 
-  // 🔔 Script Notifikasi (ASLI DARI KAMU)
-  document.addEventListener("DOMContentLoaded", function() {
-    const btn = document.getElementById('notif-button');
-    const dropdown = document.getElementById('notif-dropdown');
-    let isOpen = false;
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById('notif-button');
+  const dropdown = document.getElementById('notif-dropdown');
+  let open = false;
 
-    btn.addEventListener('click', async () => {
-      if (!isOpen) {
-        const response = await fetch('{{ route('notifications.latest') }}');
-        const html = await response.text();
-        dropdown.innerHTML = html;
-        dropdown.classList.remove('hidden');
-        isOpen = true;
-      } else {
-        dropdown.classList.add('hidden');
-        isOpen = false;
-      }
-    });
+  btn.onclick = async () => {
+    if (!open) {
+      const res = await fetch('{{ route('notifications.latest') }}');
+      dropdown.innerHTML = await res.text();
+      dropdown.classList.remove('hidden');
+    } else {
+      dropdown.classList.add('hidden');
+    }
+    open = !open;
+  };
 
-    document.addEventListener('click', function(e) {
-      if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.classList.add('hidden');
-        isOpen = false;
-      }
-    });
+  document.addEventListener('click', e => {
+    if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.add('hidden');
+      open = false;
+    }
   });
+});
 </script>

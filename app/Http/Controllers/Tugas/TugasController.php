@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\PengajarKelasMapel;
 use App\Http\Controllers\Controller;
-use App\Models\{Tugas, PengumpulanTugas, KelasMapel};
+use App\Models\{DataSiswa, Tugas, PengumpulanTugas, KelasMapel, Notification};
 
 class TugasController extends Controller
 {
@@ -116,6 +116,18 @@ public function siswaUpdateNilai(Request $request, Tugas $tugas)
             'deskripsi'        => $validated['deskripsi'],
             'due'            => Carbon::createFromFormat('Y-m-d\TH:i', $validated['due']),
         ]);
+
+        $kelasId = $kelasMapel->kelas_id ;
+        $siswaList = DataSiswa::where('kelas_id',$kelasId)->get();
+
+        foreach($siswaList as $siswa){
+            Notification::create([
+                'user_id' => $siswa->user_id,
+                'title' => 'Tugas Baru: ' . $tugas->judul,
+                'message' => 'Guru Menambahkan tugas baru di mapel ' . $kelasMapel->mapel->name,
+                'type' => 'tugas',
+            ])->with('success','Tugas Berhasil ditambahkan & notifikasi dikirim');
+        }
 
         if ($request->ajax()) {
             return response()->json([
