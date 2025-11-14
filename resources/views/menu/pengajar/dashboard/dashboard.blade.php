@@ -14,7 +14,7 @@
       <p class="text-white/90 max-w-2xl mb-6 text-sm sm:text-base">
         Kelola kelas dan materi ajar Anda di satu tempat. Pantau progres pembelajaran dan tingkatkan kualitas mengajar Anda.
       </p>
-      <div class="flex flex-wrap gap-4">
+      {{-- <div class="flex flex-wrap gap-4">
         <a href="" 
            class="px-5 sm:px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition">
           Lanjutkan Mengajar
@@ -23,7 +23,7 @@
            class="px-5 sm:px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition">
           Lihat Semua Kelas
         </a>
-      </div>
+      </div> --}}
     </div>
   </header>
 
@@ -69,31 +69,46 @@
     {{--  DAFTAR KELAS YANG DIAJAR --}}
     <h2 class="text-lg sm:text-xl font-semibold text-slate-800 mb-6">Kelas yang Anda Ajar</h2>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      @forelse ($kelasDanMapel as $index => $item)
-        <a href="{{ route('viewKelasMapel', ['mapel' => $item['mapel_id'], 'kelas' => $item['kelas_id']]) }}"
-           class="bg-white rounded-xl p-5 sm:p-6 shadow-sm hover:shadow-md transition border border-transparent hover:border-blue-200 cursor-pointer flex flex-col justify-between">
-          
-          <div class="flex items-start justify-between mb-4">
-            <div class="w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl 
-              {{ ['bg-blue-600','bg-green-600','bg-orange-600','bg-purple-600','bg-pink-600'][$index % 5] }}">
-              {{ strtoupper(substr($item['mapel_nama'], 0, 2)) }}
-            </div>
-          </div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    @forelse ($kelasDanMapel as $index => $item)
+    
+    <div class="bg-white rounded-xl p-5 sm:p-6 shadow-sm hover:shadow-md transition border border-transparent hover:border-blue-200">
 
-          <h3 class="text-base sm:text-lg font-semibold mb-1">{{ $item['mapel_nama'] }}</h3>
-          <p class="text-sm text-gray-500 mb-3">Kelas: {{ $item['kelas_nama'] }}</p>
-          <div class="mt-1 flex justify-between items-center">
-            <span class="text-sm text-gray-500">Jumlah Materi:</span>
-            <span class="font-semibold text-blue-600">{{ $item['materi_count'] ?? 0 }} Materi</span>
-          </div>
+        {{-- BAGIAN ATAS CARD --}}
+        <a href="{{ route('viewKelasMapel', ['mapel' => $item['mapel_id'], 'kelas' => $item['kelas_id']]) }}" 
+           class="block cursor-pointer">
+            
+            <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl 
+                    {{ ['bg-blue-600','bg-green-600','bg-orange-600','bg-purple-600','bg-pink-600'][$index % 5] }}">
+                    {{ strtoupper(substr($item['mapel_nama'], 0, 2)) }}
+                </div>
+            </div>
+
+            <h3 class="text-base sm:text-lg font-semibold mb-1">{{ $item['mapel_nama'] }}</h3>
+            <p class="text-sm text-gray-500 mb-3">Kelas: {{ $item['kelas_nama'] }}</p>
+
+            <div class="mt-1 flex justify-between items-center">
+                <span class="text-sm text-gray-500">Jumlah Materi:</span>
+                <span class="font-semibold text-blue-600">{{ $item['materi_count'] ?? 0 }} Materi</span>
+            </div>
         </a>
-      @empty
-        <div class="col-span-4 text-center text-gray-500 py-10">
-          Belum ada kelas yang Anda ampu.
-        </div>
-      @endforelse
+
+        {{-- TOMBOL LIHAT DAFTAR SISWA --}}
+        <a href="{{ route('siswa', ['kelasId' => $item['kelas_id']]) }}"
+           class="mt-4 block w-full text-center bg-gradient-to-tr from-blue-500 to-green-500 text-white py-2 rounded-lg font-semibold hover:opacity-90 transition">
+            Lihat Daftar Siswa
+        </a>
+
     </div>
+
+    @empty
+      <div class="col-span-4 text-center text-gray-500 py-10">
+        Belum ada kelas yang Anda ampu.
+      </div>
+    @endforelse
+</div>
+
   </main>
 
 @endif

@@ -153,4 +153,12 @@ class DashboardController extends Controller
 
         return $hasil;
     }
+
+public function viewSiswa($kelasId)
+{
+    $siswa = DataSiswa::where('kelas_id', $kelasId)->get();
+
+    return view('menu.siswa.home.siswa', compact('siswa'));
+}
+
 }

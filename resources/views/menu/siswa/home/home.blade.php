@@ -17,9 +17,9 @@
            class="px-5 sm:px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition">
           Lanjutkan Belajar
         </a>
-        <a href="#jadwal"
+      <a href="{{ route('siswa', ['kelasId' => $kelas->id]) }}"
            class="px-5 sm:px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition">
-          Lihat Jadwal
+          Lihat Teman Kelas
         </a>
       </div>
     </div>

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\Pengumuman;
+use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -36,7 +38,20 @@ class PengumumanController extends Controller
         $validated['user_id'] = Auth::id();
         $validated['published_at'] = now();
 
-        Pengumuman::create($validated);
+  $pengumuman =       Pengumuman::create($validated);
+
+           // 🔔 Tambahkan Notifikasi ke Semua User
+  
+    $user = User::all();
+
+    foreach ($user as $users) {
+        Notification::create([
+            'user_id' => $users->id,
+            'title' => 'Pengumuman Baru: ' . $pengumuman->judul,
+            'message' => strip_tags(substr($pengumuman->isi, 0, 100)) . '...',
+            'type' => 'pengumuman',
+        ]);
+    }
 
         return redirect()->route('pengumuman.index')->with('success', 'Pengumuman berhasil dibuat dan langsung dipublikasikan.');
     }

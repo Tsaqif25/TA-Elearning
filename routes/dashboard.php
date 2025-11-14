@@ -10,4 +10,5 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->controller(DashboardController::class)->group(function () {
     Route::get('/dashboard', 'viewDashboard')->name('dashboard');
     Route::get('/home', 'viewHome')->name('home');
+    Route::get('/daftarsiswa/{kelasId}', 'viewSiswa')->name('siswa');
 });

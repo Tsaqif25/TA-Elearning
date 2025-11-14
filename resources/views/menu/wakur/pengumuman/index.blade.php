@@ -1,7 +1,7 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
-<div class="w-full px-4 sm:px-8 py-8 bg-[#F9FAFB] min-h-screen font-poppins">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 fade-in bg-[#F9FAFB]  font-poppins">
 
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-3">

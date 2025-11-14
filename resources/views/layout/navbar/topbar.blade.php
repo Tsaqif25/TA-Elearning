@@ -105,9 +105,11 @@
           </div>
           <div
             class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 group-hover:visible invisible transition-all duration-200 z-50">
-            <div class="px-4 py-2 border-b text-sm text-gray-700 font-medium">
-              {{ Auth::user()->name }}
-            </div>
+          <a href="{{ route('profile.edit') }}"
+   class="block px-4 py-2 border-b text-sm text-gray-700 font-medium hover:bg-[#F9FAFB] transition">
+    Edit Profile
+</a>
+
             <form action="{{ route('logout') }}" method="POST" class="block w-full">
               @csrf
               <button type="submit"
