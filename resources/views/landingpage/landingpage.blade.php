@@ -26,7 +26,7 @@
 
     <div class="flex items-center gap-5">
       <a href="{{ route('repository.public') }}" class="font-medium text-[#0A090B] hover:text-[#2B82FE] transition">Repository</a>
-      <a href="{{ route('login') }}" class="bg-[#2B82FE] text-white font-semibold px-5 py-2 rounded-lg hover:bg-[#1E66E1] transition">Login</a>
+      <a href="{{ route('login') }}" class="bg-gradient-to-tr from-blue-500 to-green-500 text-white font-semibold px-5 py-2 rounded-lg ">Login</a>
     </div>
   </nav>
 
@@ -43,7 +43,7 @@
         Platform digital untuk siswa dan guru SMK 2 Padang. Akses materi lengkap kapan saja, di mana saja.
       </p>
       <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-        <a href="{{ route('login') }}" class="bg-[#2B82FE] text-white px-8 py-3 rounded-lg font-semibold shadow hover:bg-[#1E66E1] flex items-center gap-2 transition">
+        <a href="{{ route('login') }}" class="bg-gradient-to-tr from-blue-500 to-green-500 text-white px-8 py-3 rounded-lg font-semibold shadow  flex items-center gap-2 transition">
           Mulai Belajar Sekarang
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="white" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7" />

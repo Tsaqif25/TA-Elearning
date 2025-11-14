@@ -83,7 +83,7 @@
 
         <!-- Button -->
         <button type="submit"
-                class="w-full py-3 bg-[#2B82FE] hover:bg-[#1E66E1] text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-[0.98]">
+                class="w-full py-3 bg-gradient-to-tr from-blue-500 to-green-500 text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-[0.98]">
           Sign In to my Account
         </button>
 
@@ -95,7 +95,7 @@
     </div>
 
     <!-- RIGHT SIDE (INFORMATION PANEL) -->
-    <div class="w-full lg:w-1/2 min-h-[400px] lg:min-h-screen bg-gradient-to-br from-[#2B82FE] to-[#60A5FA] text-white flex flex-col justify-center px-8 sm:px-16 lg:px-24 py-20 relative overflow-hidden">
+    <div class="w-full lg:w-1/2 min-h-[400px] lg:min-h-screen bg-gradient-to-tr from-blue-500 to-green-500 text-white flex flex-col justify-center px-8 sm:px-16 lg:px-24 py-20 relative overflow-hidden">
       
       <!-- Background glow -->
       <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.15),_transparent)]"></div>
