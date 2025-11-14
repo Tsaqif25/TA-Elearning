@@ -42,15 +42,14 @@ class PengajarResource extends Resource
                         ->required(),
 
                     Forms\Components\TextInput::make('email')
-                        ->label('Email Akun')
+                        ->required()
                         ->email()
-                        ->required(),
+                        ->label('Email Login'),
 
                     Forms\Components\TextInput::make('password')
-                        ->label('Password Akun')
+                        ->required()
                         ->password()
-                        ->required(fn (string $context) => $context === 'create')
-                        ->helperText('Password ini digunakan untuk login akun pengajar.'),
+                        ->label('Password Login'),
                 ])
                 ->columns(2),
 
@@ -98,9 +97,9 @@ class PengajarResource extends Resource
                     ->label('NIP')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('email')
+                Tables\Columns\TextColumn::make('user.email')
                     ->label('Email')
-                    ->limit(25),
+                    // ->limit(25),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

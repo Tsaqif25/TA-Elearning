@@ -15,8 +15,9 @@ return new class extends Migration
     $table->id();
     $table->string('name');
     $table->string('nip')->unique();
-     $table->string('email')->unique() ;
-            $table->string('password');
+    $table->string('no_telp')->nullable();
+    //  $table->string('email')->unique() ;
+    //         $table->string('password');
     $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
     $table->timestamps();
         });

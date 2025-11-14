@@ -14,9 +14,9 @@ class CreatePengajar extends CreateRecord
     protected function afterCreate(): void
     {
         //  Buat akun user baru
-        $user = User::create([
+     $user = User::create([
             'name' => $this->record->name,
-            'email' => $this->record->email,
+            'email' => $this->data['email'],   // <- HARUS dari FORM
             'password' => Hash::make($this->data['password']),
         ]);
 

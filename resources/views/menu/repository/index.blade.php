@@ -1,7 +1,7 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
-<div class="flex flex-col w-full p-6 lg:px-10 mt-6 bg-[#FAFAFA] min-h-screen font-poppins">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10  bg-[#FAFAFA]  font-poppins">
 
   <!-- Header -->
   <div class="flex justify-between items-center mb-6">

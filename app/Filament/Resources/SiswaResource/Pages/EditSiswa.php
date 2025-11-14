@@ -19,22 +19,26 @@ class EditSiswa extends EditRecord
         ];
     }
 
-    protected function afterSave(): void
-    {
-        // Ambil data user yang terkait
-        $user = User::find($this->record->user_id);
+protected function afterSave(): void
+{
+    $user = User::find($this->record->user_id);
 
-        if ($user) {
-            $user->update([
-                'name' => $this->record->name,
-                'email' => $this->record->email,
-                // Password hanya diupdate kalau user isi ulang
-                'password' => $this->record->password
-                    ? Hash::make($this->record->password)
-                    : $user->password,
-            ]);
+    if ($user) {
+
+        $updateData = [
+            'name' => $this->record->name,
+            'email' => $this->data['email'], // ambil dari form
+        ];
+
+        // Update password hanya jika diisi
+        if (!empty($this->data['password'])) {
+            $updateData['password'] = Hash::make($this->data['password']);
         }
+
+        $user->update($updateData);
     }
+}
+
 
     protected function getRedirectUrl(): string
     {

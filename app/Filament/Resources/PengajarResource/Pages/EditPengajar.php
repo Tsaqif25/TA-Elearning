@@ -21,17 +21,22 @@ class EditPengajar extends EditRecord
 
     protected function afterSave(): void
     {
-        // 🧩 Update data user yang terhubung
+        // Ambil user yang terkait
         $user = User::find($this->record->user_id);
 
         if ($user) {
-            $user->update([
+
+            $updateData = [
                 'name' => $this->record->name,
-                'email' => $this->record->email,
-                'password' => $this->record->password
-                    ? Hash::make($this->record->password)
-                    : $user->password,
-            ]);
+                'email' => $this->data['email'],   // ← EMAIL dari FORM
+            ];
+
+            // Jika password diisi di form
+            if (!empty($this->data['password'])) {
+                $updateData['password'] = Hash::make($this->data['password']);
+            }
+
+            $user->update($updateData);
         }
     }
 

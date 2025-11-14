@@ -16,8 +16,8 @@ class CreateSiswa extends CreateRecord
         //  Buat akun user baru dari data siswa yang baru saja dibuat
         $user = User::create([
             'name' => $this->record->name,
-            'email' => $this->record->email,
-            'password' => Hash::make($this->data['password']),
+        'email' => $this->data['email'],       // ← AMBIL DARI FORM
+        'password' => Hash::make($this->data['password']), // ← AMBIL DARI FORM
         ]);
 
         //  Tambahkan role "Siswa"

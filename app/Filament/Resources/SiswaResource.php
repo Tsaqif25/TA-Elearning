@@ -44,15 +44,15 @@ class SiswaResource extends Resource
                         ->nullable(),
 
                     Forms\Components\TextInput::make('email')
-                        ->label('Email Akun')
-                        ->email()
-                        ->required(),
+                        ->label('Email Login')
+                        ->required()
+                        ->email(),
 
                     Forms\Components\TextInput::make('password')
-                        ->label('Password Akun')
+                        ->label('Password Login')
                         ->password()
-                        ->required(fn (string $context) => $context === 'create')
-                        ->helperText('Password ini digunakan untuk login akun siswa.'),
+                        ->dehydrated(false),
+
                 ])
                 ->columns(2),
         ]);
@@ -74,9 +74,9 @@ class SiswaResource extends Resource
                 Tables\Columns\TextColumn::make('kelas.name')
                     ->label('Kelas'),
 
-                Tables\Columns\TextColumn::make('email')
-                    ->label('Email Akun')
-                    ->limit(25),
+                Tables\Columns\TextColumn::make('user.email')
+                    ->label('Email ')
+                   
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

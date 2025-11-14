@@ -14,8 +14,6 @@ class DataSiswa extends Model
         'nis',
         'kelas_id',
         'no_telp',
-        'email',
-        'password',
         'user_id',
     ];
 

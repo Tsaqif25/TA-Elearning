@@ -33,7 +33,7 @@
                 <tr class="border-b hover:bg-gray-50 transition">
                     <td class="py-3 px-4 font-medium">{{ $item->nis }}</td>
                     <td class="py-3 px-4 font-semibold text-gray-800">{{ $item->name }}</td>
-                    <td class="py-3 px-4">{{ $item->email }}</td>
+                    <td class="py-3 px-4">{{ $item->user->email }}</td>
                      <td class="py-3 px-4">{{ $item->no_telp}}</td>
                   
                 </tr>

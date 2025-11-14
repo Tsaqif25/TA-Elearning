@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('data_siswas', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-              $table->string('email')->unique() ;
-            $table->string('password');
+            //   $table->string('email')->unique() ;
+            // $table->string('password');
             $table->foreignid('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->foreignid('user_id')->nullable()->constrained('users')->onDelete('cascade');
            $table->string('nis')->unique();
