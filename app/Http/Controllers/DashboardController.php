@@ -56,51 +56,33 @@ public function wakurDashboard()
             ->count();
 
         // 🎯 Aktivitas terbaru (ambil 10 materi terbaru)
-        $aktivitas = Materi::with('user')
+$materi = Materi::with('user')
     ->latest()
     ->take(10)
-    ->get();
+    ->get()
+    ->map(function ($m) {
+        $m->tipe = 'materi';
+        return $m;
+    });
+
+$tugas = Tugas::with('user')
+    ->latest()
+    ->take(10)
+    ->get()
+    ->map(function ($t) {
+        $t->tipe = 'tugas';
+        return $t;
+    });
+
+$aktivitas = $materi
+    ->merge($tugas)
+    ->sortByDesc('created_at')
+    ->take(10);
 
 
-
-        // 🎯 Top Performers (tanpa join, tanpa relasi tambahan)
-        $topPerformers = User::role('Pengajar')
-            ->get()
-            ->map(function($user){
-
-                // cari guru berdasarkan user
-                $guru = Guru::where('user_id', $user->id)->first();
-                if(!$guru){
-                    return (object)[
-                        'name' => $user->name,
-                        'materi_count' => 0,
-                        'tugas_count' => 0,
-                        'score' => 0,
-                    ];
-                }
-
-                // ambil kelas_mapel yg dia ajar
-                $kelasMapelIds = PengajarKelasMapel::where('guru_id', $guru->id)
-                    ->pluck('kelas_mapel_id');
-
-                // hitung total upload
-                $materiCount = Materi::whereIn('kelas_mapel_id', $kelasMapelIds)->count();
-                $tugasCount  = Tugas::whereIn('kelas_mapel_id', $kelasMapelIds)->count();
-
-                // skor sederhana
-                $score = ($materiCount + $tugasCount) * 10;
-
-                return (object)[
-                    'name' => $user->name,
-                    'materi_count' => $materiCount,
-                    'tugas_count' => $tugasCount,
-                    'score' => $score,
-                ];
-            })
-            ->sortByDesc('score')
-            ->take(3);
-
-
+$aktivitas = $materi->merge($tugas)
+    ->sortByDesc('created_at')
+    ->take(10);
 
         return view('menu.wakur.dashboard.dashboard', compact(
             'totalMateri',
@@ -108,8 +90,6 @@ public function wakurDashboard()
             'totalUjian',
             'guruAktif',
             'aktivitas',
-            'topPerformers',
-           
         ));
     }
 

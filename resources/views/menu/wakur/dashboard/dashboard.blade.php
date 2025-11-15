@@ -91,9 +91,14 @@
             <p class="font-semibold text-[#0A090B]">
                 {{ $m->user->name ?? 'Guru Tidak Diketahui' }}
             </p>
-            <p class="text-sm text-gray-500">
-                Mengunggah materi: <span class="font-medium text-gray-700">{{ $m->name }}</span>
-            </p>
+         <p class="text-sm text-gray-500">
+    Mengunggah 
+    <span class="font-medium text-gray-700">
+        {{ $m->tipe }}
+    </span> 
+    : {{ $m->name }}
+</p>
+
         </div>
     </div>
 
@@ -107,28 +112,7 @@
 
     </div>
 
-    {{-- KOLOM KANAN - TOP PERFORMERS --}}
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <h2 class="text-lg font-bold mb-4">Top Performers</h2>
-
-        @foreach ($topPerformers as $index => $guru)
-        <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-3">
-                <span class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 font-bold">
-                    {{ $index + 1 }}
-                </span>
-                <div>
-                    <p class="font-semibold">{{ $guru->name }}</p>
-                    <p class="text-xs text-gray-500">
-                        {{ $guru->materi_count }} Materi · {{ $guru->tugas_count }} Tugas
-                    </p>
-                </div>
-            </div>
-
-            <p class="font-bold text-gray-700">{{ $guru->score }}%</p>
-        </div>
-        @endforeach
-    </div>
+   
 
 </div>
 

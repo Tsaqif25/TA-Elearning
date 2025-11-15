@@ -21,3 +21,4 @@ require __DIR__.'/file.php';
 require __DIR__.'/repository.php';
 require __DIR__.'/notification.php';
 require __DIR__.'/profile.php';
+require __DIR__.'/monitoring.php';

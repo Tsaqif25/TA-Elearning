@@ -21,8 +21,6 @@ class Materi extends Model
         return $this->hasMany(MateriFile::class);
     }
 
-    // UNTUK WAKUR 
-
     public function user()
 {
     return $this->belongsTo(User::class, 'user_id');
