@@ -19,6 +19,9 @@ return new class extends Migration
     $table->string('name');
     $table->longText('deskripsi');
     $table->datetime('due')->nullable();
+    // UNTUK WAKUR
+    $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+
     $table->timestamps();
         });
     }

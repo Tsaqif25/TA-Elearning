@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Materi;
 
 use App\Models\Materi;
+use App\Models\DataSiswa;
 use App\Models\KelasMapel;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Notification;
-use App\Models\DataSiswa;
+use Illuminate\Support\Facades\Auth;
 
 
 class MateriController extends Controller
@@ -40,7 +41,8 @@ class MateriController extends Controller
         'kelas_mapel_id' => $kelasMapel->id,         
         'name' => $validated['name'],                  
         'konten' => $validated['konten'],           
-        'youtube_link' => $validated['youtube_link'] ?? null,
+        'youtube_link' => $validated['youtube_link'] ?? null ,
+        'user_id' => Auth::id() 
     ]);
 
     // 🔔 Tambahkan Notifikasi ke Semua Siswa di Kelas Ini

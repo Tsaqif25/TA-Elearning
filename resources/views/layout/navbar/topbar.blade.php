@@ -57,7 +57,7 @@
         @endif
 
         {{-- ANALYTIC --}}
-        @if (Auth::user()->hasRole('Wakur'))
+        {{-- @if (Auth::user()->hasRole('Wakur'))
           <a href="{{ route('wakur.analytics') }}"
             class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200
             {{ request()->routeIs('wakur.analytics') 
@@ -65,7 +65,7 @@
                 : 'text-gray-600 hover:text-blue-600 hover:bg-slate-100' }}">
             <i class="fa-solid fa-chart-line text-[15px]"></i> Analytic
           </a>
-        @endif
+        @endif --}}
       </div>
 
       <!-- Right Section -->

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\PengajarKelasMapel;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\{DataSiswa, Tugas, PengumpulanTugas, KelasMapel, Notification};
 
 class TugasController extends Controller
@@ -115,6 +116,7 @@ public function siswaUpdateNilai(Request $request, Tugas $tugas)
             'name'           => $validated['name'],
             'deskripsi'        => $validated['deskripsi'],
             'due'            => Carbon::createFromFormat('Y-m-d\TH:i', $validated['due']),
+            'user_id' => Auth::id() 
         ]);
 
         $kelasId = $kelasMapel->kelas_id ;

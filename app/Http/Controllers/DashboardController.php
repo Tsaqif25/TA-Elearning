@@ -12,35 +12,109 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function viewDashboard(): View|RedirectResponse
-    {
-        $user = Auth::user();
+public function viewDashboard(): View|RedirectResponse
+{
+    $user = Auth::user();
 
-        if (!$user) {
-            return redirect()->route('login')
-                ->with('error', 'Anda harus login terlebih dahulu.');
-        }
-
-        // Arahkan dashboard sesuai role
-        if ($user->hasRole('Wakur')) {
-            return $this->pengajarDashboard($user);
-        } elseif ($user->hasRole('Pengajar')) {
-            return $this->pengajarDashboard($user);
-        } elseif ($user->hasRole('Siswa')) {
-            return redirect()->route('home');
-        }
-
-        return redirect()->route('login')->with('error', 'Role tidak ditemukan.');
+    if (!$user) {
+        return redirect()->route('login')
+            ->with('error', 'Anda harus login terlebih dahulu.');
     }
+
+    // Arahkan dashboard sesuai role
+    if ($user->hasRole('Wakur')) {
+        return $this->wakurDashboard();   // ✔ dashboard khusus Wakur
+    }
+
+    if ($user->hasRole('Pengajar')) {
+        return $this->pengajarDashboard($user); // ✔ dashboard Pengajar
+    }
+
+    if ($user->hasRole('Siswa')) {
+        return redirect()->route('home'); // ✔ dashboard siswa
+    }
+
+    return redirect()->route('login')->with('error', 'Role tidak ditemukan.');
+}
+
 
     // 🟣 DASHBOARD WAKUR
-    private function wakurDashboard(): View
-    {
-        return view('menu.wakur.dashboard.dashboard', [
-            'title' => 'Dashboard Wakur',
-            'roles' => 'Wakur',
-        ]);
+public function wakurDashboard()
+{
+   // 🎯 Statistik Utama
+        $totalMateri = Materi::count();
+        $totalTugas  = Tugas::count();
+        $totalUjian  = Ujian::count();
+
+        // Guru aktif minggu ini (yang upload materi)
+        $guruAktif = Materi::whereBetween('created_at', [
+                now()->startOfWeek(),
+                now()->endOfWeek()
+            ])
+            ->select('user_id')
+            ->distinct()
+            ->count();
+
+        // 🎯 Aktivitas terbaru (ambil 10 materi terbaru)
+        $aktivitas = Materi::with('user')
+    ->latest()
+    ->take(10)
+    ->get();
+
+
+
+        // 🎯 Top Performers (tanpa join, tanpa relasi tambahan)
+        $topPerformers = User::role('Pengajar')
+            ->get()
+            ->map(function($user){
+
+                // cari guru berdasarkan user
+                $guru = Guru::where('user_id', $user->id)->first();
+                if(!$guru){
+                    return (object)[
+                        'name' => $user->name,
+                        'materi_count' => 0,
+                        'tugas_count' => 0,
+                        'score' => 0,
+                    ];
+                }
+
+                // ambil kelas_mapel yg dia ajar
+                $kelasMapelIds = PengajarKelasMapel::where('guru_id', $guru->id)
+                    ->pluck('kelas_mapel_id');
+
+                // hitung total upload
+                $materiCount = Materi::whereIn('kelas_mapel_id', $kelasMapelIds)->count();
+                $tugasCount  = Tugas::whereIn('kelas_mapel_id', $kelasMapelIds)->count();
+
+                // skor sederhana
+                $score = ($materiCount + $tugasCount) * 10;
+
+                return (object)[
+                    'name' => $user->name,
+                    'materi_count' => $materiCount,
+                    'tugas_count' => $tugasCount,
+                    'score' => $score,
+                ];
+            })
+            ->sortByDesc('score')
+            ->take(3);
+
+
+
+        return view('menu.wakur.dashboard.dashboard', compact(
+            'totalMateri',
+            'totalTugas',
+            'totalUjian',
+            'guruAktif',
+            'aktivitas',
+            'topPerformers',
+           
+        ));
     }
+
+
+
 
     // 🟢 DASHBOARD PENGAJAR
     private function pengajarDashboard(User $user): View
