@@ -33,19 +33,19 @@
 
       {{-- ANALYTICS --}}
       <li>
-        <a href="{{ route('wakur.analytics') }}"
+        <a href="{{ route('dashboard') }}"
           class="p-[10px_16px] flex items-center gap-[14px] rounded-full h-11 transition-all duration-300
-          {{ request()->routeIs('wakur.analytics') ? 'bg-[#2B82FE] text-white' : 'hover:bg-[#2B82FE] group' }}">
+          {{ request()->routeIs('dashboard') ? 'bg-[#2B82FE] text-white' : 'hover:bg-[#2B82FE] group' }}">
 
           <svg xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5 {{ request()->routeIs('wakur.analytics') ? 'text-white' : 'text-[#7F8190] group-hover:text-white' }}"
+            class="w-5 h-5 {{ request()->routeIs('dashboard') ? 'text-white' : 'text-[#7F8190] group-hover:text-white' }}"
             fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14" />
           </svg>
 
-          <p class="font-semibold {{ request()->routeIs('wakur.analytics') ? 'text-white' : 'text-[#0A090B] group-hover:text-white' }}">
-            Analytic
+          <p class="font-semibold {{ request()->routeIs('dashboard') ? 'text-white' : 'text-[#0A090B] group-hover:text-white' }}">
+            Overview
           </p>
         </a>
       </li>
@@ -70,24 +70,25 @@
       </li>
 
 
-        {{-- PENGUMUMAN --}}
-      <li>
-        <a href="{{ route('pengumuman.index') }}"
-          class="p-[10px_16px] flex items-center gap-[14px] rounded-full h-11 transition-all duration-300
-          {{ request()->routeIs('pengumuman.*') ? 'bg-[#2B82FE] text-white' : 'hover:bg-[#2B82FE] group' }}">
+        {{-- Monitoring Guru --}}
+    <li>
+  <a href="{{ route('monitoring.guru') }}"
+    class="p-[10px_16px] flex items-center gap-[14px] rounded-full h-11 transition-all duration-300
+    {{ request()->routeIs('monitoring.guru*') ? 'bg-[#2B82FE] text-white' : 'hover:bg-[#2B82FE] group' }}">
 
-          <svg xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5 {{ request()->routeIs('pengumuman.*') ? 'text-white' : 'text-[#7F8190] group-hover:text-white' }}"
-            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14" />
-          </svg>
+    <svg xmlns="http://www.w3.org/2000/svg"
+      class="w-5 h-5 {{ request()->routeIs('monitoring.guru*') ? 'text-white' : 'text-[#7F8190] group-hover:text-white' }}"
+      fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M17 20h5v-2a3 3 0 00-5.356-1.856M9 20v-2a3 3 0 00-5.356-1.856M12 4a4 4 0 110 8 4 4 0 010-8z" />
+    </svg>
 
-          <p class="font-semibold {{ request()->routeIs('pengumuman.*') ? 'text-white' : 'text-[#0A090B] group-hover:text-white' }}">
-                Monitoring Guru
-          </p>
-        </a>
-      </li>
+    <p class="font-semibold {{ request()->routeIs('monitoring.guru*') ? 'text-white' : 'text-[#0A090B] group-hover:text-white' }}">
+      Monitoring Guru
+    </p>
+  </a>
+</li>
+
     </ul>
 
   </div>

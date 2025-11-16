@@ -1,41 +1,63 @@
 @extends('layout.template.mainTemplate')
 
+@section('title', 'Detail Guru')
+
 @section('container')
 
-<h1 class="text-2xl font-bold mb-2">{{ $guru->name }}</h1>
-<p class="text-gray-600 mb-6">{{ $guru->user->email }}</p>
+{{-- Header Guru --}}
+<div class="mb-6">
+  <a href="{{ route('monitoring.guru') }}"
+     class="text-sm text-blue-600 hover:underline mb-3 inline-flex items-center gap-1">
+    ‹ Kembali ke Monitoring Guru
+  </a>
 
-{{-- Materi --}}
-<div class="bg-white p-6 rounded-xl shadow mb-6">
-    <h2 class="text-lg font-bold mb-4">Materi yang Diunggah</h2>
-    
-    @forelse ($materi as $m)
-        <p>- {{ $m->name }}</p>
-    @empty
-        <p class="text-gray-500 text-sm italic">Belum ada materi.</p>
-    @endforelse
+  <h1 class="text-2xl font-extrabold text-[#0A090B] mb-1">{{ $guru->name }}</h1>
+  <p class="text-sm text-gray-500">
+    User: {{ $guru->user->email ?? '-' }} · NIP: {{ $guru->nip ?? '-' }}
+  </p>
 </div>
 
-{{-- Tugas --}}
-<div class="bg-white p-6 rounded-xl shadow mb-6">
-    <h2 class="text-lg font-bold mb-4">Tugas yang Dibuat</h2>
-    
-    @forelse ($tugas as $t)
-        <p>- {{ $t->name }}</p>
-    @empty
-        <p class="text-gray-500 text-sm italic">Belum ada tugas.</p>
-    @endforelse
-</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-{{-- Ujian --}}
-<div class="bg-white p-6 rounded-xl shadow">
-    <h2 class="text-lg font-bold mb-4">Ujian yang Dibuat</h2>
-    
-    @forelse ($ujian as $u)
-        <p>- {{ $u->name }}</p>
-    @empty
-        <p class="text-gray-500 text-sm italic">Belum ada ujian.</p>
-    @endforelse
-</div>
+  {{--  MATERI --}}
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 lg:col-span-1">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="text-base font-semibold">Materi</h2>
+      <span class="text-xs text-gray-500">{{ $materi->count() }} item</span>
+    </div>
 
+    <div class="max-h-[380px] overflow-y-auto">
+      @forelse ($materi as $m)
+        <div class="px-6 py-3 border-b last:border-b-0 text-sm">
+          <p class="font-semibold text-[#0A090B]">{{ $m->name }}</p>
+
+          <p class="text-xs text-gray-500">
+            Kelas {{ $m->kelasMapel->kelas->name ?? '-' }} ·
+            {{ $m->kelasMapel->mapel->name ?? '-' }}
+          </p>
+
+          <p class="text-[11px] text-gray-400 mt-1">
+            {{ $m->created_at->diffForHumans() }}
+          </p>
+
+          {{-- 🔽 Tambahan tombol download file --}}
+          @foreach ($m->files as $f)
+            <a href="{{ route('materi.file.download', [$m->id, $f->file]) }}"
+               class="text-blue-600 text-xs mt-1 hover:underline block">
+               📄 {{ $f->file }}
+            </a>
+          @endforeach
+
+        </div>
+      @empty
+        <p class="px-6 py-4 text-sm text-gray-500 italic">Belum ada materi.</p>
+      @endforelse
+    </div>
+  </div>
+
+
+
+
+
+</div>
 @endsection

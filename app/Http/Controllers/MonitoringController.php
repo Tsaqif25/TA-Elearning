@@ -3,102 +3,71 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guru;
+use App\Models\Materi;
 use App\Models\Tugas;
 use App\Models\Ujian;
-use App\Models\Materi;
-use Illuminate\Http\Request;
 use App\Models\PengajarKelasMapel;
-use App\Http\Controllers\Controller;
 
 class MonitoringController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function monitoringGuru()
+    
+ public function monitoringGuru()
     {
-        $gurus = Guru::with('user', 'pengajarKelasMapels.kelasMapel.kelas', 'pengajarKelasMapels.kelasMapel.mapel')
+        $gurus = Guru::with(['user', 'pengajarKelasMapels.kelasMapel.mapel'])
             ->get();
 
-    return view('menu.wakur.monitoring.monitoring', compact('gurus'));
+        foreach ($gurus as $guru) {
+
+            // 🔹 Ambil semua kelas_mapel guru ini
+            $kelasMapelIds = $guru->pengajarKelasMapels->pluck('kelas_mapel_id');
+
+            // 🔹 Hitung materi, tugas, ujian
+            $guru->total_materi = Materi::whereIn('kelas_mapel_id', $kelasMapelIds)->count();
+            $guru->total_tugas  = Tugas::whereIn('kelas_mapel_id', $kelasMapelIds)->count();
+            $guru->total_ujian  = Ujian::whereIn('kelas_mapel_id', $kelasMapelIds)->count();
+
+            // 🔹 Ambil SEMUA mapel yang dia ajar
+            $guru->mapel_list = $guru->pengajarKelasMapels
+                ->map(fn($pkm) => $pkm->kelasMapel->mapel->name)
+                ->unique()
+                ->values()
+                ->toArray();
+        }
+
+        return view('menu.wakur.monitoring.monitoring', compact('gurus'));
     }
 
 
+    // 🟣 Halaman detail 1 guru
     public function detailGuru(Guru $guru)
-{
-    // kelas yang dia ajar
-    $kelasMapelIds = PengajarKelasMapel::where('guru_id', $guru->id)
-                        ->pluck('kelas_mapel_id');
-
-    // materi
-    $materi = Materi::whereIn('kelas_mapel_id', $kelasMapelIds)
-                    ->latest()
-                    ->get();
-
-    // tugas
-    $tugas = Tugas::whereIn('kelas_mapel_id', $kelasMapelIds)
-                  ->latest()
-                  ->get();
-
-    // ujian
-    $ujian = Ujian::whereIn('kelas_mapel_id', $kelasMapelIds)
-                  ->latest()
-                  ->get();
-
-    return view('menu.wakur.monitoring.detail', compact(
-        'guru',
-        'materi',
-        'tugas',
-        'ujian'
-    ));
-}
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
     {
-        //
-    }
+        // ambil semua kelas_mapel yang dia ajar
+        $kelasMapelIds = PengajarKelasMapel::where('guru_id', $guru->id)
+            ->pluck('kelas_mapel_id');
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        // semua materi yang dia upload (di semua kelas & mapel)
+        $materi = Materi::with('kelasMapel.kelas', 'kelasMapel.mapel')
+            ->whereIn('kelas_mapel_id', $kelasMapelIds)
+            ->latest()
+            ->get();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        // semua tugas
+        $tugas = Tugas::with('kelasMapel.kelas', 'kelasMapel.mapel')
+            ->whereIn('kelas_mapel_id', $kelasMapelIds)
+            ->latest()
+            ->get();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        // semua ujian
+        $ujian = Ujian::with('kelasMapel.kelas', 'kelasMapel.mapel')
+            ->whereIn('kelas_mapel_id', $kelasMapelIds)
+            ->latest()
+            ->get();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('menu.wakur.monitoring.detail', compact(
+            'guru',
+            'materi',
+            'tugas',
+            'ujian'
+        ));
     }
 }
