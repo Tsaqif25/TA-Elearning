@@ -9,7 +9,7 @@ class Materi extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kelas_mapel_id', 'name', 'konten', 'youtube_link'];
+    protected $fillable = ['kelas_mapel_id', 'name', 'konten', 'youtube_link','user_id'];
 
     public function kelasMapel()
     {

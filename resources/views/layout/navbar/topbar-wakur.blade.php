@@ -19,13 +19,13 @@
 
       {{-- 🔍 Search Bar --}}
       <div class="flex items-center gap-3">
-        <div class="hidden md:block">
+        {{-- <div class="hidden md:block">
           <input
             type="text"
             placeholder="Cari guru, materi, atau kelas..."
             class="w-72 px-4 py-2 text-sm border rounded-xl bg-gray-50 focus:ring-2 focus:ring-blue-400"
           />
-        </div>
+        </div> --}}
 
         {{-- 🔔 Notifikasi --}}
       <div class="relative" id="notif-wrapper">
@@ -54,17 +54,23 @@
 </div>
 
         {{-- 👤 Profil --}}
-        <div class="relative group">
-          <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold uppercase cursor-pointer shadow-sm">
+      <div class="relative group">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-green-600 to-green-400 flex items-center justify-center text-white font-bold uppercase cursor-pointer shadow-sm">
             {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
           </div>
+          <div
+            class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 group-hover:visible invisible transition-all duration-200 z-50">
+          <a href="{{ route('profile.edit') }}"
+   class="block px-4 py-2 border-b text-sm text-gray-700 font-medium hover:bg-[#F9FAFB] transition">
+    Edit Profile
+</a>
 
-          <div class="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
-            <a href="{{ route('profile.edit') }}"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-b">Edit Profil</a>
-            <form method="POST" action="{{ route('logout') }}">
+            <form action="{{ route('logout') }}" method="POST" class="block w-full">
               @csrf
-              <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
+              <button type="submit"
+                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#F9FAFB] transition">
+                Logout
+              </button>
             </form>
           </div>
         </div>

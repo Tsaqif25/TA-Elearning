@@ -9,7 +9,7 @@ class Tugas extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kelas_mapel_id', 'name', 'deskripsi', 'due'];
+    protected $fillable = ['kelas_mapel_id', 'name', 'deskripsi', 'due','user_id'];
 
     public function kelasMapel()
     {
