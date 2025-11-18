@@ -41,7 +41,7 @@ public function viewDashboard(): View|RedirectResponse
     // 🟣 DASHBOARD WAKUR
 public function wakurDashboard()
 {
-   // 🎯 Statistik Utama
+   // Statistik Utama
         $totalMateri = Materi::count();
         $totalTugas  = Tugas::count();
         $totalUjian  = Ujian::count();
@@ -55,7 +55,7 @@ public function wakurDashboard()
             ->distinct()
             ->count();
 
-        // 🎯 Aktivitas terbaru (ambil 10 materi terbaru)
+        // Aktivitas terbaru (ambil 10 materi terbaru)
 $materi = Materi::with('user')
     ->latest()
     ->take(10)
@@ -96,7 +96,7 @@ $aktivitas = $materi->merge($tugas)
 
 
 
-    // 🟢 DASHBOARD PENGAJAR
+    // DASHBOARD PENGAJAR
     private function pengajarDashboard(User $user): View
     {
         // Ambil data guru yang terkait dengan user ini
@@ -107,9 +107,6 @@ $aktivitas = $materi->merge($tugas)
                 'title' => 'Dashboard Pengajar',
                 'user' => $user,
                 'kelasDanMapel' => [],
-                // 'totalKelas' => 0,
-                // 'totalMapel' => 0,
-                // 'totalSiswa' => 0,
                 'warning' => 'Data guru belum terhubung dengan user ini.',
             ]);
         }
@@ -126,8 +123,10 @@ $aktivitas = $materi->merge($tugas)
         foreach ($dataAkses as $akses) {
             $kelas = $akses->kelasMapel->kelas ?? null;
             $mapel = $akses->kelasMapel->mapel ?? null;
-
+                //   $materiCount = $akses->kelasMapel->materis->count();
             if ($kelas && $mapel) {
+              $materiCount = $akses->kelasMapel->materis->count();
+               $tugasCount = $akses->kelasMapel->tugas->count();
                 $kelasIds[] = $kelas->id;
                 $mapelIds[] = $mapel->id;
                 $kelasDanMapel[] = [
@@ -135,25 +134,23 @@ $aktivitas = $materi->merge($tugas)
                     'kelas_nama' => $kelas->name,
                     'mapel_id' => $mapel->id,
                     'mapel_nama' => $mapel->name,
+                     'materi_count' => $materiCount, 
+                     'tugas_count' => $tugasCount
                 ];
             }
         }
 
-        // $totalKelas = count(array_unique($kelasIds));
-        // $totalMapel = count(array_unique($mapelIds));
-        // $totalSiswa = DataSiswa::whereIn('kelas_id', $kelasIds)->count();
+       
 
         return view('menu.pengajar.dashboard.dashboard', [
             'title' => 'Dashboard Pengajar',
             'user' => $user,
             'kelasDanMapel' => $kelasDanMapel,
-            // 'totalKelas' => $totalKelas,
-            // 'totalMapel' => $totalMapel,
-            // 'totalSiswa' => $totalSiswa,
+             'materi_count' => $materiCount, 
         ]);
     }
 
-    // 🟡 FUNGSI UNTUK SISWA
+    //  FUNGSI UNTUK SISWA
     public function viewHome(): View|RedirectResponse
     {
         $user = Auth::user();
@@ -184,7 +181,7 @@ $aktivitas = $materi->merge($tugas)
         ]);
     }
 
-    // 🔹 Relasi mapel & pengajar untuk siswa
+    //  Relasi mapel & pengajar untuk siswa
     private function getMapelWithPengajar(Kelas $kelas): array
     {
         $data = KelasMapel::where('kelas_id', $kelas->id)

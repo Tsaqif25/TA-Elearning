@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
     $table->foreignId('tugas_id')->constrained('tugas')->onDelete('cascade');
     $table->foreignId('siswa_id')->constrained('data_siswas')->onDelete('cascade');
-    $table->bigInteger('nilai')->nullable();
-    $table->text('komentar')->nullable();
+    $table->dateTime('submitted_at')->nullable();
+    $table->boolean('is_late')->default(false);
+ 
     $table->timestamps();
         });
     }

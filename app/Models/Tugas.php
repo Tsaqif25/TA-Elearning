@@ -9,7 +9,7 @@ class Tugas extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kelas_mapel_id', 'name', 'deskripsi', 'due','user_id'];
+    protected $fillable = ['kelas_mapel_id', 'judul', 'deskripsi', 'due','user_id'];
 
     public function kelasMapel()
     {
@@ -30,6 +30,16 @@ class Tugas extends Model
 {
     return $this->belongsTo(User::class);
 }
+
+public function nilai(){
+    return $this->hasMany(NilaiTugas::class);
+}
+
+public function komentar()
+{
+    return $this->hasMany(TugasKomentar::class);
+}
+
 
     
 }

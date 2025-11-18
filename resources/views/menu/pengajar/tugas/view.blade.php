@@ -35,7 +35,7 @@
     </div>
 
     {{-- 📊 Statistik --}}
-   <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
       <div class="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm">
         <p class="text-[#7F8190] text-xs font-medium mb-1">Total Siswa</p>
         <p class="text-lg font-bold text-[#0A090B]">{{ $kelas->dataSiswa->count() }}</p>
@@ -117,13 +117,13 @@
         </div>
 
         {{-- ✏️ Submission Siswa --}}
-        <form id="submission" action="{{ route('siswaUpdateNilai', ['tugas' => $tugas->id]) }}" method="post"
+        <form id="submission" action="{{ route('guru.tugas.nilai.update', ['tugas' => $tugas->id]) }}" method="post"
               class="bg-white border border-[#EEEEEE] rounded-2xl shadow-sm p-6 space-y-4">
           @csrf
           <div class="flex justify-between items-center mb-4">
-             <h3 class="text-lg font-bold">Submission Siswa ({{ $kelas->dataSiswa->count() }} siswa)</h3> 
+            <h3 class="text-lg font-bold">Submission Siswa ({{ $kelas->dataSiswa->count() }} siswa)</h3> 
             <button type="submit" class="bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2 rounded-full text-sm font-semibold ">
-              <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Nilai
+              <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Nilai & Komentar
             </button>
           </div>
 
@@ -136,6 +136,7 @@
                   <th class="py-3 px-4 text-left">File</th>
                   <th class="py-3 px-4 text-center">Nilai</th>
                   <th class="py-3 px-4 text-center">Input Nilai</th>
+                  <th class="py-3 px-4 text-left">Komentar Guru</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100">
@@ -145,26 +146,67 @@
                         ->where('siswa_id', $siswa->id)
                         ->with('files')
                         ->first();
-                    $nilai = $pengumpulan->nilai ?? null;
+
+                    // Ambil nilai dari tabel nilai_tugas
+                    $nilai = \App\Models\NilaiTugas::where('tugas_id', $tugas->id)
+                              ->where('siswa_id', $siswa->id)
+                              ->value('nilai');
+
+                    // Ambil komentar guru dari pengumpulan_tugas (kolom komentar)
+                    $komentarGuru = $pengumpulan->komentar ?? null;
                   @endphp
                   <tr class="hover:bg-gray-50 transition">
                     <td class="py-3 px-4 font-medium">{{ $loop->iteration }}</td>
                     <td class="py-3 px-4 font-semibold">{{ $siswa->name }}</td>
+
+                    {{-- File --}}
                     <td class="py-3 px-4">
                       @if ($pengumpulan && $pengumpulan->files->count())
                         @foreach ($pengumpulan->files as $file)
-                          <a href="{{ asset('storage/' . $file->file) }}" class="text-[#2B82FE] font-semibold hover:underline cursor-pointer block" target="_blank">Lihat File</a>
+                          <a href="{{ asset('storage/' . $file->file) }}" class="text-[#2B82FE] font-semibold hover:underline cursor-pointer block" target="_blank">
+                            Lihat File
+                          </a>
                         @endforeach
                       @else
                         <span class="text-gray-500 italic">Belum upload</span>
                       @endif
                     </td>
-                    <td class="py-3 px-4 text-center text-gray-800 font-semibold">{{ $nilai ?? '-' }}</td>
+
+                    {{-- Nilai (ditampilkan) --}}
+                    <td class="py-3 px-4 text-center text-gray-800 font-semibold">
+                      {{ $nilai !== null ? $nilai : '-' }}
+                    </td>
+
+                    {{-- Input Nilai --}}
                     <td class="py-3 px-4 text-center">
                       <input type="hidden" name="siswaId[]" value="{{ $siswa->id }}">
-                      <input type="number" name="nilai[]" value="{{ $nilai ?? 0 }}" min="0" max="100"
+                      <input type="number" name="nilai[]" value="{{ $nilai ?? '' }}" min="0" max="100"
                         class="w-16 border border-gray-200 rounded-xl p-1 text-center text-sm focus:ring-[#2B82FE] focus:border-[#2B82FE] transition">
                     </td>
+
+                    {{-- Komentar Guru --}}
+                    <td class="py-3 px-4">
+                      <textarea name="komentar[]" rows="1" placeholder="Masukkan komentar..."
+                        class="w-full border border-gray-200 rounded-xl px-3 py-1 text-xs focus:ring-[#2B82FE] focus:border-[#2B82FE] transition resize-none">{{ $komentarGuru ?? '' }}</textarea>
+                    </td>
+                    <td class="py-3 px-4 text-center">
+
+  @if ($pengumpulan)
+      @if ($pengumpulan->is_late)
+          <span class="px-3 py-1 rounded-full text-[10px] font-semibold bg-red-100 text-red-700">
+              Terlambat
+          </span>
+      @else
+          <span class="px-3 py-1 rounded-full text-[10px] font-semibold bg-green-100 text-green-700">
+              Tepat Waktu
+          </span>
+      @endif
+  @else
+      <span class="text-gray-400 text-xs italic">Belum upload</span>
+  @endif
+
+</td>
+
                   </tr>
                 @empty
                   <tr>
@@ -184,14 +226,6 @@
           <div class="text-sm text-[#7F8190] space-y-2">
             <p><span class="font-medium text-[#0A090B]">Kelas:</span> {{ $kelasMapel->kelas->name }}</p>
             <p><span class="font-medium text-[#0A090B]">Mata Pelajaran:</span> {{ $kelasMapel->mapel->name }}</p>
-            {{-- <p><span class="font-medium text-[#0A090B]">Deadline:</span> {{ $localTime->translatedFormat('d F Y H:i') }}</p> --}}
-            {{-- <p><span class="font-medium text-[#0A090B]">Status:</span>
-              @if(now() < $localTime)
-                <span class="text-green-600 font-semibold">Dibuka</span>
-              @else
-                <span class="text-red-600 font-semibold">Ditutup</span>
-              @endif
-            </p> --}}
           </div>
         </div>
 
@@ -200,7 +234,7 @@
           <ul class="list-disc list-inside text-sm text-[#7F8190] space-y-1">
             <li>Pastikan semua file sudah diperiksa sebelum memberi nilai.</li>
             <li>Nilai maksimal adalah 100.</li>
-            <li>Gunakan kolom “Input Nilai” untuk menyimpan nilai baru.</li>
+            <li>Gunakan kolom “Input Nilai” dan “Komentar Guru” untuk memberi umpan balik.</li>
           </ul>
         </div>
       </div>

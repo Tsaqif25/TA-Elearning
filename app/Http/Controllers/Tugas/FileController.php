@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 
 class FileController extends Controller
 {
-    // 🔹 File Materi
+    //  File Materi
 public function getFile($namaFile)
 {
     $path = storage_path('app/public/' . $namaFile);
@@ -31,7 +31,7 @@ public function getFile($namaFile)
         return response()->file($path);
     }
 
-    // 🔹 File User (siswa)
+    //  File User (siswa)
     public function getFileUser($namaFile)
     {
         $path = storage_path('app/public/file/tugas/user/' . $namaFile);

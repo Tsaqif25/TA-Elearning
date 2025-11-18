@@ -16,8 +16,8 @@ return new class extends Migration
  $table->foreignId('kelas_mapel_id')
                 ->constrained('kelas_mapels')
                 ->onDelete('cascade');
-    $table->string('name');
-    $table->longText('deskripsi');
+    $table->string('judul');
+    $table->longText('deskripsi')->nullable();
     $table->datetime('due')->nullable();
     $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
 

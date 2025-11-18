@@ -9,76 +9,47 @@ use Illuminate\Support\Facades\Storage;
 
 class TugasFileController extends Controller
 {
-    /**
-     *  Upload file materi tugas oleh guru
-     */
+  
     public function store(Request $request, Tugas $tugas)
     {
-        $validated = $request->validate([
-            'file' => 'required|file|max:10240', // Maksimal 10 MB
+        $request->validate([
+            "file" => "required|file|max:20480", // MAX 20MB
         ]);
 
-        try {
-            // Simpan file ke folder publik: storage/app/public/file/tugas/{id_tugas}
-            $path = $validated['file']->store("file/tugas/{$tugas->id}", 'public');
+        //  Simpan file ke folder: storage/app/public/tugas/{id}
+        $path = $request->file("file")->store("tugas/{$tugas->id}", "public");
 
-            // Simpan path file ke database
-            $tugas->files()->create([
-                'file' => $path,
-            ]);
+        //  Simpan ke database
+        $tugas->files()->create([
+            "file" => $path
+        ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'File tugas berhasil diunggah.',
-            ]);
-        } catch (\Throwable $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal mengunggah file: ' . $e->getMessage(),
-            ], 500);
-        }
+        return response()->json([
+            "success" => true,
+            "file"    => $path,
+            "message" => "📁 File berhasil diupload!"
+        ]);
     }
 
     /**
-     *  Hapus file materi tugas
+     * HAPUS FILE TUGAS
      */
-    public function destroy(Request $request, Tugas $tugas)
-    {
-        $validated = $request->validate([
-            'fileName' => 'required|string',
-        ]);
+public function destroy(Request $request, Tugas $tugas)
+{
+    $request->validate([
+        "fileName" => "required"
+    ]);
 
-        // Cari record file di database
-        $file = $tugas->files()
-                      ->where('file', $validated['fileName'])
-                      ->first();
+    $file = $tugas->files()->where("file", $request->fileName)->first();
 
-        if (!$file) {
-            return response()->json([
-                'success' => false,
-                'message' => 'File tidak ditemukan di database.',
-            ], 404);
-        }
-
-        // Tentukan path file di storage publik
-        $path = $file->file;
-
-        // Hapus file fisik jika masih ada
-        if (Storage::disk('public')->exists($path)) {
-            Storage::disk('public')->delete($path);
-        }
-
-        // Hapus record database
-        $file->delete();
-
-        // Respon berdasarkan jenis request
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'File berhasil dihapus.',
-            ]);
-        }
-
-        return back()->with('success', 'File berhasil dihapus.');
+    if (!$file) {
+        return back()->with("error", "⚠ File tidak ditemukan!");
     }
+
+    Storage::disk("public")->delete($file->file);
+    $file->delete();
+
+    return back()->with("success", "🗑 File berhasil dihapus!");
+}
+
 }

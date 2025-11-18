@@ -11,7 +11,7 @@ class PengumpulanTugas extends Model
 
     protected $table = 'pengumpulan_tugas';
 
-    protected $fillable = ['tugas_id', 'siswa_id', 'nilai', 'komentar'];
+    protected $fillable = ['tugas_id', 'siswa_id', 'submitted_at','is_late' ];
 
     public function tugas()
     {

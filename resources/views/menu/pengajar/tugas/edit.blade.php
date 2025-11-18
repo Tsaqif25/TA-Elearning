@@ -37,19 +37,19 @@
 
       <!--  Kolom Kiri -->
       <div class="flex-1">
-        <form id="formTugasUpdate" action="{{ route('updateTugas', $tugas->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+        <form id="formTugasUpdate" action="{{ route('guru.tugas.update', $tugas->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
           @csrf
-          @method('PUT')
+         @method('PUT') 
 
           <!-- Judul -->
           <div>
-            <label for="name" class="block text-sm font-semibold text-gray-800 mb-2">
+            <label for="judul" class="block text-sm font-semibold text-gray-800 mb-2">
               Judul Tugas <span class="text-red-500">*</span>
             </label>
-            <input type="text" id="name" name="name" placeholder="Masukkan judul tugas..." 
-              value="{{ old('name', $tugas->name) }}" required
+            <input type="text" id="name" name="judul" placeholder="Masukkan judul tugas..." 
+              value="{{ old('judul', $tugas->judul) }}" required
               class="w-full rounded-xl border border-gray-200 bg-[#F9FAFB] focus:border-[#2B82FE] focus:ring-2 focus:ring-[#2B82FE]/20 p-3 outline-none transition placeholder:text-gray-400">
-            @error('name')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+            @error('judul')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
           </div>
 
           <!-- Deadline -->
@@ -65,12 +65,12 @@
 
           <!-- Deskripsi -->
           <div>
-            <label for="content" class="block text-sm font-semibold text-gray-800 mb-2">
+            <label for="deskripsi" class="block text-sm font-semibold text-gray-800 mb-2">
               Deskripsi / Konten
             </label>
-            <textarea id="content" name="content" rows="5" placeholder="Tuliskan instruksi atau penjelasan tugas..."
-              class="w-full rounded-xl border border-gray-200 bg-[#F9FAFB] focus:border-[#2B82FE] focus:ring-2 focus:ring-[#2B82FE]/20 p-3 outline-none transition resize-none placeholder:text-gray-400">{{ old('content', $tugas->content) }}</textarea>
-            @error('content')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+            <textarea id="deskripsi" name="deskripsi" rows="5" placeholder="Tuliskan instruksi atau penjelasan tugas..."
+              class="w-full rounded-xl border border-gray-200 bg-[#F9FAFB] focus:border-[#2B82FE] focus:ring-2 focus:ring-[#2B82FE]/20 p-3 outline-none transition resize-none placeholder:text-gray-400">{{ old('deskripsi', $tugas->deskripsi) }}</textarea>
+            @error('deskripsi')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
           </div>
 
           <!-- Dropzone -->
@@ -130,7 +130,7 @@
 </a>
 
                 </div>
-                <form id="formDeleteFile" action="{{ route('tugas.deleteFile', $tugas->id) }}" method="POST"
+                <form id="formDeleteFile" action="{{ route('guru.tugas.file.delete', $tugas->id) }}" method="POST"
                       onsubmit="return confirm('Yakin ingin menghapus file ini?')">
                   @csrf
                   @method('DELETE')
@@ -172,7 +172,8 @@
 <script>
 Dropzone.autoDiscover = false;
 const myDropzone = new Dropzone("#my-dropzone", {
-  url: "{{ route('tugas.uploadFile', $tugas->id) }}",
+  url: "{{ route('guru.tugas.file.upload', ['tugas' => $tugas->id]) }}",
+
   paramName: "file",
   maxFilesize: 10,
   acceptedFiles: ".jpg,.jpeg,.png,.gif,.mp4,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.mp3,.avi,.mov",
