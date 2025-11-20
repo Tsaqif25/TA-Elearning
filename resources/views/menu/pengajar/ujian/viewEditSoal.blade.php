@@ -1,59 +1,67 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
+<div class="flex flex-col w-full bg-[#FAFAFA] font-poppins min-h-screen">
+    <div class="max-w-[1200px] mx-auto w-full px-5 lg:px-10 mt-8 mb-16">
 
-<div class="header flex justify-between items-center bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-    <div class="flex items-center gap-5">
+        <!-- Back -->
         <a href="{{ route('ujian.soal.manage', $ujian->id) }}"
-           class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 border hover:bg-gray-100 hover:shadow transition">
-            <i class="fa-solid fa-arrow-left text-gray-700 text-lg"></i>
+           class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] mb-6 text-sm font-medium">
+            <i class="fa-solid fa-arrow-left text-xs"></i> Kembali
         </a>
-        <div>
-            <h1 class="text-2xl font-extrabold text-[#0A090B]">{{ $kelasMapel->kelas->name }}</h1>
-            <p class="text-sm text-[#7F8190] font-medium mt-1">{{ $kelasMapel->mapel->name }}</p>
+
+        <!-- Header -->
+        <div class="bg-white border rounded-2xl shadow-sm p-6 mb-8">
+            <h1 class="text-2xl font-extrabold">Edit Soal</h1>
+            <p class="text-sm text-gray-500">{{ $kelasMapel->kelas->name }} — {{ $kelasMapel->mapel->name }}</p>
         </div>
+
+        <div class="bg-white border rounded-2xl p-8 shadow-sm">
+
+            <form action="{{ route('ujian.soal.update', [$ujian->id, $soal->id]) }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                <!-- Pertanyaan -->
+                <div class="mb-5">
+                    <label class="text-sm font-semibold">Pertanyaan</label>
+                    <textarea name="pertanyaan" required
+                        class="w-full mt-2 p-3 border rounded-xl bg-[#F9FAFB]">{{ $soal->pertanyaan }}</textarea>
+                </div>
+
+                <!-- Options -->
+                <div class="grid grid-cols-1 gap-4">
+                    @foreach (['option_1','option_2','option_3','option_4','option_5'] as $index => $opt)
+                        <div>
+                            <label class="text-sm font-semibold">
+                                Pilihan {{ chr(65 + $index) }}
+                            </label>
+                            <input type="text" name="{{ $opt }}" value="{{ $soal->$opt }}"
+                                class="w-full mt-2 p-3 border rounded-xl bg-[#F9FAFB]">
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Kunci Jawaban -->
+                <div class="mt-5 mb-6">
+                    <label class="text-sm font-semibold">Kunci Jawaban</label>
+                    <select name="answer" required
+                        class="w-full mt-2 p-3 border rounded-xl bg-[#F9FAFB]">
+                        <option value="1" {{ $soal->answer == 1 ? 'selected' : '' }}>A</option>
+                        <option value="2" {{ $soal->answer == 2 ? 'selected' : '' }}>B</option>
+                        <option value="3" {{ $soal->answer == 3 ? 'selected' : '' }}>C</option>
+                        <option value="4" {{ $soal->answer == 4 ? 'selected' : '' }}>D</option>
+                        <option value="5" {{ $soal->answer == 5 ? 'selected' : '' }}>E</option>
+                    </select>
+                </div>
+
+                <button class="bg-[#2B82FE] text-white px-6 py-2.5 rounded-full shadow hover:bg-blue-600">
+                    Update Soal
+                </button>
+            </form>
+
+        </div>
+
     </div>
 </div>
-
-<div class="p-6">
-    <form action="{{ route('ujian.soal.update', [$ujian->id, $soal->id]) }}" method="POST" class="flex flex-col gap-5">
-        @csrf
-        @method('PUT')
-
-        <h2 class="font-bold text-2xl">Edit Question</h2>
-
-        {{-- Pertanyaan --}}
-        <div class="flex flex-col gap-[10px]">
-            <p class="font-semibold">Question</p>
-            <input type="text" name="question"
-                value="{{ old('question', $soal->soal) }}"
-                class="w-[500px] border p-3 rounded-full"
-                required>
-        </div>
-
-        {{-- Jawaban --}}
-        <div class="flex flex-col gap-[10px]">
-            <p class="font-semibold">Answers</p>
-            @foreach ($soal->answer as $i => $ans)
-                <div class="flex items-center gap-4">
-                    <input type="text" name="answers[]" value="{{ $ans->jawaban }}"
-                           class="w-[500px] border p-3 rounded-full" required>
-
-                    <label class="font-semibold flex items-center gap-[10px]">
-                        <input type="radio" name="correct_answer" value="{{ $i }}"
-                               {{ $ans->is_correct ? 'checked' : '' }}
-                               class="w-[24px] h-[24px] appearance-none rounded-full ring ring-[#EEEEEE] checked:bg-[#2B82FE]" />
-                        Correct
-                    </label>
-                </div>
-            @endforeach
-        </div>
-
-        <button type="submit"
-                class="w-[500px] h-[52px] bg-[#6436F1] rounded-full text-white font-bold">
-            Update Question
-        </button>
-    </form>
-</div>
-
 @endsection

@@ -1,87 +1,63 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
-<div class="flex flex-col px-6 lg:px-10 mt-6">
+<div class="flex flex-col w-full bg-[#FAFAFA] font-poppins min-h-screen">
+    <div class="max-w-[1200px] mx-auto w-full px-5 lg:px-10 mt-8 mb-16">
 
-  <!-- 🔹 Tombol Back -->
-  <div class="mb-6">
-    <a href="{{ route('ujian.soal.manage', $ujian->id) }}"
-       class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm transition">
-      <i class="fa-solid fa-arrow-left text-xs"></i>
-      Kembali ke Daftar Soal
-    </a>
-  </div>
+        <!-- Back -->
+        <a href="{{ route('ujian.soal.manage', $ujian->id) }}"
+           class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] mb-6 text-sm font-medium">
+            <i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke Soal
+        </a>
 
-  <!-- Header Quiz Info -->
-  <div class="bg-white border border-[#EEEEEE] rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-center gap-5 shadow-sm">
-    <div>
-      <h1 class="text-2xl font-extrabold text-[#0A090B]">{{ $ujian->name }}</h1>
-      <p class="text-sm text-[#7F8190]">Tambah pertanyaan baru untuk quiz ini</p>
-    </div>
-
-    <div class="flex items-center gap-4">
-      <div class="flex flex-col text-right">
-        <p class="text-sm font-medium text-[#7F8190]">Deadline: <span class="text-[#0A090B] font-semibold">{{ \Carbon\Carbon::parse($ujian->due)->format('d M Y H:i') }}</span></p>
-      </div>
-      <div class="w-[80px] h-[80px] bg-gradient-to-r from-[#2B82FE] to-[#1E3A8A] rounded-2xl flex items-center justify-center shadow">
-        <i class="fa-solid fa-clipboard-question text-white text-3xl"></i>
-      </div>
-    </div>
-  </div>
-
-  <!-- Form Section -->
-  <div class="mt-6 bg-white border border-[#EEEEEE] rounded-2xl shadow-sm p-6 sm:p-10 flex flex-col gap-6">
-
-    <form id="add-question" action="{{ route('ujian.soal.store', $ujian->id) }}" method="POST" class="flex flex-col gap-6">
-      @csrf
-
-      <h2 class="font-bold text-2xl text-[#0A090B]">Add New Question</h2>
-
-      <!-- Question Input -->
-      <div class="flex flex-col gap-[10px]">
-        <p class="font-semibold">Question</p>
-        <div class="flex items-center w-full sm:w-[550px] h-[52px] p-[14px_16px] rounded-full border border-[#EEEEEE] focus-within:border-2 focus-within:border-[#0A090B] transition">
-          <div class="mr-[14px] w-6 h-6 flex items-center justify-center overflow-hidden">
-            <img src="{{ asset('images/icons/note-text.svg') }}" class="h-full w-full object-contain" alt="icon">
-          </div>
-          <input type="text" name="question" required
-                 class="font-semibold placeholder:text-[#7F8190] placeholder:font-normal w-full outline-none bg-transparent"
-                 placeholder="Write the question">
+        <!-- Header -->
+        <div class="bg-white border rounded-2xl shadow-sm p-6 mb-8">
+            <h1 class="text-2xl font-extrabold text-[#0A090B] mb-1">Tambah Soal</h1>
+            <p class="text-sm text-gray-500">{{ $kelas->name }} — {{ $mapel->name }}</p>
         </div>
-      </div>
 
-      <!-- Answers Section -->
-      <div class="flex flex-col gap-[10px]">
-        <p class="font-semibold">Answers</p>
+        <div class="bg-white border rounded-2xl shadow-sm p-8">
 
-        @for ($i = 0; $i < 4; $i++)
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-          <div class="flex items-center w-full sm:w-[550px] h-[52px] p-[14px_16px] rounded-full border border-[#EEEEEE] focus-within:border-2 focus-within:border-[#0A090B] transition">
-            <div class="mr-[14px] w-6 h-6 flex items-center justify-center overflow-hidden">
-              <img src="{{ asset('images/icons/edit.svg') }}" class="h-full w-full object-contain" alt="icon">
-            </div>
-            <input type="text" name="answers[]" required
-                   class="font-semibold placeholder:text-[#7F8190] placeholder:font-normal w-full outline-none bg-transparent"
-                   placeholder="Write better answer option">
-          </div>
+            <form action="{{ route('ujian.soal.store', $ujian->id) }}" method="POST">
+                @csrf
 
-          <label class="font-semibold flex items-center gap-[10px] text-sm text-[#0A090B]">
-            <input type="radio" name="correct_answer" value="{{ $i }}" class="w-[22px] h-[22px] appearance-none rounded-full ring ring-[#EEEEEE] checked:bg-[#2B82FE] checked:border-[3px] checked:border-white cursor-pointer" {{ $i === 0 ? 'required' : '' }}/>
-            Correct
-          </label>
+                <!-- Pertanyaan -->
+                <div class="mb-5">
+                    <label class="font-semibold text-sm">Pertanyaan</label>
+                    <textarea name="pertanyaan" required
+                        class="w-full mt-2 p-3 border rounded-xl bg-[#F9FAFB] focus:ring-2 focus:ring-blue-300"></textarea>
+                </div>
+
+                <!-- Options -->
+                @for ($i = 1; $i <= 5; $i++)
+                    <div class="mb-4">
+                        <label class="text-sm font-semibold">Pilihan {{ chr(64 + $i) }}</label>
+                        <input type="text" name="option_{{ $i }}" 
+                               class="w-full mt-2 p-3 border rounded-xl bg-[#F9FAFB]">
+                    </div>
+                @endfor
+
+                <!-- Kunci Jawaban -->
+                <div class="mb-6">
+                    <label class="text-sm font-semibold">Kunci Jawaban</label>
+                    <select name="answer" required
+                        class="w-full mt-2 p-3 border rounded-xl bg-[#F9FAFB]">
+                        <option value="">-- Pilih --</option>
+                        <option value="1">A</option>
+                        <option value="2">B</option>
+                        <option value="3">C</option>
+                        <option value="4">D</option>
+                        <option value="5">E</option>
+                    </select>
+                </div>
+
+                <button class="bg-[#2B82FE] text-white px-6 py-2.5 rounded-full shadow hover:bg-blue-600">
+                    Simpan Soal
+                </button>
+            </form>
+
         </div>
-        @endfor
-      </div>
 
-      <!-- Submit Button -->
-      <div class="pt-3">
-        <button type="submit"
-                class="w-full sm:w-[550px] h-[52px] bg-gradient-to-r from-[#6436F1] to-[#4F3CF1] rounded-full font-semibold text-white transition-all duration-300 hover:shadow-[0_4px_15px_0_#6436F14D] hover:scale-[1.02]">
-          <i class="fa-solid fa-paper-plane mr-2"></i> Save Question
-        </button>
-      </div>
-    </form>
-  </div>
+    </div>
 </div>
-
 @endsection

@@ -10,7 +10,7 @@ class UjianAttemptAnswer extends Model
         'ujian_attempt_id',
         'soal_ujian_id',
         'answer',
-        'is_correct',
+        'is_corret',
     ];
 
     public function attempt()

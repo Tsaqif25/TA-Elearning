@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Ujian\UjianStudentController;
 use App\Http\Controllers\Ujian\UjianManagementController;
+
+
 use App\Http\Controllers\Ujian\SoalManagementController;
 use App\Http\Controllers\Ujian\UjianEvaluationController;
 use Illuminate\Support\Facades\Route;
@@ -26,12 +28,19 @@ Route::middleware(['auth','role:Pengajar'])
             ->prefix('{ujian}/soal')->name('soal.')
             ->group(function(){
                 Route::get('manage','show')->name('manage');
+                  Route::get('preview','previewAll')->name('preview');
                 Route::get('create','createSoal')->name('create');
                 Route::post('store','storeSoal')->name('store');
                 Route::get('edit/{soal}', 'editSoal')->name('edit');
                 Route::put('update/{soal}', 'updateSoal')->name('update');
                 Route::delete('delete/{soal}', 'destroySoal')->name('destroy');
+                  Route::get('import', 'importView')->name('importView');
+        Route::post('import', 'import')->name('import');
+                
             });
+
+
+
 
         Route::controller(UjianEvaluationController::class)->group(function(){
             Route::get('{ujian}/siswa','listStudent')->name('students');
@@ -39,14 +48,42 @@ Route::middleware(['auth','role:Pengajar'])
     });
 
 // Siswa
+// Route::middleware(['auth','role:Siswa'])
+//     ->prefix('ujian')->name('ujian.')
+//     ->controller(UjianStudentController::class)
+//     ->group(function(){
+//         Route::get('access/{ujian}/{kelas}/{mapel}', 'ujianAccess')->name('access');
+//         Route::get('{ujian}/start', 'startUjian')->name('start');
+//         Route::get('{ujian}/finished', 'learningFinished')->name('learning.finished');
+//         Route::get('{ujian}/raport', 'learningRapport')->name('learning.raport');
+//         Route::get('{ujian}/{soal}', 'siswaUjian')->name('userUjian');
+//         Route::post('{ujian}/{soal}/submit', 'storeAnswer')->name('answer.store');
+//     });
+
+
 Route::middleware(['auth','role:Siswa'])
     ->prefix('ujian')->name('ujian.')
     ->controller(UjianStudentController::class)
     ->group(function(){
-        Route::get('access/{ujian}/{kelas}/{mapel}', 'ujianAccess')->name('access');
-        Route::get('{ujian}/start', 'startUjian')->name('start');
-        Route::get('{ujian}/finished', 'learningFinished')->name('learning.finished');
-        Route::get('{ujian}/raport', 'learningRapport')->name('learning.raport');
-        Route::get('{ujian}/{soal}', 'siswaUjian')->name('userUjian');
-        Route::post('{ujian}/{soal}/submit', 'storeAnswer')->name('answer.store');
-    });
+
+        // halaman sebelum mulai, info ujian
+        Route::get('{ujian}/access', 'ujianAccess')->name('access');
+
+        // buat attempt
+        Route::get('{ujian}/start', 'start')->name('start');
+
+        // tampilkan soal per nomor
+      Route::get('attempt/{attempt}/{nomor}', 'siswaUjian')->name('show');
+
+
+        // simpan jawaban
+        Route::post('attempt/{attempt}/{soal}/submit', 'submit')->name('answer.store');
+
+        // selesai
+        Route::get('attempt/{attempt}/finished', 'finish')->name('finish');
+
+        // raport
+        Route::get('attempt/{attempt}/raport', 'result')->name('hasil');
+});
+
+

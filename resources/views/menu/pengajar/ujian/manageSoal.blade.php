@@ -1,94 +1,133 @@
 @extends('layout.template.mainTemplate')
 
 @section('container')
-<div class="flex flex-col px-4 sm:px-6 lg:px-10 mt-6">
+<div class="flex flex-col w-full bg-[#FAFAFA] font-poppins min-h-screen">
+    <div class="max-w-[1200px] w-full mx-auto px-5 sm:px-6 lg:px-10 mt-8 mb-16">
 
-  <!-- 🔹 Tombol Back -->
-  <div class="mb-6">
-    <a href="{{ route('viewKelasMapel', [
-        'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id,
-        'tab' => 'quiz'
-    ]) }}"
-       class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm transition">
-      <i class="fa-solid fa-arrow-left text-xs"></i>
-      Kembali ke Daftar Quiz
-    </a>
-  </div>
+        <!-- Back -->
+        <a href="{{ route('viewKelasMapel', [
+            'mapel' => $kelasMapel->mapel->id,
+            'kelas' => $kelasMapel->kelas->id,
+            'tab' => 'quiz'
+        ]) }}"
+           class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm mb-6">
+            <i class="fa-solid fa-arrow-left text-xs"></i> Kembali
+        </a>
 
-  <!-- Header Quiz Info -->
-  <div class="bg-white border border-[#EEEEEE] rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-center gap-5 shadow-sm">
-    <div class="text-center sm:text-left">
-      <h1 class="text-2xl font-extrabold text-[#0A090B]">{{ $kelasMapel->kelas->name }} — {{ $kelasMapel->mapel->name }}</h1>
-      <p class="text-sm text-[#7F8190]">Kelola pertanyaan untuk quiz ini</p>
-    </div>
+        <!-- =============================== -->
+        <!-- DETAIL UJIAN -->
+        <!-- =============================== -->
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 mb-8">
+            <h2 class="text-lg font-bold text-[#0A090B] flex items-center gap-2 mb-4">
+                <i class="fa-solid fa-pen-to-square"></i> Detail Ujian
+            </h2>
 
-    <div class="flex items-center gap-4 sm:flex-row flex-col sm:text-right text-center">
-      <div class="flex flex-col">
-        <p class="text-sm font-medium text-[#7F8190]">Deadline: <span class="text-[#0A090B] font-semibold">{{ \Carbon\Carbon::parse($ujian->due)->format('d M Y') }}</span></p>
-      </div>
-      <div class="w-[70px] h-[70px] bg-gradient-to-r from-[#2B82FE] to-[#1E3A8A] rounded-2xl flex items-center justify-center shadow">
-        <i class="fa-solid fa-clipboard-question text-white text-2xl"></i>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add Question Button -->
-  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-8 mb-4 gap-4">
-    <h2 class="text-xl font-bold text-[#0A090B] text-center sm:text-left">Daftar Pertanyaan</h2>
-    <a href="{{ route('ujian.soal.create', $ujian->id) }}"
-       class="flex items-center justify-center gap-2 bg-gradient-to-r from-[#6436F1] to-[#4F3CF1] text-white px-5 py-2.5 rounded-full font-semibold text-sm shadow hover:opacity-90 transition w-full sm:w-auto">
-      <i class="fa-solid fa-plus"></i> Tambah Pertanyaan
-    </a>
-  </div>
-
-  <!-- Question List -->
-  <div class="space-y-5">
-    @forelse ($ujian->soalUjianMultiple as $index => $soal)
-      <div class="bg-white border border-[#EEEEEE] rounded-2xl p-5 sm:p-6 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 gap-3">
-          <div class="flex items-start gap-3">
-            <div class="w-8 h-8 flex items-center justify-center bg-[#2B82FE]/10 text-[#2B82FE] font-bold rounded-full flex-shrink-0">{{ $index + 1 }}</div>
-            <div>
-              <p class="text-sm font-medium text-[#7F8190]">Pertanyaan</p>
-              <h3 class="font-semibold text-lg text-[#0A090B] leading-snug break-words">{{ $soal->soal }}</h3>
+            <div class="border border-gray-200 rounded-xl overflow-hidden">
+                <table class="w-full text-sm">
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="bg-gray-50 font-semibold p-3 w-1/3">Nama Ujian</td>
+                            <td class="p-3">{{ $ujian->judul }}</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="bg-gray-50 font-semibold p-3">Mata Pelajaran</td>
+                            <td class="p-3">{{ $mapel->name }}</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="bg-gray-50 font-semibold p-3">Kelas</td>
+                            <td class="p-3">{{ $kelas->name }}</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="bg-gray-50 font-semibold p-3">Jumlah Soal</td>
+                            <td class="p-3">{{ $soal->count() }}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg-gray-50 font-semibold p-3">Durasi (Menit)</td>
+                            <td class="p-3">{{ $ujian->durasi }} menit</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-          </div>
-
-          <div class="flex gap-2 justify-end sm:flex-nowrap flex-wrap">
-            <a href="{{ route('ujian.soal.edit', [$ujian->id, $soal->id]) }}"
-               class="flex items-center gap-1 bg-[#E0E7FF] text-[#4338CA] px-3 py-1.5 rounded-full font-semibold text-xs hover:bg-[#C7D2FE] transition w-full sm:w-auto justify-center">
-              <i class="fa-solid fa-pen-to-square"></i> Edit
-            </a>
-            <form action="{{ route('ujian.soal.destroy', [$ujian->id, $soal->id]) }}" method="POST" class="w-full sm:w-auto" onsubmit="return confirm('Yakin ingin menghapus soal ini?')">
-              @csrf
-              @method('DELETE')
-              <button type="submit"
-                      class="flex items-center justify-center gap-1 bg-[#FEE2E2] text-[#B91C1C] px-3 py-1.5 rounded-full font-semibold text-xs hover:bg-[#FECACA] transition w-full sm:w-auto">
-                <i class="fa-solid fa-trash"></i> Hapus
-              </button>
-            </form>
-          </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
-          @php $labels = ['A','B','C','D']; @endphp
-          @foreach ($soal->answer as $i => $ans)
-            <div class="flex items-center justify-between border border-[#EEEEEE] rounded-xl px-4 py-2.5">
-              <p class="text-sm text-[#0A090B] font-medium break-words">{{ $ans->jawaban }}</p>
-              @if ($ans->is_correct)
-                <span class="bg-[#D1FAE5] text-[#065F46] text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap">Benar</span>
-              @endif
+        <!-- =============================== -->
+        <!-- SOAL UJIAN -->
+        <!-- =============================== -->
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6">
+
+            <h2 class="text-lg font-bold text-[#0A090B] flex items-center gap-2 mb-4">
+                <i class="fa-solid fa-circle-question"></i> Soal Ujian
+            </h2>
+
+            <!-- Tombol Tambah dan Import -->
+            <div class="flex gap-2 mb-5">
+                <a href="{{ route('ujian.soal.create', $ujian->id) }}"
+                   class="px-4 py-2 text-sm font-semibold bg-[#2B82FE] text-white rounded-lg shadow hover:bg-blue-600">
+                    <i class="fa-solid fa-plus mr-1"></i> Tambah
+                </a>
+
+                {{-- <a href="#"
+                   class="px-4 py-2 text-sm font-semibold bg-green-500 text-white rounded-lg shadow hover:bg-green-600">
+                    <i class="fa-solid fa-file-excel mr-1"></i> Import
+                </a> --}}
+<a href="{{ route('ujian.soal.importView', $ujian->id) }}"
+   class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow flex items-center gap-2 text-sm font-semibold">
+    <i class="fa-solid fa-file-excel"></i>
+    Import Soal
+</a>
+
+
             </div>
-          @endforeach
+
+            <!-- LIST SOAL -->
+            @if ($soal->isEmpty())
+                <p class="text-center text-gray-500 py-6">Belum ada soal ditambahkan.</p>
+            @else
+                <table class="w-full text-sm border border-gray-200 rounded-xl overflow-hidden">
+                    <thead class="bg-[#111827] text-white">
+                        <tr>
+                            <th class="p-3 w-16 text-center">No.</th>
+                            <th class="p-3">Soal</th>
+                            <th class="p-3 w-32 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach ($soal as $item)
+                            <tr class="border-b">
+                                <td class="p-3 text-center">{{ $loop->iteration }}</td>
+                                <td class="p-3">
+                                    {{ $item->pertanyaan }}
+                                </td>
+                                <td class="p-3 text-center flex justify-center gap-2">
+
+                                    <!-- Edit -->
+                                    <a href="{{ route('ujian.soal.edit', [$ujian->id, $item->id]) }}"
+                                       class="px-3 py-1.5 text-xs bg-amber-100 text-amber-700 rounded-full">
+                                        Edit
+                                    </a>
+
+                                    <!-- Delete -->
+                                    <form action="{{ route('ujian.soal.destroy', [$ujian->id, $item->id]) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('Yakin ingin menghapus soal ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="px-3 py-1.5 text-xs bg-red-100 text-red-700 rounded-full">
+                                            Hapus
+                                        </button>
+                                    </form>
+
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+
+                </table>
+            @endif
+
         </div>
-      </div>
-    @empty
-      <div class="text-center py-10 border border-dashed border-gray-300 rounded-2xl bg-gray-50 text-gray-500">
-        Belum ada pertanyaan tersedia.
-      </div>
-    @endforelse
-  </div>
+
+    </div>
 </div>
-
 @endsection
