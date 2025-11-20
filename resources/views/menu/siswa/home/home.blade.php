@@ -48,8 +48,8 @@
               <h3 class="text-base sm:text-lg font-semibold mb-1">{{ $mapel['mapel_name'] }}</h3>
               <p class="text-sm text-gray-500 mb-4">Pengajar: {{ $mapel['pengajar_name'] ?? '-' }}</p>
               <div class="mt-3 flex items-center justify-between">
-                <span class="text-sm text-gray-500">Jumlah Materi:</span>
-                <span class="font-semibold text-green-600">{{ $mapel['materi_count'] ?? 0 }} Materi</span>
+                {{-- <span class="text-sm text-gray-500">Jumlah Materi:</span>
+                <span class="font-semibold text-green-600">{{ $mapel['materi_count'] ?? 0 }} Materi</span> --}}
               </div>
             </div>
           </a>

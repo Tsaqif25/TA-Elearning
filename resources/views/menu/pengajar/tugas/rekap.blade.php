@@ -3,9 +3,17 @@
 @section('container')
 
 <div class="p-8 bg-gray-50 min-h-screen">
-
+   <a href="{{ route('viewKelasMapel', [
+        'mapel' => $kelasMapel->mapel->id,
+        'kelas' => $kelasMapel->kelas->id,
+        'tab'   => 'tugas'
+    ]) }}"
+       class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm mb-6 transition">
+      <i class="fa-solid fa-arrow-left text-xs"></i>
+      Kembali ke Daftar Tugas
+    </a>
     <h1 class="text-3xl font-bold mb-6">
-        📊 Rekap Nilai — {{ $kelasMapel->kelas->name }} / {{ $kelasMapel->mapel->name }}
+        📊 Rekap Nilai — {{ $kelasMapel->kelas->name }}-{{ $kelasMapel->mapel->name }}
     </h1>
 
     <table class="w-full border text-sm bg-white shadow rounded-xl overflow-hidden">

@@ -161,10 +161,7 @@
   <p class="mb-1">Dosen Pembimbing: <span class="font-semibold text-white">Dr. Titi Sriwahyuni, S.Pd., M.Eng</span></p>
   <p class="mb-1">Pengembang: <span class="font-semibold text-white">Tsaqif Luthfan</span></p>
   <p class="mb-3">Universitas Negeri Padang</p>
-
   <p>© 2025 SMK 2 Padang. All rights reserved.</p>
 </footer>
-
-
 </body>
 </html>

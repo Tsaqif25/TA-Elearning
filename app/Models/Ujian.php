@@ -9,15 +9,23 @@ class Ujian extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kelas_mapel_id', 'name', 'due'];
+    protected $fillable = ['kelas_mapel_id', 'guru_id','judul','deskripsi','durasi_menit','random_question','random_answer','show_answer'];
 
     public function kelasMapel()
     {
         return $this->belongsTo(KelasMapel::class);
     }
 
-    public function soalMultiples()
-    {
-        return $this->hasMany(SoalUjianMultiple::class);
-    }
+  public function guru()
+  {
+    return $this->belongsTo(Guru::class);
+  }
+
+  public function soal(){
+    return $this->hasMany(SoalUjian::class);
+  }
+
+  public function attempts(){
+    return $this->hasMany(UjianAttempt::class);
+  }
 }

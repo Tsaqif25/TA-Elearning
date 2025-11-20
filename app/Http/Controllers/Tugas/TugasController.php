@@ -13,7 +13,7 @@ class TugasController extends Controller
     public function viewTugas(Tugas $tugas)
     {
         return view('menu.pengajar.tugas.view', [
-            'tugas'      => $tugas,
+    'tugas'      => $tugas,
     'kelas'      => $tugas->kelasMapel->kelas,
     'mapel'      => $tugas->kelasMapel->mapel,
     'kelasMapel' => $tugas->kelasMapel,
@@ -46,7 +46,7 @@ class TugasController extends Controller
         foreach (DataSiswa::where("kelas_id", $kelasMapel->kelas_id)->get() as $siswa) {
             Notification::create([
                 "user_id" => $siswa->user_id,
-                "title"   => "Tugas Baru 🚀",
+                "title"   => "Tugas Baru ",
                 "message" => "Guru menambahkan tugas: " . $request->name,
                 "type"    => "tugas",
             ]);
@@ -119,14 +119,10 @@ public function siswaUpdateNilai(Request $request, Tugas $tugas)
 
 public function rekapNilaiTugas(KelasMapel $kelasMapel)
 {
-    // Ambil semua tugas dalam kelas-mapel ini
-    $tugasList = Tugas::where("kelas_mapel_id", $kelasMapel->id)->get();
-
-    // Ambil semua siswa dalam kelas ini
+   
+    $tugasList = Tugas::where("kelas_mapel_id", $kelasMapel->id)->get(); 
     $siswaList = DataSiswa::where("kelas_id", $kelasMapel->kelas_id)->get();
-
-    // Ambil semua nilai siswa untuk tugas-tugas tersebut
-    $nilaiList = \App\Models\NilaiTugas::whereIn("tugas_id", $tugasList->pluck('id'))->get();
+    $nilaiList = NilaiTugas::whereIn("tugas_id", $tugasList->pluck('id'))->get();
 
     return view("menu.pengajar.tugas.rekap", compact(
         "kelasMapel",

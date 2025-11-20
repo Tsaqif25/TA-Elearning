@@ -16,8 +16,15 @@ return new class extends Migration
             $table->foreignId('kelas_mapel_id')
                 ->constrained('kelas_mapels')
                 ->onDelete('cascade');
-            $table->string('name');
-            $table->dateTime('due');
+             $table->foreignId('guru_id')
+            ->constrained('gurus')
+            ->cascadeOnDelete();
+            $table->string('judul');
+           $table->text('deskripsi')->nullable();
+           $table->integer('durasi_menit');
+           $table->boolean('random_question')->default(true);
+           $table->boolean('random_answer')->default(true);
+           $table->boolean('show_answer')->default(false);
             $table->timestamps();
         });
     }

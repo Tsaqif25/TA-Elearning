@@ -3,7 +3,7 @@
 @section('title', 'Detail Materi')
 
 @section('container')
-<div class="flex flex-col w-full bg-[#FAFAFA] font-poppins min-h-screen">
+<div class="flex flex-col w-full bg-[#FAFAFA] font-poppins min-h-screen overflow-x-hidden">
   <div class="max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-10 mt-10 mb-16">
 
     {{-- 🔙 Tombol Kembali --}}
@@ -43,11 +43,13 @@
     </section>
     @endif
 
-    {{-- 📦 Konten Utama --}}
-    <div class="grid lg:grid-cols-3 gap-10 mt-8">
+
+    {{-- ⚡⚡⚡ RESPONSIVE GRID FIX ⚡⚡⚡ --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8 w-full overflow-x-hidden">
 
       {{-- Kolom Kiri --}}
       <div class="lg:col-span-2 flex flex-col gap-8">
+
 
         {{-- 📁 File Materi --}}
         <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
@@ -62,10 +64,9 @@
                   $ext = pathinfo($file->file, PATHINFO_EXTENSION);
                   $iconClass = match($ext) {
                     'pdf' => 'fa-file-pdf text-red-500',
-                    'ppt', 'pptx' => 'fa-file-powerpoint text-orange-500',
-                    'doc', 'docx' => 'fa-file-word text-blue-500',
-                    'xls', 'xlsx' => 'fa-file-excel text-green-500',
-                    'zip', 'rar' => 'fa-file-zipper text-yellow-500',
+                    'ppt','pptx' => 'fa-file-powerpoint text-orange-500',
+                    'doc','docx' => 'fa-file-word text-blue-500',
+                    'xls','xlsx' => 'fa-file-excel text-green-500',
                     default => 'fa-file text-gray-500'
                   };
                 @endphp
@@ -73,14 +74,14 @@
                 <div class="flex items-center justify-between bg-[#F9FAFB] hover:bg-[#EEF4FF] border border-gray-100 rounded-xl px-5 py-4 transition duration-300">
                   <div class="flex items-center gap-3 min-w-0">
                     <i class="fa-solid {{ $iconClass }} text-2xl"></i>
-                    <a href="{{ asset('storage/materi/' . $materi->id . '/' . $file->file) }}"
+                    <a href="{{ asset('storage/materi/'.$materi->id.'/'.$file->file) }}"
                        target="_blank"
                        class="truncate font-medium text-[#0A090B] hover:text-[#2B82FE]">
                       {{ basename($file->file) }}
                     </a>
                   </div>
 
-                  <a href="{{ asset('storage/materi/' . $materi->id . '/' . $file->file) }}" download
+                  <a href="{{ asset('storage/materi/'.$materi->id.'/'.$file->file) }}" download
                      class="flex items-center justify-center w-9 h-9 border border-[#2B82FE]/30 rounded-full text-[#2B82FE] hover:bg-[#2B82FE] hover:text-white transition">
                     <i class="fa-solid fa-download text-sm"></i>
                   </a>
@@ -100,30 +101,26 @@
           </h2>
 
           @php
-              $links = preg_split("/(\r\n|\r|\n)/", trim($materi->youtube_link));
-              $links = array_filter($links);
-              function toEmbed($url) {
-                  $url = trim($url);
-                  if (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)/', $url, $m)) return "https://www.youtube.com/embed/{$m[1]}";
-                  if (preg_match('/v=([a-zA-Z0-9_-]+)/', $url, $m)) return "https://www.youtube.com/embed/{$m[1]}";
-                  if (preg_match('/shorts\/([a-zA-Z0-9_-]+)/', $url, $m)) return "https://www.youtube.com/embed/{$m[1]}";
-                  return $url;
-              }
+            $links = preg_split("/(\r|\n)/", trim($materi->youtube_link));
+            $links = array_filter($links);
+            function toEmbed($url) {
+              if (preg_match('/youtu\.be\/(.+)/',$url,$m)) return "https://www.youtube.com/embed/$m[1]";
+              if (preg_match('/v=([^&]+)/',$url,$m)) return "https://www.youtube.com/embed/$m[1]";
+              return $url;
+            }
           @endphp
 
-          @foreach ($links as $link)
-            <div class="aspect-video rounded-xl overflow-hidden mb-5">
-              <iframe class="w-full h-full rounded-xl"
-                      src="{{ toEmbed($link) }}"
-                      title="YouTube video player"
-                      frameborder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowfullscreen></iframe>
-            </div>
+          @foreach($links as $link)
+          <div class="aspect-video rounded-xl overflow-hidden mb-5">
+            <iframe class="w-full h-full rounded-xl"
+              src="{{ toEmbed($link) }}" allowfullscreen></iframe>
+          </div>
           @endforeach
         </div>
         @endif
+
       </div>
+
 
       {{-- 📊 Sidebar --}}
       <aside class="space-y-6">

@@ -207,9 +207,11 @@ $aktivitas = $materi->merge($tugas)
 
 public function viewSiswa($kelasId)
 {
-    $siswa = DataSiswa::where('kelas_id', $kelasId)->get();
-
-    return view('menu.siswa.home.siswa', compact('siswa'));
+    $siswa = DataSiswa::where('kelas_id', $kelasId)->with('user')->paginate(15);
+ $kelasMapel = KelasMapel::where('kelas_id', $kelasId)
+        ->with(['kelas', 'mapel'])
+        ->first();
+    return view('menu.siswa.home.siswa', compact('siswa','kelasMapel'));
 }
 
 }

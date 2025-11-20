@@ -5,7 +5,7 @@
 <div class="flex flex-col w-full bg-[#FAFAFA] font-poppins">
   <div class="max-w-[1200px] w-full mx-auto px-5 sm:px-6 lg:px-10 mt-8 mb-16">
 
-    {{-- 🔙 Tombol Kembali --}}
+    {{-- Tombol Kembali --}}
     <div class="mb-5">
       <a href="{{ route('viewKelasMapel', [ 'mapel' => $kelasMapel->mapel->id, 'kelas' => $kelasMapel->kelas->id, 'tab' => 'tugas']) }}"
          class="flex items-center gap-2 text-sm text-[#2B82FE] hover:underline font-medium">
@@ -13,7 +13,7 @@
       </a>
     </div>
 
-    {{-- 🟦 Header Tugas --}}
+    {{-- Header Tugas --}}
     <div class="bg-gradient-to-tr from-blue-500 to-green-500 text-white rounded-2xl p-6 sm:p-8 mb-8 shadow-sm">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    {{-- 📊 Statistik --}}
+    {{-- Statistik --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
       <div class="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm">
         <p class="text-[#7F8190] text-xs font-medium mb-1">Total Siswa</p>
@@ -48,10 +48,10 @@
         </p>
       </div>
 
-      <div class="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm">
+      {{-- <div class="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm">
         <p class="text-[#7F8190] text-xs font-medium mb-1">Tepat Waktu</p>
         <p class="text-lg font-bold text-[#0A090B]">—</p>
-      </div>
+      </div> --}}
 
       <div class="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm">
         <p class="text-[#7F8190] text-xs font-medium mb-1">Status</p>
@@ -66,13 +66,13 @@
           </span>
         @endif
       </div>
-    </div> 
+    </div>
 
-    {{-- 📄 Detail & File --}}
+    {{-- Grid Kiri-Kanan --}}
     <div class="grid lg:grid-cols-3 gap-8">
 
-      {{-- 📘 Kiri --}}
-      <div class="lg:col-span-2 flex flex-col gap-6">
+      {{-- KIRI --}}
+      <div class="lg:col-span-2 flex flex-col gap-6" id="submission-container">
 
         {{-- Detail Tugas --}}
         <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-6 space-y-6">
@@ -116,7 +116,7 @@
           </div>
         </div>
 
-        {{-- ✏️ Submission Siswa --}}
+        {{-- Submission Siswa --}}
         <form id="submission" action="{{ route('guru.tugas.nilai.update', ['tugas' => $tugas->id]) }}" method="post"
               class="bg-white border border-[#EEEEEE] rounded-2xl shadow-sm p-6 space-y-4">
           @csrf
@@ -147,12 +147,10 @@
                         ->with('files')
                         ->first();
 
-                    // Ambil nilai dari tabel nilai_tugas
                     $nilai = \App\Models\NilaiTugas::where('tugas_id', $tugas->id)
                               ->where('siswa_id', $siswa->id)
                               ->value('nilai');
 
-                    // Ambil komentar guru dari pengumpulan_tugas (kolom komentar)
                     $komentarGuru = $pengumpulan->komentar ?? null;
                   @endphp
                   <tr class="hover:bg-gray-50 transition">
@@ -172,7 +170,7 @@
                       @endif
                     </td>
 
-                    {{-- Nilai (ditampilkan) --}}
+                    {{-- Nilai --}}
                     <td class="py-3 px-4 text-center text-gray-800 font-semibold">
                       {{ $nilai !== null ? $nilai : '-' }}
                     </td>
@@ -184,28 +182,28 @@
                         class="w-16 border border-gray-200 rounded-xl p-1 text-center text-sm focus:ring-[#2B82FE] focus:border-[#2B82FE] transition">
                     </td>
 
-                    {{-- Komentar Guru --}}
-                    <td class="py-3 px-4">
-                      <textarea name="komentar[]" rows="1" placeholder="Masukkan komentar..."
-                        class="w-full border border-gray-200 rounded-xl px-3 py-1 text-xs focus:ring-[#2B82FE] focus:border-[#2B82FE] transition resize-none">{{ $komentarGuru ?? '' }}</textarea>
+                    {{-- Komentar --}}
+                    <td class="py-3 px-4 w-[320px]">
+                      <textarea name="komentar[]" rows="2" placeholder="Masukkan komentar..."
+                        class="min-w-[300px] w-full border border-gray-200 rounded-xl px-3 py-2 text-xs focus:ring-[#2B82FE] 
+                               focus:border-[#2B82FE] transition resize-y">{{ $komentarGuru ?? '' }}</textarea>
                     </td>
+
                     <td class="py-3 px-4 text-center">
-
-  @if ($pengumpulan)
-      @if ($pengumpulan->is_late)
-          <span class="px-3 py-1 rounded-full text-[10px] font-semibold bg-red-100 text-red-700">
-              Terlambat
-          </span>
-      @else
-          <span class="px-3 py-1 rounded-full text-[10px] font-semibold bg-green-100 text-green-700">
-              Tepat Waktu
-          </span>
-      @endif
-  @else
-      <span class="text-gray-400 text-xs italic">Belum upload</span>
-  @endif
-
-</td>
+                      @if ($pengumpulan)
+                          @if ($pengumpulan->is_late)
+                              <span class="px-3 py-1 rounded-full text-[10px] font-semibold bg-red-100 text-red-700">
+                                  Terlambat
+                              </span>
+                          @else
+                              <span class="px-10 py-1 rounded-full text-[10px] font-semibold bg-green-100 text-green-700">
+                                  Tepat Waktu
+                              </span>
+                          @endif
+                      @else
+                          <span class="text-gray-400 text-xs italic">Belum upload</span>
+                      @endif
+                    </td>
 
                   </tr>
                 @empty
@@ -219,8 +217,8 @@
         </form>
       </div>
 
-      {{-- 📋 Kanan --}}
-      <div class="flex flex-col gap-6">
+      {{-- KANAN --}}
+      {{-- <div class="flex flex-col gap-6">
         <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-6">
           <h3 class="font-semibold mb-3 text-[#0A090B]">Informasi Tugas</h3>
           <div class="text-sm text-[#7F8190] space-y-2">
@@ -229,17 +227,28 @@
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-6">
-          <h3 class="font-semibold mb-3 text-[#0A090B]">Tips Penilaian</h3>
-          <ul class="list-disc list-inside text-sm text-[#7F8190] space-y-1">
-            <li>Pastikan semua file sudah diperiksa sebelum memberi nilai.</li>
-            <li>Nilai maksimal adalah 100.</li>
-            <li>Gunakan kolom “Input Nilai” dan “Komentar Guru” untuk memberi umpan balik.</li>
-          </ul>
-        </div>
-      </div>
+      </div> --}}
     </div>
   </div>
 </div>
+
+{{-- CSS UNTUK MEMPERPANJANG CARD SUBMISSION --}}
+<style>
+#submission-container {
+    grid-column: 1 / -1 !important; /* MEMBUAT SUBMISSION FULL LEBAR */
+}
+
+#submission {
+    width: 100% !important;
+}
+
+#submission table {
+    width: 100% !important;
+}
+
+#submission textarea {
+    min-width: 300px !important;
+}
+</style>
 
 @endsection

@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Tugas;
 
-use App\Http\Controllers\Controller;
-use App\Models\{Tugas, PengumpulanTugas, PengumpulanTugasFile, TugasKomentar};
+use App\Models\NilaiTugas;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\{Tugas, PengumpulanTugas, PengumpulanTugasFile, TugasKomentar};
 
 class TugasSubmitController extends Controller
 {
-    /**
-     * HALAMAN UPLOAD TUGAS (UNTUK SISWA)
-     */
+   
 public function viewTugasSiswa(Tugas $tugas)
 {
     $siswaId = Auth::user()->dataSiswa->id;
@@ -22,7 +21,7 @@ public function viewTugasSiswa(Tugas $tugas)
         "siswa_id" => $siswaId
     ])->first();
 
-    $nilai = \App\Models\NilaiTugas::where([
+    $nilai = NilaiTugas::where([
         "tugas_id" => $tugas->id,
         "siswa_id" => $siswaId
     ])->value('nilai');
@@ -56,9 +55,7 @@ public function submitTugas(Request $request, Tugas $tugas)
     ]);
 }
 
-    /**
-     * UPLOAD FILE TUGAS (DROPZONE / AJAX)
-     */
+    
     public function submitFileTugas(Request $request)
     {
         $request->validate([
@@ -66,10 +63,9 @@ public function submitTugas(Request $request, Tugas $tugas)
             "file"     => "required|file|max:10240" // 10MB
         ]);
 
-        $tugas = Tugas::findOrFail($request->tugas_id);
+        $tugas      = Tugas::findOrFail($request->tugas_id);
         $siswa_id = Auth::user()->dataSiswa->id;
- $isLate = now()->greaterThan($tugas->due) ? 1 : 0;
-        //  Jika belum pernah submit → buat record
+        $isLate = now()->greaterThan($tugas->due) ? 1 : 0;
         $submit = PengumpulanTugas::firstOrCreate([
             "tugas_id" => $tugas->id,
             "siswa_id" => $siswa_id,
@@ -95,13 +91,13 @@ public function submitTugas(Request $request, Tugas $tugas)
     }
 
     /**
-     * ❌ HAPUS FILE JAWABAN SISWA
+     *  HAPUS FILE JAWABAN SISWA
      */
     public function deleteFile(Request $request)
     {
-        $request->validate(["file" => "required"]);
+        $request->validate(["fileName" => "required"]);
 
-        $file = PengumpulanTugasFile::where("file", $request->file)->firstOrFail();
+        $file = PengumpulanTugasFile::where("file", $request->fileName)->firstOrFail();
 
         Storage::disk("public")->delete($file->file);
         $file->delete();
@@ -109,16 +105,5 @@ public function submitTugas(Request $request, Tugas $tugas)
         return back()->with("success", "🗑 File berhasil dihapus!");
     }
 
-    public function komentarSiswa(Request $request,Tugas $tugas)
-    {
-        $request->validate([
-            'komentar' => 'nullable'
-        ]);
-
-       TugasKomentar::create([
-        'tugas_id' => $tugas->id,
-        'user_id' => auth()->id(),
-        'komentar' => $request->komentar
-       ]);
-    }
+   
 }
