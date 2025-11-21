@@ -32,7 +32,7 @@ public function store(Request $request, KelasMapel $kelasMapel)
     $request->validate([
         'judul' => 'required',
         'deskripsi' => 'required',
-        'durasi' => 'required|integer',
+        'durasi_menit' => 'required|integer',
     ]);
 
     $ujian = Ujian::create([
@@ -40,7 +40,7 @@ public function store(Request $request, KelasMapel $kelasMapel)
         'guru_id'        => auth()->user()->guru->id, // WAJIB
         'judul'          => $request->judul,
         'deskripsi'      => $request->deskripsi,
-        'durasi_menit'   => $request->durasi, 
+        'durasi_menit'   => $request->durasi_menit, 
         'random_question' => false,
         'random_answer'   => false,
         'show_answer'     => false,
@@ -85,16 +85,18 @@ public function edit(Ujian $ujian)
     // UPDATE
     public function update(Request $request, Ujian $ujian)
     {
-        $request->validate([
-            // 'kelas_mapel_id' => 'required',
-            'judul' => 'required',
-            'deskripsi' => 'required',
-            'durasi' => 'required|integer',
-        ]);
+      $request->validate([
+    'durasi_menit' => 'required|integer',
+]);
 
-        $ujian->update($request->only('kelas_mapel_id', 'judul', 'deskripsi', 'durasi'));
+$ujian->update([
+    'judul' => $request->judul,
+    'deskripsi' => $request->deskripsi,
+    'durasi_menit' => $request->durasi_menit,
+]);
 
-        // 👉 Redirect ke halaman manage soal
+
+        //  Redirect ke halaman manage soal
         return redirect()->route('ujian.soal.manage', $ujian->id)
             ->with('success', 'Ujian berhasil diperbarui!');
     }

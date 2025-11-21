@@ -4,35 +4,33 @@
 <div class="flex flex-col w-full bg-[#FAFAFA] font-poppins min-h-screen">
   <div class="max-w-[1200px] w-full mx-auto px-5 sm:px-6 lg:px-10 mt-8 mb-16">
 
-    <!-- Tombol Back -->
-    <a href="{{ route('viewKelasMapel', [
-        'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id,
-        'tab' => 'materi',
-    ]) }}"
-       class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm mb-6 transition">
-      <i class="fa-solid fa-arrow-left text-xs"></i>
-      Kembali ke Daftar Materi
-    </a>
+    <!-- HEADER GRADIENT EDIT (SAMA STRUCTURE DENGAN ADD) -->
+    <div class="bg-gradient-to-tr from-blue-500 to-green-500 text-white rounded-2xl p-6 shadow-lg w-full mb-6">
 
-    <!-- Header -->
-    <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 mb-8 flex items-start sm:items-center justify-between flex-wrap gap-4">
-      <div class="flex items-start sm:items-center gap-3">
-        <div class="w-1.5 h-8 rounded-full bg-[#2B82FE]"></div>
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-[#0A090B] leading-tight">
-            {{ $kelasMapel->kelas->name }} — {{ $kelasMapel->mapel->name }}
-          </h1>
-          <p class="text-sm text-[#7F8190]">Perbarui materi pembelajaran untuk siswa</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2 bg-[#E8F0FF] text-[#2B82FE] px-3 py-1 rounded-full text-xs font-semibold">
-        <i class="fa-solid fa-pen-to-square text-[10px]"></i> Edit Materi
-      </div>
+      <!-- Back Button -->
+      <a href="{{ route('viewKelasMapel', [
+          'mapel' => $kelasMapel->mapel->id,
+          'kelas' => $kelasMapel->kelas->id,
+          'tab' => 'materi'
+      ]) }}"
+        class="flex items-center gap-2 text-white/90 hover:text-white mb-4 font-medium text-sm transition">
+        <i class="fa-solid fa-arrow-left text-xs"></i>
+        Kembali ke Daftar Materi
+      </a>
+
+      <!-- Title -->
+      <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight">
+        {{ $kelasMapel->kelas->name }} — {{ $kelasMapel->mapel->name }}
+      </h1>
+
+      <p class="text-sm opacity-90">Perbarui materi pembelajaran untuk siswa</p>
+
     </div>
 
     <!-- Form Utama -->
     <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-8 flex flex-col lg:flex-row gap-6">
+
+      <!-- Kiri: Form -->
       <div class="flex-1">
         <form id="formMateri" action="{{ route('materi.update', $materi->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
           @csrf
@@ -96,32 +94,34 @@
         </h3>
         <div class="divide-y divide-gray-100">
           @forelse ($materi->files as $file)
-          <div class="flex items-center justify-between py-3">
-            <div class="flex items-center gap-3 min-w-0">
-              <i class="fa-solid fa-file text-[#2B82FE] text-lg"></i>
-              <a href="{{ asset('storage/materi/' . $materi->id . '/' . basename($file->file)) }}"
-                 target="_blank"
-                 class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
-                 {{ basename($file->file) }}
-              </a>
+            <div class="flex items-center justify-between py-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <i class="fa-solid fa-file text-[#2B82FE] text-lg"></i>
+                <a href="{{ asset('storage/materi/' . $materi->id . '/' . basename($file->file)) }}"
+                  target="_blank"
+                  class="font-medium text-sm text-[#0A090B] hover:text-[#2B82FE] truncate">
+                  {{ basename($file->file) }}
+                </a>
+              </div>
+              <form action="{{ route('materi.destroyFile', $materi->id) }}" method="POST" onsubmit="event.preventDefault(); handleDeleteMateri(this);" class="ml-4 flex-shrink-0">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="file_id" value="{{ $file->id }}">
+                <button type="submit" class="inline-flex items-center gap-1 text-rose-500 hover:text-rose-700 text-xs font-medium transition">
+                  <i class="fa-solid fa-trash"></i><span>Hapus</span>
+                </button>
+              </form>
             </div>
-            <form action="{{ route('materi.destroyFile', $materi->id) }}" method="POST" onsubmit="event.preventDefault(); handleDeleteMateri(this);" class="ml-4 flex-shrink-0">
-              @csrf
-              @method('DELETE')
-              <input type="hidden" name="file_id" value="{{ $file->id }}">
-              <button type="submit" class="inline-flex items-center gap-1 text-rose-500 hover:text-rose-700 text-xs font-medium transition">
-                <i class="fa-solid fa-trash"></i><span>Hapus</span>
-              </button>
-            </form>
-          </div>
           @empty
-          <p class="text-gray-500 text-sm italic py-2">Belum ada file yang diunggah.</p>
+            <p class="text-gray-500 text-sm italic py-2">Belum ada file yang diunggah.</p>
           @endforelse
         </div>
       </div>
+
     </div>
   </div>
 </div>
+
 
 {{-- ========================== --}}
 {{-- SCRIPT DROPZONE & ALERT --}}

@@ -4,49 +4,48 @@
 <div class="flex flex-col w-full bg-[#FAFAFA] font-poppins min-h-screen">
   <div class="max-w-[1200px] w-full mx-auto px-5 sm:px-6 lg:px-10 mt-8 mb-16">
 
-    <!-- 🔹 Tombol Back -->
-    <a href="{{ route('viewKelasMapel', [
-        'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id,
-        'tab' => 'tugas',
-    ]) }}"
-       class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm mb-6 transition">
-      <i class="fa-solid fa-arrow-left text-xs"></i>
-      Kembali ke Daftar Tugas
-    </a>
+    <!-- HEADER GRADIENT (SAMA SEPERTI ADD & EDIT MATERI / ADD TUGAS) -->
+    <div class="bg-gradient-to-tr from-blue-500 to-green-500 text-white rounded-2xl p-6 shadow-lg w-full mb-6 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-tr from-blue-600/90 to-green-500/90 rounded-2xl"></div>
 
-    <!-- 🔸 Header -->
-    <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 mb-8 flex items-start sm:items-center justify-between flex-wrap gap-4">
-      <div class="flex items-start sm:items-center gap-3">
-        <div class="w-1.5 h-8 rounded-full bg-[#2B82FE]"></div>
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-[#0A090B] leading-tight">
-            {{ $kelasMapel->kelas->name }} — {{ $kelasMapel->mapel->name }}
-          </h1>
-          <p class="text-sm text-[#7F8190]">Edit detail tugas dan file pendukung siswa</p>
-        </div>
-      </div>
+      <div class="relative z-10">
 
-      <div class="flex items-center gap-2 bg-[#E8F0FF] text-[#2B82FE] px-3 py-1 rounded-full text-xs font-semibold">
-        <i class="fa-solid fa-pen-to-square text-[10px]"></i> Edit Tugas
+        <!-- 🔙 Tombol Back -->
+        <a href="{{ route('viewKelasMapel', [
+            'mapel' => $kelasMapel->mapel->id,
+            'kelas' => $kelasMapel->kelas->id,
+            'tab' => 'tugas',
+        ]) }}"
+           class="flex items-center gap-2 text-white/90 hover:text-white font-medium text-sm mb-4 transition">
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+          Kembali ke Daftar Tugas
+        </a>
+
+        <!-- Judul Header -->
+        <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight">
+          {{ $kelasMapel->kelas->name }} — {{ $kelasMapel->mapel->name }}
+        </h1>
+
+        <p class="text-sm opacity-90">Edit detail tugas dan file pendukung siswa</p>
+
       </div>
     </div>
 
-    <!--  Card Form Utama -->
+    <!-- CARD FORM UTAMA -->
     <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-8 flex flex-col lg:flex-row gap-6">
 
-      <!--  Kolom Kiri -->
+      <!-- KOLOM KIRI: FORM -->
       <div class="flex-1">
         <form id="formTugasUpdate" action="{{ route('guru.tugas.update', $tugas->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
           @csrf
-         @method('PUT') 
+          @method('PUT')
 
           <!-- Judul -->
           <div>
             <label for="judul" class="block text-sm font-semibold text-gray-800 mb-2">
               Judul Tugas <span class="text-red-500">*</span>
             </label>
-            <input type="text" id="name" name="judul" placeholder="Masukkan judul tugas..." 
+            <input type="text" id="name" name="judul" placeholder="Masukkan judul tugas..."
               value="{{ old('judul', $tugas->judul) }}" required
               class="w-full rounded-xl border border-gray-200 bg-[#F9FAFB] focus:border-[#2B82FE] focus:ring-2 focus:ring-[#2B82FE]/20 p-3 outline-none transition placeholder:text-gray-400">
             @error('judul')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
@@ -76,7 +75,8 @@
           <!-- Dropzone -->
           <div>
             <label class="block text-sm font-semibold text-gray-800 mb-2">Upload File Pendukung</label>
-            <div id="my-dropzone" class="dropzone border-2 border-dashed border-gray-300 bg-[#F9FAFB] hover:bg-[#F3F6FF] rounded-xl p-10 text-center cursor-pointer transition">
+            <div id="my-dropzone"
+                 class="dropzone border-2 border-dashed border-gray-300 bg-[#F9FAFB] hover:bg-[#F3F6FF] rounded-xl p-10 text-center cursor-pointer transition">
               <i class="fa-solid fa-cloud-arrow-up text-4xl text-[#2B82FE] mb-3"></i>
               <p class="text-sm text-[#7F8190] font-medium">Seret file ke sini atau klik untuk mengunggah</p>
               <p class="text-xs text-gray-400 mt-1">Format: PDF, DOCX, ZIP — maks 10 MB</p>
@@ -85,24 +85,27 @@
 
           <!-- Tombol -->
           <div class="flex justify-end gap-3 mt-8">
-            <a href="{{ route('viewKelasMapel', [ 
-                'mapel' => $kelasMapel->mapel->id, 
-                'kelas' => $kelasMapel->kelas->id, 
-                'tab'=> 'tugas' 
+            <a href="{{ route('viewKelasMapel', [
+                'mapel' => $kelasMapel->mapel->id,
+                'kelas' => $kelasMapel->kelas->id,
+                'tab'=> 'tugas'
             ]) }}"
               class="px-5 py-2.5 rounded-full border border-gray-300 text-gray-600 font-semibold hover:bg-gray-100 transition">
               Batal
             </a>
+
             <button type="submit" id="btnSimpan"
               class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#2B82FE] to-[#1a5fd4] text-white font-semibold shadow hover:opacity-90 transition">
               <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
             </button>
           </div>
+
         </form>
       </div>
 
-      <!-- 📂 Kolom Kanan (File Lama) -->
+      <!-- KOLOM KANAN: FILE LAMA -->
       <div class="lg:w-[30%] bg-[#F9FAFB] border border-gray-200 rounded-2xl p-6 h-fit">
+
         <h3 class="font-bold text-[#0A090B] mb-3 text-sm flex items-center gap-2">
           <i class="fa-solid fa-folder-open text-[#2B82FE]"></i> File Tugas Saat Ini
         </h3>
@@ -111,7 +114,9 @@
           <ul class="divide-y divide-gray-100">
             @foreach ($tugas->files as $key)
               <li class="flex items-center justify-between py-3">
+
                 <div class="flex items-center gap-3 min-w-0">
+
                   @if (Str::endsWith($key->file, ['.jpg', '.jpeg', '.png', '.gif']))
                     <i class="fa-solid fa-image text-indigo-500"></i>
                   @elseif (Str::endsWith($key->file, ['.pdf']))
@@ -123,24 +128,27 @@
                   @else
                     <i class="fa-solid fa-file text-gray-400"></i>
                   @endif
-             <a href="{{ asset('storage/' . $key->file) }}" 
-   class="text-sm text-gray-700 truncate hover:text-[#2B82FE] hover:underline min-w-0"
-   target="_blank">
-   {{ Str::limit($key->file, 40) }}
-</a>
 
+                  <a href="{{ asset('storage/' . $key->file) }}"
+                     class="text-sm text-gray-700 truncate hover:text-[#2B82FE] hover:underline min-w-0"
+                     target="_blank">
+                    {{ Str::limit($key->file, 40) }}
+                  </a>
                 </div>
-                <form id="formDeleteFile" action="{{ route('guru.tugas.file.delete', $tugas->id) }}" method="POST"
-                      onsubmit="return confirm('Yakin ingin menghapus file ini?')">
+
+                <form id="formDeleteFile" action="{{ route('guru.tugas.file.delete', $tugas->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus file ini?')">
                   @csrf
                   @method('DELETE')
                   <input type="hidden" name="idTugas" value="{{ $tugas->id }}">
                   <input type="hidden" name="fileName" value="{{ $key->file }}">
+
                   <button type="submit"
                     class="inline-flex items-center gap-1 text-rose-500 hover:text-rose-700 text-xs font-medium transition">
                     <i class="fa-solid fa-trash"></i> Hapus
                   </button>
+
                 </form>
+
               </li>
             @endforeach
           </ul>
@@ -156,10 +164,14 @@
             <li>Perubahan akan langsung diterapkan setelah disimpan.</li>
           </ul>
         </div>
+
       </div>
+
     </div>
+
   </div>
 </div>
+
 
 
 <!-- Scripts -->

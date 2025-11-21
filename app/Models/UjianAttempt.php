@@ -12,6 +12,7 @@ class UjianAttempt extends Model
         'nilai',
         'mulai',
         'selesai',
+         'sisa_waktu',
     ];
 
     public function ujian(){

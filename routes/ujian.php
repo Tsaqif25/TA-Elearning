@@ -1,12 +1,13 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Ujian\UjianReportController;
+
+
 use App\Http\Controllers\Ujian\UjianStudentController;
-use App\Http\Controllers\Ujian\UjianManagementController;
-
-
 use App\Http\Controllers\Ujian\SoalManagementController;
 use App\Http\Controllers\Ujian\UjianEvaluationController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Ujian\UjianManagementController;
 
 // ==========================
 //MODUL UJIAN / QUIZ
@@ -64,7 +65,7 @@ Route::middleware(['auth','role:Pengajar'])
 Route::middleware(['auth','role:Siswa'])
     ->prefix('ujian')->name('ujian.')
     ->controller(UjianStudentController::class)
-    ->group(function(){
+    ->group(function() {
 
         // halaman sebelum mulai, info ujian
         Route::get('{ujian}/access', 'ujianAccess')->name('access');
@@ -72,18 +73,28 @@ Route::middleware(['auth','role:Siswa'])
         // buat attempt
         Route::get('{ujian}/start', 'start')->name('start');
 
-        // tampilkan soal per nomor
-      Route::get('attempt/{attempt}/{nomor}', 'siswaUjian')->name('show');
+        Route::get('attempt/{attempt}/finished', 'finish')->name('finish');
+        Route::get('attempt/{attempt}/raport',  'result')->name('hasil');
 
+        // baru route yang pakai {nomor}
+        Route::get('attempt/{attempt}/{nomor}', 'siswaUjian')->name('show');
 
         // simpan jawaban
         Route::post('attempt/{attempt}/{soal}/submit', 'submit')->name('answer.store');
 
-        // selesai
-        Route::get('attempt/{attempt}/finished', 'finish')->name('finish');
+        Route::post('update-timer/{attempt}', 'updateTimer')->name('update_timer');
+    });
 
-        // raport
-        Route::get('attempt/{attempt}/raport', 'result')->name('hasil');
+
+    Route::middleware(['auth','role:Pengajar'])
+    ->prefix('guru/ujian')->name('guru.ujian.')
+    ->controller(UjianReportController::class)
+    ->group(function(){
+
+        Route::get('/report', 'index')->name('report.index');
+
+        Route::get('/report/{ujian}', 'show')->name('report.show');
 });
+
 
 

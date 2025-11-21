@@ -4,35 +4,34 @@
 <div class="flex flex-col w-full bg-[#FAFAFA] font-poppins min-h-screen">
   <div class="max-w-[1200px] w-full mx-auto px-5 sm:px-6 lg:px-10 mt-8 mb-16">
 
-    <!--  Tombol Back -->
-    <a href="{{ route('viewKelasMapel', [
-        'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id,
-        'tab'   => 'tugas'
-    ]) }}"
-       class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm mb-6 transition">
-      <i class="fa-solid fa-arrow-left text-xs"></i>
-      Kembali ke Daftar Tugas
-    </a>
+  
+    <div class="bg-gradient-to-tr from-blue-500 to-green-500 text-white rounded-2xl p-6 shadow-lg w-full mb-6 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-tr from-blue-600/90 to-green-500/90 rounded-2xl"></div>
 
-    <!--  Header Informasi -->
-    <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 mb-8 flex items-start sm:items-center justify-between flex-wrap gap-4">
-      <div class="flex items-start sm:items-center gap-3">
-        <div class="w-1.5 h-8 rounded-full bg-[#2B82FE]"></div>
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-[#0A090B] leading-tight">
-            {{ $kelasMapel->kelas->name }} — {{ $kelasMapel->mapel->name }}
-          </h1>
-          <p class="text-sm text-[#7F8190]">Buat dan unggah tugas untuk siswa</p>
-        </div>
-      </div>
+      <div class="relative z-10">
 
-      <div class="flex items-center gap-2 bg-[#E8F0FF] text-[#2B82FE] px-3 py-1 rounded-full text-xs font-semibold">
-        <i class="fa-solid fa-circle-plus text-[10px]"></i> Tambah Tugas
+       
+        <a href="{{ route('viewKelasMapel', [
+            'mapel' => $kelasMapel->mapel->id,
+            'kelas' => $kelasMapel->kelas->id,
+            'tab'   => 'tugas'
+        ]) }}"
+           class="flex items-center gap-2 text-white/90 hover:text-white mb-4 font-medium text-sm transition">
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+          Kembali ke Daftar Tugas
+        </a>
+
+      
+        <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight">
+          {{ $kelasMapel->kelas->name }} — {{ $kelasMapel->mapel->name }}
+        </h1>
+
+        <p class="text-sm opacity-90">Buat dan unggah tugas untuk siswa</p>
+
       </div>
     </div>
 
-    <!-- Card Form -->
+    
     <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-6 sm:p-8 flex flex-col lg:flex-row gap-8">
 
       <!-- Kolom Kiri: Form -->
@@ -43,7 +42,7 @@
               enctype="multipart/form-data">
           @csrf
 
-          <!-- Judul -->
+       
           <div class="mb-5">
             <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
               Judul Tugas <span class="text-red-500">*</span>
@@ -51,7 +50,7 @@
             <input
               type="text"
               id="name"
-              name="name" {{-- HARUS "name" agar lolos validasi --}}
+              name="name"
               placeholder="Masukkan judul tugas..."
               value="{{ old('name') }}"
               required
@@ -61,14 +60,14 @@
             @enderror
           </div>
 
-          <!-- Deskripsi -->
+        
           <div class="mb-5">
             <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-2">
               Deskripsi / Konten <span class="text-red-500">*</span>
             </label>
             <textarea
               id="deskripsi"
-              name="deskripsi" {{-- HARUS "deskripsi" --}}
+              name="deskripsi"
               rows="5"
               placeholder="Tuliskan instruksi atau penjelasan tugas..."
               class="w-full rounded-xl border border-gray-200 bg-gray-50 focus:border-[#2B82FE] focus:ring focus:ring-[#2B82FE]/20 p-3 outline-none transition resize-none"
@@ -78,7 +77,7 @@
             @enderror
           </div>
 
-          <!-- Deadline -->
+        
           <div class="mb-5">
             <label for="due" class="block text-sm font-semibold text-gray-700 mb-2">
               Tanggal Jatuh Tempo <span class="text-red-500">*</span>
@@ -86,7 +85,7 @@
             <input
               type="datetime-local"
               id="due"
-              name="due" {{-- HARUS "due" --}}
+              name="due"
               value="{{ old('due') }}"
               required
               class="w-full rounded-xl border border-gray-200 bg-gray-50 focus:border-[#2B82FE] focus:ring focus:ring-[#2B82FE]/20 p-3 outline-none transition">
@@ -95,7 +94,7 @@
             @enderror
           </div>
 
-          <!-- Dropzone Upload File -->
+         
           <div class="mb-6">
             <label class="block text-sm font-semibold text-gray-700 mb-2">
               Upload File (opsional)
@@ -104,11 +103,13 @@
                  class="dropzone border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 rounded-xl p-10 text-center cursor-pointer transition">
               <i class="fa-solid fa-cloud-arrow-up text-4xl text-[#2B82FE] mb-3"></i>
               <p class="text-sm text-gray-600 font-medium">Seret file ke sini atau klik untuk mengunggah</p>
-              <p class="text-xs text-gray-400 mt-1">Format: PDF, DOCX, PPTX, ZIP, dll (maks 10MB)</p>
+              <p class="text-xs text-gray-400 mt-1">
+                Format: PDF, DOCX, PPTX, ZIP, dll (maks 10MB)
+              </p>
             </div>
           </div>
 
-          <!-- Tombol -->
+      
           <div class="flex justify-end gap-3 mt-6">
             <a href="{{ route('viewKelasMapel', [
                   'mapel' => $kelasMapel->mapel->id,
@@ -138,8 +139,10 @@
       </div>
 
     </div>
+
   </div>
 </div>
+
 
 {{-- CDN: jQuery, Dropzone, Toastify --}}
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

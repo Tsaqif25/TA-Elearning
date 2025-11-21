@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ujian_attempt_answers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ujian_attempt_id')->constrained('ujian_attempts')->cascadeOnDelete();
-            $table->foreignId('soal_ujian_id')->constrained('soal_ujians')->cascadeOnUpdate();
+            $table->foreignId('soal_ujian_id')->constrained('soal_ujians')->cascadeOnDelete();
             $table->integer('answer');// opsi yang dipilih siswa
             $table->boolean('is_corret')->default(false);
             $table->timestamps();

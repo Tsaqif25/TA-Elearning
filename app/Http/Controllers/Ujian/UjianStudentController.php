@@ -26,53 +26,50 @@ class UjianStudentController extends Controller
 
 public function start(Ujian $ujian)
 {
-    // ambil siswa_id dari tabel data_siswas
     $siswa = Auth::user()->dataSiswa;
 
-    if (!$siswa) {
-        abort(403, 'Akun ini tidak memiliki data siswa.');
-    }
+    if (!$siswa) abort(403);
 
-    $siswaId = $siswa->id;
-
-    // Cek kalau sudah pernah attempt
     $existing = UjianAttempt::where('ujian_id', $ujian->id)
-        ->where('siswa_id', $siswaId)
+        ->where('siswa_id', $siswa->id)
         ->first();
 
     if ($existing) {
-        return redirect()->route('ujian.show', [
-            'attempt' => $existing->id,
-            'nomor' => 1
-        ]);
+        return redirect()->route('ujian.show', [$existing->id, 1]);
     }
 
-    // Buat attempt baru
+    // PENTING!!!
+    $durasiDetik = $ujian->durasi_menit * 60;
+
     $attempt = UjianAttempt::create([
-        'ujian_id' => $ujian->id,
-        'siswa_id' => $siswaId,
-        'mulai' => now(),
+        'ujian_id'  => $ujian->id,
+        'siswa_id'  => $siswa->id,
+        'mulai'     => now(),
+        'sisa_waktu' => $durasiDetik,   // JANGAN LUPA INI
     ]);
 
-    // Buat jawaban kosong utk semua soal
     foreach ($ujian->soal as $soal) {
         UjianAttemptAnswer::create([
             'ujian_attempt_id' => $attempt->id,
-            'soal_ujian_id' => $soal->id,
-            'answer' => null,
-            'is_corret' => false,
+            'soal_ujian_id'    => $soal->id,
+            'answer'           => 0,
+            'is_corret'        => false,
         ]);
     }
 
-    return redirect()->route('ujian.show', [
-        'attempt' => $attempt->id,
-        'nomor' => 1
-    ]);
+    return redirect()->route('ujian.show', [$attempt->id, 1]);
 }
 
-public function siswaUjian(UjianAttempt $attempt, $nomor)
 
+
+public function siswaUjian(UjianAttempt $attempt, $nomor)
 {
+    // CEK JIKA UJIAN SUDAH SELESAI
+    if ($attempt->selesai !== null) {
+        return redirect()->route('ujian.hasil', $attempt->id)
+            ->with('error', 'Ujian ini sudah selesai.');
+    }
+
     $ujian = $attempt->ujian;
 
     $soal = $ujian->soal()->orderBy('id')->skip($nomor - 1)->first();
@@ -84,11 +81,31 @@ public function siswaUjian(UjianAttempt $attempt, $nomor)
         ->first();
 
     $totalSoal = $ujian->soal->count();
+    $sisaWaktu = $attempt->sisa_waktu;
 
     return view('menu.siswa.ujian.cbt-show', compact(
-        'attempt', 'ujian', 'soal', 'jawaban', 'nomor', 'totalSoal'
+        'attempt', 'ujian', 'soal', 'jawaban', 'nomor', 'totalSoal', 'sisaWaktu'
     ));
 }
+
+
+
+ public function updateTimer(Request $request, UjianAttempt $attempt)
+    {
+        $validated = $request->validate([
+            'sisa_waktu' => 'required|integer|min:0'
+        ]);
+
+        $attempt->update([
+            'sisa_waktu' => $validated['sisa_waktu']
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'sisa_waktu' => $attempt->sisa_waktu
+        ]);
+    }
+
 public function submit(Request $request, UjianAttempt $attempt, $soalId)
 {
     $request->validate([
@@ -97,29 +114,38 @@ public function submit(Request $request, UjianAttempt $attempt, $soalId)
 
     $soal = \App\Models\SoalUjian::findOrFail($soalId);
 
-    $correct = ($request->answer == $soal->kunci);
+    // PENENTU BENAR ATAU SALAH
+    $correct = ($request->answer == $soal->answer);
 
     $attempt->answers()->where('soal_ujian_id', $soalId)->update([
-        'answer' => $request->answer,
+        'answer'    => $request->answer,
         'is_corret' => $correct,
     ]);
 
     return back();
 }
+
 public function finish(UjianAttempt $attempt)
 {
+    // hitung jawaban benar
     $correct = $attempt->answers()->where('is_corret', true)->count();
+
+    // hitung total soal
     $total = $attempt->answers()->count();
 
+    // hitung nilai
     $nilai = round(($correct / $total) * 100);
 
+    // simpan
     $attempt->update([
         'selesai' => now(),
-        'nilai' => $nilai,
+        'nilai'   => $nilai,
     ]);
 
+    // redirect ke hasil
     return redirect()->route('ujian.hasil', $attempt->id);
 }
+
 public function result(UjianAttempt $attempt)
 {
     $ujian = $attempt->ujian;

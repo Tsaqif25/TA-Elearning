@@ -6,34 +6,46 @@
 <div class="flex flex-col w-full bg-[#FAFAFA] font-poppins min-h-screen overflow-x-hidden">
   <div class="max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-10 mt-10 mb-16">
 
-    {{-- 🔙 Tombol Kembali --}}
-    <a href="{{ route('viewKelasMapel', [
-        'mapel' => $materi->kelasMapel->mapel->id,
-        'kelas' => $materi->kelasMapel->kelas->id
-    ]) }}"
-       class="flex items-center gap-2 text-sm text-[#2B82FE] hover:underline font-medium mb-6">
-      <i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke Daftar Materi
-    </a>
+    <!-- 🎨 HEADER GRADIENT (SAMA DENGAN ADD/EDIT) -->
+    <div class="bg-gradient-to-tr from-blue-500 to-green-500 text-white rounded-3xl p-8 shadow-lg w-full mb-6 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-tr from-blue-600/90 to-green-500/90 rounded-3xl"></div>
 
-    {{-- 🎨 Hero Section --}}
-    <section class="relative bg-gradient-to-tr from-blue-500 to-green-500 text-white rounded-3xl p-8 shadow-lg overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-tr from-blue-600/90 to-green-500/90 rounded-3xl"></div>
-      <div class="relative z-10">
-        <h1 class="text-3xl sm:text-4xl font-extrabold leading-snug break-words">
-          {{ $materi->name }}
-        </h1>
+        <div class="relative z-10">
 
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-sm text-white/90">
-          <span class="flex items-center gap-2"><i class="fa-regular fa-calendar"></i> {{ $materi->created_at->translatedFormat('d F Y') }}</span>
-          <span class="flex items-center gap-2"><i class="fa-solid fa-eye"></i> 189 ditonton</span>
-          <span class="flex items-center gap-2"><i class="fa-solid fa-user-graduate"></i> 45 siswa</span>
+            <!-- 🔙 Tombol Kembali -->
+            <a href="{{ route('viewKelasMapel', [
+                'mapel' => $materi->kelasMapel->mapel->id,
+                'kelas' => $materi->kelasMapel->kelas->id
+            ]) }}"
+               class="flex items-center gap-2 text-white/90 hover:text-white mb-4 font-medium text-sm transition">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                Kembali ke Daftar Materi
+            </a>
+
+            <!-- Judul -->
+            <h1 class="text-3xl sm:text-4xl font-extrabold leading-snug break-words">
+              {{ $materi->name }}
+            </h1>
+
+            <!-- Info kecil -->
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-sm text-white/90">
+              <span class="flex items-center gap-2">
+                <i class="fa-regular fa-calendar"></i> {{ $materi->created_at->translatedFormat('d F Y') }}
+              </span>
+              <span class="flex items-center gap-2">
+                <i class="fa-solid fa-eye"></i> 189 ditonton
+              </span>
+              <span class="flex items-center gap-2">
+                <i class="fa-solid fa-user-graduate"></i> 45 siswa
+              </span>
+            </div>
+
         </div>
-      </div>
-    </section>
+    </div>
 
-    {{-- 📄 Deskripsi Materi --}}
+    <!-- 📄 Deskripsi Materi -->
     @if ($materi->konten)
-    <section class="bg-white border border-gray-100 rounded-2xl shadow-sm mt-8 p-6">
+    <section class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 mt-8">
       <h2 class="text-lg font-semibold text-[#0A090B] mb-3 flex items-center gap-2">
         <i class="fa-regular fa-file-lines text-[#2B82FE]"></i> Deskripsi Materi
       </h2>
@@ -43,15 +55,13 @@
     </section>
     @endif
 
-
-    {{-- ⚡⚡⚡ RESPONSIVE GRID FIX ⚡⚡⚡ --}}
+    <!-- ⚡ GRID UTAMA -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8 w-full overflow-x-hidden">
 
-      {{-- Kolom Kiri --}}
+      <!-- Kolom Kiri -->
       <div class="lg:col-span-2 flex flex-col gap-8">
 
-
-        {{-- 📁 File Materi --}}
+        <!-- 📁 File Materi -->
         <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
           <h2 class="text-lg font-semibold text-[#0A090B] mb-4 flex items-center gap-2">
             <i class="fa-solid fa-folder-open text-[#2B82FE]"></i> File Materi
@@ -93,7 +103,7 @@
           @endif
         </div>
 
-        {{-- 🎥 Video Pembelajaran --}}
+        <!-- 🎥 Video Pembelajaran -->
         @if ($materi->youtube_link)
         <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm p-6">
           <h2 class="text-lg font-semibold mb-4 text-[#0A090B] flex items-center gap-2">
@@ -118,12 +128,11 @@
           @endforeach
         </div>
         @endif
-
       </div>
 
-
-      {{-- 📊 Sidebar --}}
+      <!-- 📊 Sidebar -->
       <aside class="space-y-6">
+
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
           <h3 class="text-sm font-bold text-[#0A090B] mb-3">📊 Statistik</h3>
           <div class="text-sm text-[#7F8190] space-y-2">
@@ -152,4 +161,5 @@
     </div>
   </div>
 </div>
+
 @endsection

@@ -1,4 +1,4 @@
-<div id="content-materi" class="tab-content block p-6">
+<div id="content-materi" class="tab-content block p-8">
 
   <!-- Header Section -->
   <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-3">

@@ -1,13 +1,15 @@
-<div id="content-quiz" class="tab-content block p-6">
+<div id="content-quiz" class="tab-content block p-8">
 
   <!-- Header -->
-  <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-3">
-    <h2 class="text-xl font-bold text-[#0A090B]">Daftar Ujian</h2>
+  <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-3">
+    <h2 class="text-2xl font-extrabold text-[#0A090B] tracking-tight">
+      📘 Daftar Ujian
+    </h2>
 
     {{-- Tombol Buat Ujian hanya untuk Pengajar --}}
     @if (Auth::user()->hasRole('Pengajar'))
       <a href="{{ route('ujian.create', ['kelasMapel' => $kelasMapel->id]) }}"
-         class="flex items-center gap-2 bg-[#2B82FE] text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:bg-[#1a6ae0] transition">
+         class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2.5 rounded-full font-semibold text-sm shadow-md hover:scale-[1.03] hover:shadow-lg transition duration-300 ease-in-out">
         <i class="fa-solid fa-plus"></i> Tambah Ujian
       </a>
     @endif
@@ -15,95 +17,129 @@
 
   {{-- Jika Belum Ada Ujian --}}
   @if ($ujian->isEmpty())
-    <p class="text-center text-[#7F8190] py-6">Belum ada ujian yang ditambahkan.</p>
+    <div class="flex flex-col items-center justify-center py-10 text-center">
+      <div class="w-14 h-14 flex items-center justify-center bg-[#EEF4FF] rounded-2xl text-[#2B82FE] mb-4 shadow-sm">
+        <i class="fa-solid fa-folder-open text-xl"></i>
+      </div>
+      <p class="text-[#7F8190] text-sm">Belum ada ujian yang ditambahkan.</p>
+    </div>
+
   @else
-    <div class="flex flex-col gap-3">
 
-      @foreach ($ujian as $item)
+  <!-- Daftar Ujian -->
+  <div class="flex flex-col gap-4">
 
-        @php
-            // CEK apakah siswa sudah attempt
-            $sudahAttempt = \App\Models\UjianAttempt::where('ujian_id', $item->id)
-                ->where('siswa_id', Auth::id())
-                ->exists();
-        @endphp
+    @foreach ($ujian as $item)
+    <div class="group bg-white border border-gray-100 p-5 rounded-2xl shadow-sm hover:shadow-lg hover:border-[#2B82FE]/40 transition-all duration-300 ease-in-out">
 
-        <div class="bg-white border border-gray-100 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-sm hover:shadow-md transition">
+      <!-- BARIS UTAMA -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
 
-          <!-- KIRI -->
-          <div class="flex items-start gap-4">
-            <div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-[#2B82FE] rounded-lg">
-              <i class="fa-solid fa-circle-question text-lg"></i>
-            </div>
-
-            <div>
-              <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1">
-                {{ $item->judul }}
-              </h3>
-
-              <p class="text-sm text-[#7F8190]">
-                <span class="inline-flex items-center gap-1">
-                  <i class="fa-solid fa-list-check text-xs"></i>
-                  {{ $item->soal->count() }} Soal
-                </span>
-              </p>
-            </div>
+        <!-- KIRI -->
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-tr from-blue-500 to-green-500 text-white rounded-xl shadow-sm flex-shrink-0 group-hover:scale-110 transition">
+            <i class="fa-solid fa-circle-question text-lg"></i>
           </div>
 
-          <!-- KANAN -->
-          <div class="flex gap-2 mt-4 sm:mt-0">
+          <div class="min-w-0">
+            <h3 class="font-semibold text-[#0A090B] text-[15px] mb-1 leading-snug group-hover:text-[#2B82FE] transition">
+              {{ $item->judul }}
+            </h3>
 
-            {{-- PENGAJAR --}}
-            @if (Auth::user()->hasRole('Pengajar'))
+            <p class="text-sm text-[#555] leading-relaxed mb-2">
+              Terdapat <strong>{{ $item->soal->count() }}</strong> soal ujian.
+            </p>
 
-              <a href="{{ route('ujian.soal.manage', ['ujian' => $item->id]) }}"
-                class="px-3 py-1.5 text-xs bg-gray-100 rounded-full font-semibold hover:bg-gray-200">
-                Detail
-              </a>
+            <p class="text-xs text-[#7F8190]">
+              <span class="inline-flex items-center gap-1">
+                <i class="fa-solid fa-calendar-days text-[10px]"></i>
+                {{ $item->created_at->format('d/m/Y') }}
+              </span>
 
-              <a href="{{ route('ujian.edit', ['ujian' => $item->id]) }}"
-                class="px-3 py-1.5 text-xs bg-amber-100 text-amber-700 rounded-full">
-                Edit
-              </a>
+              <span class="mx-2 text-gray-300">•</span>
 
-              <form action="{{ route('ujian.destroy', $item->id) }}" method="POST"
-                    onsubmit="event.preventDefault(); handleDeleteUjian(this);">
-                @csrf @method('DELETE')
-                <button class="px-3 py-1.5 text-xs bg-rose-100 text-rose-700 rounded-full">
-                  Hapus
-                </button>
-              </form>
-
-            @else
-            {{-- SISWA --}}
-
-              @if ($sudahAttempt)
-                <a href="{{ route('ujian.learning.rapport', $item->id) }}"
-                  class="px-3 py-1.5 text-xs bg-green-100 text-green-700 rounded-full">
-                  Lihat Hasil
-                </a>
-              @else
-                <a href="{{ route('ujian.access', [
-                      'ujian' => $item->id,
-                      'kelas' => $kelas->id,
-                      'mapel' => $mapel->id,
-                    ]) }}"
-                  class="px-3 py-1.5 text-xs bg-[#2B82FE] text-white rounded-full">
-                  Kerjakan
-                </a>
-              @endif
-
-            @endif
-
+              <span class="inline-flex items-center gap-1">
+                <i class="fa-solid fa-bolt text-[10px]"></i>
+                Ujian
+              </span>
+            </p>
           </div>
-
         </div>
 
-      @endforeach
+        <!-- KANAN -->
+        <div class="flex flex-wrap gap-2">
+
+          {{-- PENGAJAR --}}
+          @if (Auth::user()->hasRole('Pengajar'))
+
+            <!-- Lihat Nilai -->
+            <a href="{{ route('guru.ujian.report.show', $item->id) }}"
+              class="flex items-center gap-1 bg-green-50 text-green-700 text-xs px-3 py-1.5 rounded-full font-medium border border-green-200 hover:bg-green-100 transition duration-200">
+              <i class="fa-solid fa-chart-line text-[12px]"></i>
+              Nilai
+            </a>
+
+            <!-- Detail -->
+            <a href="{{ route('ujian.soal.manage', ['ujian' => $item->id]) }}"
+              class="flex items-center gap-1 bg-gray-50 text-gray-700 text-xs px-3 py-1.5 rounded-full font-medium border border-gray-200 hover:bg-gray-100 transition duration-200">
+              <i class="fa-solid fa-list-check text-[12px]"></i>
+              Detail
+            </a>
+
+            <!-- Edit -->
+            <a href="{{ route('ujian.edit', ['ujian' => $item->id]) }}"
+              class="flex items-center gap-1 bg-amber-50 text-amber-700 text-xs px-3 py-1.5 rounded-full font-medium border border-amber-200 hover:bg-amber-100 transition duration-200">
+              <i class="fa-solid fa-pen text-[12px]"></i>
+           
+            </a>
+
+            <!-- Hapus -->
+            <form action="{{ route('ujian.destroy', $item->id) }}" method="POST"
+                  onsubmit="event.preventDefault(); handleDeleteUjian(this);">
+              @csrf @method('DELETE')
+              <button class="flex items-center gap-1 bg-rose-50 text-rose-700 text-xs px-3 py-1.5 rounded-full font-medium border border-rose-200 hover:bg-rose-100 transition duration-200">
+                <i class="fa-solid fa-trash text-[12px]"></i>
+              
+              </button>
+            </form>
+
+          @else
+          {{-- SISWA --}}
+            @php
+                $sudahAttempt = \App\Models\UjianAttempt::where('ujian_id', $item->id)
+                    ->where('siswa_id', Auth::id())
+                    ->exists();
+            @endphp
+
+            @if ($sudahAttempt)
+              <!-- Lihat Hasil -->
+              <a href="{{ route('ujian.learning.rapport', $item->id) }}"
+                class="flex items-center gap-1 bg-green-50 text-green-700 text-xs px-3 py-1.5 rounded-full font-medium border border-green-200 hover:bg-green-100 transition duration-200">
+                <i class="fa-solid fa-check text-[12px]"></i> Hasil
+              </a>
+            @else
+              <!-- Kerjakan -->
+              <a href="{{ route('ujian.access', ['ujian' => $item->id]) }}"
+                class="flex items-center gap-1 bg-gradient-to-tr from-blue-500 to-green-500 text-white text-xs px-3 py-1.5 rounded-full font-medium shadow hover:scale-[1.03] hover:shadow-lg transition duration-200">
+                <i class="fa-solid fa-pen-nib text-[12px]"></i> Kerjakan
+              </a>
+            @endif
+
+          @endif
+
+        </div>
+      </div>
 
     </div>
+    @endforeach
+
+  </div>
   @endif
+
 </div>
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   function handleDeleteUjian(form) {
