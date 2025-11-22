@@ -9,7 +9,7 @@ class Ujian extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kelas_mapel_id', 'guru_id','judul','deskripsi','durasi_menit','random_question','random_answer','show_answer'];
+    protected $fillable = ['kelas_mapel_id', 'guru_id','judul','deskripsi'];
 
     public function kelasMapel()
     {

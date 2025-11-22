@@ -14,7 +14,6 @@
 
   <!-- Header Title -->
   <div class="flex items-center gap-3 mb-8">
-  
     <div>
       <h1 class="text-xl font-extrabold text-[#0A090B]">Buat Pengumuman Baru</h1>
       <p class="text-sm text-[#7F8190]">Isi form di bawah untuk membuat pengumuman</p>
@@ -41,9 +40,16 @@
         <label class="block text-sm font-semibold mb-2 text-[#0A090B]">
           Isi Pengumuman <span class="text-red-500">*</span>
         </label>
-        <textarea name="isi" id="editor" rows="6" required
-          class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#6C63FF] focus:border-[#6C63FF] outline-none transition resize-none"
-          placeholder="Tulis isi pengumuman di sini...">{{ old('isi') }}</textarea>
+
+        <!-- PENTING: textarea jangan ada hidden, jangan display:none -->
+        <textarea 
+            name="isi" 
+            id="editor" 
+            rows="6"
+            required
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#6C63FF] focus:border-[#6C63FF] outline-none transition resize-none"
+            placeholder="Tulis isi pengumuman di sini...">{{ old('isi') }}</textarea>
+
       </div>
 
       <!-- Lampiran -->
@@ -86,9 +92,27 @@
     }
   });
 </script>
-<link rel="stylesheet" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
-<script src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
 
+<!-- TinyMCE Open Source (AMANKAN localhost + produksi) -->
+<!-- TinyMCE Open Source tanpa integrity (AMAN + TIDAK DIBLOKIR) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.7.0/tinymce.min.js"></script>
+
+
+<script>
+tinymce.init({
+    selector: '#editor',
+    menubar: false,
+    height: 300,
+    plugins: 'lists link image emoticons table code',
+    toolbar: 'undo redo | bold italic underline | bullist numlist | link emoticons | alignleft aligncenter alignright | code',
+
+    setup: function (editor) {
+        editor.on('change', function () {
+            tinymce.triggerSave(); // Sync ke textarea
+        });
+    }
+});
+</script>
 
 
 @endsection

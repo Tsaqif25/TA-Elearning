@@ -31,19 +31,7 @@
                     </span>
                 </div>
 
-                <div class="col-12 border p-3 col-lg-3">
-                    <span class="fw-bold">Time : </span>
-                    {{ $ujian->time }} Menit
-                </div>
-                <div class="border p-3 fw-bold col-lg-3 col-12">
-                    <div id="countdown">
-                        Waktu :
-                        <span class="badge badge-danger p-2">
-                            <span id="minutes">{{ floor($diffInSeconds / 60) }}</span>
-                            <span id="seconds">{{ $diffInSeconds % 60 }}</span>
-                        </span>
-                    </div>
-                </div>
+              
 
                 <div class="col-12 border p-3 col-lg-3">
                     <span class="fw-bold">Jumlah Soal :</span>

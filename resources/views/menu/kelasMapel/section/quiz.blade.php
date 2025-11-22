@@ -9,7 +9,7 @@
     {{-- Tombol Buat Ujian hanya untuk Pengajar --}}
     @if (Auth::user()->hasRole('Pengajar'))
       <a href="{{ route('ujian.create', ['kelasMapel' => $kelasMapel->id]) }}"
-         class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2.5 rounded-full font-semibold text-sm shadow-md hover:scale-[1.03] hover:shadow-lg transition duration-300 ease-in-out">
+         class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2.5 rounded-full font-semibold text-sm shadow-md ">
         <i class="fa-solid fa-plus"></i> Tambah Ujian
       </a>
     @endif
@@ -90,7 +90,6 @@
             <a href="{{ route('ujian.edit', ['ujian' => $item->id]) }}"
               class="flex items-center gap-1 bg-amber-50 text-amber-700 text-xs px-3 py-1.5 rounded-full font-medium border border-amber-200 hover:bg-amber-100 transition duration-200">
               <i class="fa-solid fa-pen text-[12px]"></i>
-           
             </a>
 
             <!-- Hapus -->
@@ -99,33 +98,36 @@
               @csrf @method('DELETE')
               <button class="flex items-center gap-1 bg-rose-50 text-rose-700 text-xs px-3 py-1.5 rounded-full font-medium border border-rose-200 hover:bg-rose-100 transition duration-200">
                 <i class="fa-solid fa-trash text-[12px]"></i>
-              
               </button>
             </form>
 
           @else
           {{-- SISWA --}}
-            @php
-                $sudahAttempt = \App\Models\UjianAttempt::where('ujian_id', $item->id)
-                    ->where('siswa_id', Auth::id())
-                    ->exists();
-            @endphp
 
-            @if ($sudahAttempt)
-              <!-- Lihat Hasil -->
-              <a href="{{ route('ujian.learning.rapport', $item->id) }}"
-                class="flex items-center gap-1 bg-green-50 text-green-700 text-xs px-3 py-1.5 rounded-full font-medium border border-green-200 hover:bg-green-100 transition duration-200">
-                <i class="fa-solid fa-check text-[12px]"></i> Hasil
-              </a>
-            @else
-              <!-- Kerjakan -->
-              <a href="{{ route('ujian.access', ['ujian' => $item->id]) }}"
-                class="flex items-center gap-1 bg-gradient-to-tr from-blue-500 to-green-500 text-white text-xs px-3 py-1.5 rounded-full font-medium shadow hover:scale-[1.03] hover:shadow-lg transition duration-200">
-                <i class="fa-solid fa-pen-nib text-[12px]"></i> Kerjakan
-              </a>
-            @endif
+          @php
+              $dataSiswa = \App\Models\DataSiswa::where('user_id', Auth::id())->first();
+              $sudahAttempt = false;
 
+              if ($dataSiswa) {
+                  $sudahAttempt = \App\Models\UjianAttempt::where('ujian_id', $item->id)
+                      ->where('siswa_id', $dataSiswa->id)
+                      ->exists();
+              }
+          @endphp
+
+          @if ($sudahAttempt)
+            <a href="{{ route('ujian.hasil', $item->id) }}"
+              class="flex items-center gap-1 bg-green-50 text-green-700 text-xs px-3 py-1.5 rounded-full font-medium border border-green-200 hover:bg-green-100 transition duration-200">
+              <i class="fa-solid fa-check text-[12px]"></i> Hasil
+            </a>
+          @else
+            <a href="{{ route('ujian.access', ['ujian' => $item->id]) }}"
+              class="flex items-center gap-1 bg-gradient-to-tr from-blue-500 to-green-500 text-white text-xs px-3 py-1.5 rounded-full font-medium shadow hover:scale-[1.03] hover:shadow-lg transition duration-200">
+              <i class="fa-solid fa-pen-nib text-[12px]"></i> Kerjakan
+            </a>
           @endif
+
+          @endif {{-- penutup if role Pengajar/Siswa --}}
 
         </div>
       </div>

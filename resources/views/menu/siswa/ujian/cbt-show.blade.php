@@ -15,10 +15,6 @@
                     <h2 class="text-xl font-semibold">
                         Soal No. {{ $nomor }}
                     </h2>
-
-                    <div class="bg-blue-600 text-white p-3 rounded-lg text-center text-xl font-bold mb-4">
-                        Sisa Waktu: <span id="timer">Loading...</span>
-                    </div>
                 </div>
 
                 <!-- Soal -->
@@ -121,11 +117,10 @@
                 </div>
 
                 <div class="mt-6">
-                  <a href="{{ route('ujian.finish', ['attempt' => $attempt->id]) }}"
-   class="block w-full text-center bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700">
-    Akhiri Ujian
-</a>
-
+                    <a href="{{ route('ujian.finish', ['attempt' => $attempt->id]) }}"
+                       class="block w-full text-center bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700">
+                        Akhiri Ujian
+                    </a>
                 </div>
 
             </div>
@@ -134,59 +129,3 @@
     </div>
 </div>
 @endsection
-
-{{-- SCRIPT LANGSUNG DI SINI (BUKAN @push) --}}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-
-    let waktu = {{ $sisaWaktu }};
-    const attemptId = {{ $attempt->id }};
-    let hitungDetik = 0;
-
-    // Format HH:MM:SS
-    const format = (d) => {
-        if (d < 0) d = 0;
-        const h = String(Math.floor(d / 3600)).padStart(2, '0');
-        const m = String(Math.floor((d % 3600) / 60)).padStart(2, '0');
-        const s = String(d % 60).padStart(2, '0');
-        return `${h}:${m}:${s}`;
-    };
-
-    const timerEl = document.getElementById('timer');
-
-    // Jika waktu = 0 → langsung finish
-    if (waktu <= 0) {
-        timerEl.textContent = "00:00:00";
-        return;
-    }
-
-    timerEl.textContent = format(waktu);
-
-    const interval = setInterval(() => {
-
-        waktu--;
-        hitungDetik++;
-        timerEl.textContent = format(waktu);
-
-        // Jika waktu habis
-        if (waktu <= 0) {
-            clearInterval(interval);
-            window.location.href = "{{ route('ujian.finish', $attempt->id) }}";
-        }
-
-        // SIMPAN ke server tiap 10 detik
-        if (hitungDetik % 10 === 0) {
-            fetch(`/ujian/update-timer/${attemptId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({ sisa_waktu: waktu })
-            });
-        }
-
-    }, 1000);
-
-});
-</script>

@@ -5,55 +5,91 @@ namespace App\Imports;
 use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\KelasMapel;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
 class KelasImport implements ToModel, WithStartRow
 {
+    public function model(array $row)
+    {
+        // ---------------------------
+        // 1. Ambil data per kolom Excel
+        // ---------------------------
+        $tingkat = trim($row[0] ?? null);   // X, XI, XII
+        $jurusan = trim($row[1] ?? null);   // TKJ, PPLG, dll
+        $rombel  = trim($row[2] ?? null);   // angka rombel
+        $mapelStr = trim($row[3] ?? null);  // K3LH,MIKROTIK,...
 
-// Fungsi model() dipanggil setiap kali ada satu baris data dari file Excel
-public function model(array $row)
-{
-    // --- 1. Validasi nama kelas ---
-    if (empty($row[1])) {
-        // Kalau kolom kelas kosong, langsung hentikan proses dengan error
-        throw new \Exception("Nama kelas wajib diisi pada file Excel. Tidak boleh kosong.");
-    }
-
-    // --- 2. Cari atau buat kelas ---
-    $kelas = Kelas::firstOrCreate(['name' => trim($row[1])]);
-
-    // --- 3. Cek apakah ada mapel di kolom ke-3 (row[2]) ---
-    if (!empty($row[2])) {
-        $mapelNames = explode(',', $row[2]);
-
-        foreach ($mapelNames as $mapelName) {
-            $mapelName = trim($mapelName);
-
-            // --- 4. Cari atau buat mapel ---
-            $mapel = Mapel::firstOrCreate(['name' => $mapelName]);
-
-            // --- 5. Hubungkan kelas dengan mapel (pivot table) ---
-            KelasMapel::firstOrCreate([
-                'kelas_id' => $kelas->id,
-                'mapel_id' => $mapel->id
-            ]);
+        // ---------------------------
+        // 2. Validasi wajib
+        // ---------------------------
+        if (!$tingkat || !$jurusan || !$rombel) {
+            throw new \Exception("Tingkat, Jurusan, dan Rombel wajib diisi pada Excel.");
         }
+
+        // ---------------------------
+        // 3. Bentuk nama kelas otomatis
+        // ---------------------------
+        $jurusan = strtoupper($jurusan);
+        $kelasName = "{$tingkat}-{$jurusan} {$rombel}";
+
+        // ---------------------------
+        // 4. Cari atau buat kelas
+        // ---------------------------
+        $kelas = Kelas::firstOrCreate(
+            ['name' => $kelasName],
+            [
+                'tingkat' => $tingkat,
+                'jurusan' => $jurusan,
+                'rombel'  => $rombel,
+            ]
+        );
+
+        // ---------------------------
+        // 5. Proses mata pelajaran
+        // ---------------------------
+ // ===========================
+// 5. Proses mata pelajaran
+// ===========================
+if (!empty($mapelStr)) {
+
+    $mapelNames = explode(',', $mapelStr);
+
+    foreach ($mapelNames as $mapelName) {
+
+        $mapelName = trim($mapelName);
+        if ($mapelName === "") continue;
+
+        // CEK mapel harus sudah ada
+        $mapel = Mapel::where('name', $mapelName)->first();
+
+        if (!$mapel) {
+            throw new \Exception("Mapel '{$mapelName}' tidak ditemukan di tabel mapel! 
+Silakan tambahkan mapel tersebut terlebih dahulu.");
+        }
+
+        // Hubungkan kelas dengan mapel
+        KelasMapel::firstOrCreate([
+            'kelas_id' => $kelas->id,
+            'mapel_id' => $mapel->id,
+        ]);
     }
-
-    // --- 6. Simpan daftar ID kelas yang berhasil di-import ke session ---
-    $importedIds = session('imported_ids', []);
-    $importedIds[] = $kelas->id;
-    session(['imported_ids' => $importedIds]);
-
-    // --- 7. Return kelas ---
-    return $kelas;
 }
+
+
+        // ---------------------------
+        // 6. Simpan ID kelas yang sukses
+        // ---------------------------
+        $imported = session('imported_ids', []);
+        $imported[] = $kelas->id;
+        session(['imported_ids' => $imported]);
+
+        return $kelas;
+    }
 
 
     public function startRow(): int
     {
-        return 2; // Lewati header
+        return 2; // Lewati header Excel
     }
 }

@@ -8,7 +8,6 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use App\Models\DataSiswa;
-use App\Models\Kelas;
 use App\Filament\Resources\SiswaResource\Pages;
 
 class SiswaResource extends Resource
@@ -21,7 +20,6 @@ class SiswaResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            // 🧩 Data Utama Siswa
             Forms\Components\Section::make('Data Siswa')
                 ->schema([
                     Forms\Components\TextInput::make('name')
@@ -43,16 +41,29 @@ class SiswaResource extends Resource
                         ->tel()
                         ->nullable(),
 
+                    // EMAIL
                     Forms\Components\TextInput::make('email')
                         ->label('Email Login')
                         ->required()
-                        ->email(),
+                        ->email()
+                        ->afterStateHydrated(function ($component, $state, $record) {
+                            $component->state($record?->user?->email);
+                        })
+                        ->dehydrated(),
 
+                    // PASSWORD + SHOW/HIDE
                     Forms\Components\TextInput::make('password')
                         ->label('Password Login')
                         ->password()
-                        ->dehydrated(false),
-
+                        ->suffixIcon('heroicon-o-eye')
+                        ->extraAttributes([
+                            'x-data' => "{ show: false }",
+                            'x-bind:type' => "show ? 'text' : 'password'",
+                            '@click.suffix' => "show = !show",
+                        ])
+                        ->placeholder('Kosongkan jika tidak diganti')
+                        ->nullable()
+                        ->dehydrated(),
                 ])
                 ->columns(2),
         ]);
@@ -75,9 +86,56 @@ class SiswaResource extends Resource
                     ->label('Kelas'),
 
                 Tables\Columns\TextColumn::make('user.email')
-                    ->label('Email ')
-                   
+                    ->label('Email'),
             ])
+
+            // FILTER JURUSAN DARI NAMA KELAS
+       ->filters([
+    // Filter Jurusan
+    Tables\Filters\SelectFilter::make('jurusan')
+        ->label('Filter Jurusan')
+        ->options([
+            'TKJ' => 'TKJ',
+            'PPLG' => 'PPLG',
+            'MPLB' => 'MPLB',
+            'AKL' => 'AKL',
+            'BD'  => 'BD',
+            'BR'  => 'BR',
+            'ULW' => 'ULW',
+        ])
+        ->query(function ($query, array $data) {
+            if ($data['value']) {
+                $query->whereHas('kelas', function ($q) use ($data) {
+                    $q->where('jurusan', $data['value']);
+                });
+            }
+        }),
+
+    // Filter Tingkat
+    Tables\Filters\SelectFilter::make('tingkat')
+        ->label('Filter Tingkat')
+        ->options([
+            'X' => 'X',
+            'XI' => 'XI',
+            'XII' => 'XII',
+        ])
+        ->query(function ($query, array $data) {
+            if ($data['value']) {
+                $query->whereHas('kelas', function ($q) use ($data) {
+                    $q->where('tingkat', $data['value']);
+                });
+            }
+        }),
+])
+
+
+
+                ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ])
+
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

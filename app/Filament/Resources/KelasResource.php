@@ -20,23 +20,51 @@ class KelasResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\TextInput::make('name')
-                ->label('Nama Kelas')
-                ->placeholder('Contoh: XII TKJ 1')
-                ->required()
-                ->unique(ignoreRecord: true),
+            // BAGIAN PEMBUATAN KELAS
+            Forms\Components\Section::make('Data Kelas')
+                ->schema([
+                    Forms\Components\Select::make('tingkat')
+                        ->label('Tingkat')
+                        ->options([
+                            'X' => 'X',
+                            'XI' => 'XI',
+                            'XII' => 'XII',
+                        ])
+                        ->required(),
 
-            // Forms\Components\TextInput::make('jurusan')
-            //     ->label('Jurusan')
-            //     ->placeholder('Contoh: PPLG, TKJ, AKL, dsb.')
-            //     ->nullable(),
+                    Forms\Components\Select::make('jurusan')
+                        ->label('Jurusan')
+                        ->options([
+                            'TKJ' => 'TKJ',
+                            'PPLG' => 'PPLG',
+                            'MPLB' => 'MPLB',
+                            'AKL' => 'AKL',
+                            'BD'  => 'BD',
+                            'BR'  => 'BR',
+                            'ULW' => 'ULW',
+                        ])
+                        ->required(),
 
-            Forms\Components\Select::make('mapels')
-                ->label('Mata Pelajaran')
-                ->relationship('mapels', 'name')
-                ->multiple()
-                ->preload()
-                ->helperText('Pilih satu atau lebih mapel yang diampu di kelas ini.'),
+                    Forms\Components\TextInput::make('rombel')
+                        ->numeric()
+                        ->label('Rombel')
+                        ->placeholder('Contoh: 1')
+                        ->required(),
+
+                   
+                ])
+                ->columns(2),
+
+            // RELASI MAPEL
+            Forms\Components\Section::make('Mapel yang Diampu')
+                ->schema([
+                    Forms\Components\Select::make('mapels')
+                        ->label('Mata Pelajaran')
+                        ->relationship('mapels', 'name')
+                        ->multiple()
+                        ->preload()
+                        ->helperText('Pilih mapel yang diajar di kelas ini.')
+                ]),
         ]);
     }
 
@@ -44,24 +72,64 @@ class KelasResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('Nama Kelas')->searchable()->sortable(),
-                // Tables\Columns\TextColumn::make('jurusan')->label('Jurusan')->sortable(),
-                Tables\Columns\BadgeColumn::make('mapels_count')->counts('mapels')->label('Jumlah Mapel'),
-                Tables\Columns\TextColumn::make('created_at')->label('Dibuat')->date('d M Y'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nama Kelas')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('tingkat')
+                    ->label('Tingkat'),
+
+                Tables\Columns\TextColumn::make('jurusan')
+                    ->label('Jurusan'),
+
+                Tables\Columns\TextColumn::make('rombel')
+                    ->label('Rombel'),
+
+                Tables\Columns\BadgeColumn::make('mapels_count')
+                    ->counts('mapels')
+                    ->label('Jumlah Mapel'),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->date('d M Y'),
             ])
-            // ->filters([
-            //     Tables\Filters\SelectFilter::make('jurusan')
-            //         ->label('Filter Jurusan')
-            //         ->options([
-            //             'TKJ' => 'Teknik Komputer & Jaringan (TKJ)',
-            //             'PPLG' => 'Pengembangan Perangkat Lunak & Gim (PPLG)',
-            //             'MPLB' => 'Manajemen Perkantoran & Layanan Bisnis (MPLB)',
-            //             'ULW' => 'Usaha Layanan Wisata (ULW)',
-            //             'BR'  => 'Bisnis Ritel (BR)',
-            //             'BD'  => 'Bisnis Digital (BD)',
-            //             'AKL' => 'Akuntansi & Keuangan Lembaga (AKL)',
-            //         ]),
-            // ])
+
+            // FILTER JURUSAN
+            ->filters([
+                Tables\Filters\SelectFilter::make('jurusan')
+                    ->label('Filter Jurusan')
+                    ->options([
+                        'TKJ' => 'TKJ',
+                        'PPLG' => 'PPLG',
+                        'MPLB' => 'MPLB',
+                        'AKL' => 'AKL',
+                        'BD'  => 'BD',
+                        'BR'  => 'BR',
+                        'ULW' => 'ULW',
+                    ])
+                    ->query(fn ($query, array $data) =>
+                        $data['value'] ? $query->where('jurusan', $data['value']) : null
+                    ),
+
+                // FILTER TINGKAT
+                Tables\Filters\SelectFilter::make('tingkat')
+                    ->label('Filter Tingkat')
+                    ->options([
+                        'X' => 'X',
+                        'XI' => 'XI',
+                        'XII' => 'XII',
+                    ])
+                    ->query(fn ($query, array $data) =>
+                        $data['value'] ? $query->where('tingkat', $data['value']) : null
+                    ),
+            ])
+             ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ])
+
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

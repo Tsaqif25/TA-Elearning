@@ -13,7 +13,19 @@ return new class extends Migration
     {
         Schema::create('kelas', function (Blueprint $table) {
             $table->id();
+
+            // Tingkat: X, XI, XII
+            $table->enum('tingkat', ['X', 'XI', 'XII']);
+
+            // Jurusan
+            $table->enum('jurusan', ['TKJ', 'PPLG', 'MPLB', 'AKL', 'BD', 'BR', 'ULW']);
+
+            // Rombel (nomor kelas)
+          $table->unsignedInteger('rombel')->nullable();
+
+            // Nama gabungan (X-TKJ 1), kita generate otomatis
             $table->string('name');
+
             $table->timestamps();
         });
     }

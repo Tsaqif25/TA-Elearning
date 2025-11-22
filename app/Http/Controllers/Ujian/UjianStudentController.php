@@ -39,13 +39,13 @@ public function start(Ujian $ujian)
     }
 
     // PENTING!!!
-    $durasiDetik = $ujian->durasi_menit * 60;
+ 
 
     $attempt = UjianAttempt::create([
         'ujian_id'  => $ujian->id,
         'siswa_id'  => $siswa->id,
         'mulai'     => now(),
-        'sisa_waktu' => $durasiDetik,   // JANGAN LUPA INI
+
     ]);
 
     foreach ($ujian->soal as $soal) {
@@ -81,30 +81,16 @@ public function siswaUjian(UjianAttempt $attempt, $nomor)
         ->first();
 
     $totalSoal = $ujian->soal->count();
-    $sisaWaktu = $attempt->sisa_waktu;
+  
 
     return view('menu.siswa.ujian.cbt-show', compact(
-        'attempt', 'ujian', 'soal', 'jawaban', 'nomor', 'totalSoal', 'sisaWaktu'
+        'attempt', 'ujian', 'soal', 'jawaban', 'nomor', 'totalSoal'
     ));
 }
 
 
 
- public function updateTimer(Request $request, UjianAttempt $attempt)
-    {
-        $validated = $request->validate([
-            'sisa_waktu' => 'required|integer|min:0'
-        ]);
 
-        $attempt->update([
-            'sisa_waktu' => $validated['sisa_waktu']
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'sisa_waktu' => $attempt->sisa_waktu
-        ]);
-    }
 
 public function submit(Request $request, UjianAttempt $attempt, $soalId)
 {
@@ -150,9 +136,14 @@ public function result(UjianAttempt $attempt)
 {
     $ujian = $attempt->ujian;
     $answers = $attempt->answers()->with('soal')->get();
+    $benar = $answers->where('is_corret', 1)->count();
+$salah = $answers->where('is_corret', 0)->count();
+
+// Total soal
+$total = $answers->count();
 
     return view('menu.siswa.ujian.cbt-result', compact(
-        'attempt', 'ujian', 'answers'
+        'attempt', 'ujian', 'answers','benar','salah'
     ));
 }
 

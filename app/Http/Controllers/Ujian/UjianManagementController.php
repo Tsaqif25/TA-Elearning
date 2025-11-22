@@ -32,7 +32,7 @@ public function store(Request $request, KelasMapel $kelasMapel)
     $request->validate([
         'judul' => 'required',
         'deskripsi' => 'required',
-        'durasi_menit' => 'required|integer',
+       
     ]);
 
     $ujian = Ujian::create([
@@ -40,7 +40,7 @@ public function store(Request $request, KelasMapel $kelasMapel)
         'guru_id'        => auth()->user()->guru->id, // WAJIB
         'judul'          => $request->judul,
         'deskripsi'      => $request->deskripsi,
-        'durasi_menit'   => $request->durasi_menit, 
+    
         'random_question' => false,
         'random_answer'   => false,
         'show_answer'     => false,
@@ -85,14 +85,12 @@ public function edit(Ujian $ujian)
     // UPDATE
     public function update(Request $request, Ujian $ujian)
     {
-      $request->validate([
-    'durasi_menit' => 'required|integer',
-]);
+     
 
 $ujian->update([
     'judul' => $request->judul,
     'deskripsi' => $request->deskripsi,
-    'durasi_menit' => $request->durasi_menit,
+ 
 ]);
 
 

@@ -2,74 +2,104 @@
 
 @section('container')
 
-<div class="p-8 bg-gray-50 min-h-screen">
-   <a href="{{ route('viewKelasMapel', [
-        'mapel' => $kelasMapel->mapel->id,
-        'kelas' => $kelasMapel->kelas->id,
-        'tab'   => 'tugas'
-    ]) }}"
-       class="flex items-center gap-2 text-[#2B82FE] hover:text-[#1a5fd4] font-medium text-sm mb-6 transition">
-      <i class="fa-solid fa-arrow-left text-xs"></i>
-      Kembali ke Daftar Tugas
-    </a>
-    <h1 class="text-3xl font-bold mb-6">
-        📊 Rekap Nilai — {{ $kelasMapel->kelas->name }}-{{ $kelasMapel->mapel->name }}
-    </h1>
+<div class="flex flex-col w-full bg-[#FAFAFA] min-h-screen font-poppins">
+    <div class="max-w-[1200px] mx-auto w-full px-5 sm:px-6 lg:px-10 mt-8 mb-16">
 
-    <table class="w-full border text-sm bg-white shadow rounded-xl overflow-hidden">
+        <!--  HEADER GRADIENT + BACK -->
+        <div class="bg-gradient-to-tr from-blue-500 to-green-500 text-white rounded-2xl p-6 sm:p-8 shadow-lg mb-8">
 
-        <thead class="bg-gray-100 text-gray-700 font-semibold">
-            <tr>
-                <th class="p-3 border">Nama Siswa</th>
+            <!-- Tombol Back -->
+            <a href="{{ route('viewKelasMapel', [
+                'mapel' => $kelasMapel->mapel->id,
+                'kelas' => $kelasMapel->kelas->id,
+                'tab'   => 'tugas'
+            ]) }}"
+            class="flex items-center gap-2 text-white/90 hover:text-white font-medium text-sm mb-4 transition">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                Kembali ke Daftar Tugas
+            </a>
 
-                @foreach($tugasList as $tugas)
-                    <th class="p-3 border">{{ $tugas->judul }}</th>
-                @endforeach
+            <!-- Title -->
+            <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight">
+                Rekap Nilai Tugas
+            </h1>
 
-                <th class="p-3 border bg-blue-50">Rata-rata</th>
-            </tr>
-        </thead>
+            <p class="text-sm opacity-90 mt-1">
+                {{ $kelasMapel->kelas->name }} — {{ $kelasMapel->mapel->name }}
+            </p>
+        </div>
 
-        <tbody>
-            @foreach($siswaList as $siswa)
+        <!-- 🔸 TABEL NILAI -->
+        <div class="bg-white rounded-2xl shadow border border-gray-200 overflow-hidden">
 
-                @php $total = 0; $count = 0; @endphp
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
 
-                <tr class="hover:bg-gray-50">
+                    <!-- HEADER -->
+                    <thead class="bg-gray-50 border-b sticky top-0 z-10">
+                        <tr class="text-gray-700 font-semibold">
 
-                    <td class="border p-3 font-semibold bg-gray-100">
-                        {{ $siswa->name }}
-                    </td>
+                            <th class="p-4 border text-left bg-gray-100">Nama Siswa</th>
 
-                    @foreach($tugasList as $tugas)
+                            @foreach($tugasList as $tugas)
+                                <th class="p-4 border text-center">
+                                    {{ $tugas->judul }}
+                                </th>
+                            @endforeach
 
-                        @php
-                            $nilai = $nilaiList
-                                ->where("tugas_id", $tugas->id)
-                                ->where("siswa_id", $siswa->id)
-                                ->first();
-                        @endphp
+                            <th class="p-4 border bg-blue-50 text-center">Rata-rata</th>
+                        </tr>
+                    </thead>
 
-                        <td class="border p-2 text-center">
-                            {{ $nilai->nilai ?? '-' }}
+                    <!-- BODY -->
+                    <tbody>
+                        @foreach($siswaList as $siswa)
+                            @php $total = 0; $count = 0; @endphp
 
-                            @if($nilai)
-                                @php $total += $nilai->nilai; $count++; @endphp
-                            @endif
-                        </td>
+                            <tr class="hover:bg-gray-50 transition">
 
-                    @endforeach
+                                <!-- NAMA SISWA -->
+                                <td class="border p-4 font-semibold bg-gray-100">
+                                    {{ $siswa->name }}
+                                </td>
 
-                    <td class="border p-2 text-center font-bold bg-blue-50">
-                        {{ $count > 0 ? round($total/$count,2) : '-' }}
-                    </td>
+                                <!-- NILAI PER TUGAS -->
+                                @foreach($tugasList as $tugas)
 
-                </tr>
+                                    @php
+                                        $nilai = $nilaiList
+                                                ->where("tugas_id", $tugas->id)
+                                                ->where("siswa_id", $siswa->id)
+                                                ->first();
+                                    @endphp
 
-            @endforeach
-        </tbody>
-    </table>
+                                    <td class="border p-3 text-center">
+                                        {{ $nilai->nilai ?? '-' }}
 
+                                        @if($nilai)
+                                            @php
+                                                $total += $nilai->nilai;
+                                                $count++;
+                                            @endphp
+                                        @endif
+                                    </td>
+                                @endforeach
+
+                                <!-- RATA-RATA -->
+                                <td class="border p-3 text-center font-bold bg-blue-50">
+                                    {{ $count > 0 ? round($total/$count, 2) : '-' }}
+                                </td>
+
+                            </tr>
+                        @endforeach
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+
+    </div>
 </div>
 
 @endsection

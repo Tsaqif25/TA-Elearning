@@ -60,12 +60,7 @@
                         class="w-full rounded-xl border border-gray-200 bg-[#F9FAFB] focus:ring-2 focus:ring-[#2B82FE]/20 focus:border-[#2B82FE] p-3 outline-none transition resize-none"></textarea>
                 </div>
 
-                <!-- Durasi -->
-                <div class="mb-5">
-                    <label class="font-semibold text-sm text-gray-800 mb-1 block">Durasi (menit) *</label>
-                    <input type="number" name="durasi_menit" required
-                        class="w-full rounded-xl border border-gray-200 bg-[#F9FAFB] focus:ring-2 focus:ring-[#2B82FE]/20 focus:border-[#2B82FE] p-3 outline-none transition">
-                </div>
+               
 
                 <!-- Tombol -->
                 <div class="flex justify-end gap-3 mt-8">

@@ -49,15 +49,7 @@
                     @enderror
                 </div>
 
-                {{-- Waktu Ujian --}}
-                <div class="mb-3">
-                    <label for="time" class="form-label">Waktu Ujian (menit) <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="time" name="time" placeholder="0"
-                        value="{{ old('time') }}" required>
-                    @error('time')
-                        <div class="text-danger small">{{ $message }}</div>
-                    @enderror
-                </div>
+              
 
                 {{-- Deadline --}}
                 <div class="mb-3">

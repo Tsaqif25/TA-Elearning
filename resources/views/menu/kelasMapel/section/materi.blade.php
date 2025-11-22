@@ -6,7 +6,7 @@
 
     @if (Auth::user()->hasRole('Pengajar'))
       <a href="{{ route('materi.create', ['kelasMapel' => $kelasMapel->id]) }}"
-         class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2.5 rounded-full font-semibold text-sm shadow-md hover:scale-[1.03] hover:shadow-lg transition duration-300 ease-in-out">
+         class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2.5 rounded-full font-semibold text-sm shadow-md  ">
         <i class="fa-solid fa-plus"></i> Tambah Materi
       </a>
     @endif

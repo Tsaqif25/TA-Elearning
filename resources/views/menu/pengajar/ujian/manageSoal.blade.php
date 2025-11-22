@@ -52,10 +52,10 @@
                           <td class="bg-gray-50 font-semibold p-3">Jumlah Soal</td>
                           <td class="p-3">{{ $soal->count() }}</td>
                       </tr>
-                      <tr>
+                      {{-- <tr>
                           <td class="bg-gray-50 font-semibold p-3">Durasi</td>
                           <td class="p-3">{{ $ujian->durasi_menit }} menit</td>
-                      </tr>
+                      </tr> --}}
                   </tbody>
               </table>
           </div>

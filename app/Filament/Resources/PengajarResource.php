@@ -41,15 +41,28 @@ class PengajarResource extends Resource
                         ->unique(ignoreRecord: true)
                         ->required(),
 
-                    Forms\Components\TextInput::make('email')
-                        ->required()
-                        ->email()
-                        ->label('Email Login'),
+          Forms\Components\TextInput::make('email')
+    ->label('Email Login')
+    ->required()
+    ->email()
+    ->afterStateHydrated(function ($component, $state, $record) {
+        $component->state($record?->user?->email); // TAMPILKAN EMAIL LAMA
+    })
+    ->dehydrated(), // KIRIM KE BACKEND
 
-                    Forms\Components\TextInput::make('password')
-                        ->required()
-                        ->password()
-                        ->label('Password Login'),
+Forms\Components\TextInput::make('password')
+    ->label('Password Login')
+    ->password()
+    ->placeholder('Kosongkan jika tidak diganti')
+    ->nullable()
+    ->dehydrated()
+    ->suffixIcon('heroicon-o-eye')
+    ->extraAttributes([
+        'x-data' => '{ show: false }',
+        'x-bind:type' => "show ? 'text' : 'password'",
+        '@click.suffix' => "show = !show",
+    ]),
+
                 ])
                 ->columns(2),
 
@@ -100,6 +113,11 @@ class PengajarResource extends Resource
                 Tables\Columns\TextColumn::make('user.email')
                     ->label('Email')
                     // ->limit(25),
+            ])
+                ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

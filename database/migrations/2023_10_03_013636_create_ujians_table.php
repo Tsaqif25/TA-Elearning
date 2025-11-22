@@ -21,10 +21,10 @@ return new class extends Migration
             ->cascadeOnDelete();
             $table->string('judul');
            $table->text('deskripsi')->nullable();
-           $table->integer('durasi_menit');
-           $table->boolean('random_question')->default(true);
-           $table->boolean('random_answer')->default(true);
-           $table->boolean('show_answer')->default(false);
+        //    $table->integer('durasi_menit');
+        //    $table->boolean('random_question')->default(true);
+        //    $table->boolean('random_answer')->default(true);
+        //    $table->boolean('show_answer')->default(false);
             $table->timestamps();
         });
     }

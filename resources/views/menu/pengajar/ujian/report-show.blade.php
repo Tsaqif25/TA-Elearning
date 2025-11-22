@@ -5,7 +5,7 @@
 <div class="flex flex-col w-full bg-[#FAFAFA] min-h-screen font-poppins">
   <div class="max-w-[1200px] w-full mx-auto px-5 sm:px-6 lg:px-10 mt-8 mb-16">
 
-      <!-- 🔹 HEADER GRADIENT + BACK -->
+      <!-- HEADER GRADIENT + BACK -->
       <div class="bg-gradient-to-tr from-blue-500 to-green-500 text-white rounded-2xl p-6 sm:p-8 shadow-lg mb-8">
 
           <!-- Tombol Back -->
@@ -24,7 +24,7 @@
           <p class="text-sm opacity-90 mt-1">{{ $ujian->judul }}</p>
       </div>
 
-      <!-- 🔸 BODY UTAMA (CARD PUTIH) -->
+      <!-- BODY UTAMA (CARD PUTIH) -->
       <div class="bg-white p-6 sm:p-8 rounded-2xl shadow border border-gray-200">
 
           <!-- Statistik -->
@@ -64,11 +64,7 @@
           <div class="flex justify-between items-center mb-4">
               <h3 class="text-lg font-semibold">Daftar Nilai Siswa</h3>
 
-              <a href="#"
-                class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-full flex items-center gap-2 shadow transition">
-                  <i class="fa-solid fa-file-csv"></i>
-                  Export CSV
-              </a>
+              
           </div>
 
           <!-- TABEL -->
@@ -79,9 +75,10 @@
                       <tr>
                           <th class="px-4 py-3 text-left">No</th>
                           <th class="px-4 py-3 text-left">Nama Siswa</th>
-                          <th class="px-4 py-3 text-left">NIS/NIM</th>
+                          <th class="px-4 py-3 text-left">NIS</th>
                           <th class="px-4 py-3 text-center">Nilai</th>
                           <th class="px-4 py-3 text-left">Tanggal</th>
+                           <th class="px-4 py-3 text-center">Aksi</th>
                       </tr>
                   </thead>
 
@@ -100,6 +97,13 @@
                           <td class="px-4 py-3">
                               {{ \Carbon\Carbon::parse($a->selesai)->translatedFormat('d F Y') }}
                           </td>
+                          <td class="px-4 py-3 text-center">
+    <a href="{{ route('guru.ujian.hasil', $a->id) }}"
+       class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-full shadow transition">
+        Lihat Detail
+    </a>
+</td>
+
                       </tr>
                       @endforeach
                   </tbody>

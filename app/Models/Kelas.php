@@ -9,8 +9,21 @@ class Kelas extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+  protected $fillable = [
+        'tingkat',
+        'jurusan',
+        'rombel',
+        'name',
+    ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($kelas) {
+            $kelas->name = "{$kelas->tingkat}-{$kelas->jurusan} {$kelas->rombel}";
+        });
+    }
     public function dataSiswa()
     {
         return $this->hasMany(DataSiswa::class);

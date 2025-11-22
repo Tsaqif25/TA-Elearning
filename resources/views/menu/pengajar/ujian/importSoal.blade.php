@@ -29,7 +29,7 @@
                 Upload
             </button>
 
-            <a href="{{ asset('format/soal_format.xlsx') }}"
+           <a href="{{ asset('storage/format/Template_Import_Soal.xlsx') }}"
                class="ml-3 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full">
                 Download Format
             </a>

@@ -11,7 +11,7 @@
     </div>
 
     <a href="{{ route('repository.create') }}"
-       class="flex items-center gap-2 bg-[#2B82FE] text-white px-5 py-2 rounded-full font-semibold text-sm shadow hover:bg-[#1a6ae0] transition">
+       class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2 rounded-full font-semibold text-sm shadow ">
       <i class="fa-solid fa-plus"></i> Upload Materi
     </a>
   </div>

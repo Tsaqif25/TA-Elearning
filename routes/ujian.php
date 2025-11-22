@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GuruUjianController;
+
+
 use App\Http\Controllers\Ujian\UjianReportController;
-
-
 use App\Http\Controllers\Ujian\UjianStudentController;
 use App\Http\Controllers\Ujian\SoalManagementController;
 use App\Http\Controllers\Ujian\UjianEvaluationController;
@@ -48,6 +49,11 @@ Route::middleware(['auth','role:Pengajar'])
         });
     });
 
+    Route::get('/guru/ujian/hasil/{attempt}', 
+    [GuruUjianController::class, 'viewAttemptDetail'])
+    ->name('guru.ujian.hasil');
+
+
 // Siswa
 // Route::middleware(['auth','role:Siswa'])
 //     ->prefix('ujian')->name('ujian.')
@@ -82,7 +88,7 @@ Route::middleware(['auth','role:Siswa'])
         // simpan jawaban
         Route::post('attempt/{attempt}/{soal}/submit', 'submit')->name('answer.store');
 
-        Route::post('update-timer/{attempt}', 'updateTimer')->name('update_timer');
+     
     });
 
 
