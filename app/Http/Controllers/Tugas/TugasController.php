@@ -85,37 +85,24 @@ class TugasController extends Controller
 
 public function siswaUpdateNilai(Request $request, Tugas $tugas)
 {
-    $siswaIds      = $request->input('siswaId', []);
-    $nilaiList     = $request->input('nilai', []);
-    $komentarList  = $request->input('komentar', []);
+    $siswaIds  = $request->input('siswaId', []);
+    $nilaiList = $request->input('nilai', []);
 
     foreach ($siswaIds as $index => $siswaId) {
 
-        $nilai    = $nilaiList[$index] ?? null;
-        $komentar = $komentarList[$index] ?? null;
+        $nilai = $nilaiList[$index] ?? null;
 
-        // SIMPAN / UPDATE NILAI
         if ($nilai !== null && $nilai !== '') {
             NilaiTugas::updateOrCreate(
                 ['tugas_id' => $tugas->id, 'siswa_id' => $siswaId],
                 ['nilai' => $nilai]
             );
         }
-
-        // SIMPAN / UPDATE KOMENTAR
-        if ($komentar !== null) {
-            $pengumpulan = PengumpulanTugas::firstOrCreate(
-                ['tugas_id' => $tugas->id, 'siswa_id' => $siswaId],
-                ['submitted_at' => now(), 'is_late' => false]
-            );
-
-            $pengumpulan->komentar = $komentar;
-            $pengumpulan->save();
-        }
     }
 
-    return back()->with("success", "Nilai & komentar berhasil disimpan!");
+    return back()->with("success", "Nilai berhasil disimpan!");
 }
+
 
 public function rekapNilaiTugas(KelasMapel $kelasMapel)
 {

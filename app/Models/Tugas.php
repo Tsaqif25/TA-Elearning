@@ -35,10 +35,7 @@ public function nilai(){
     return $this->hasMany(NilaiTugas::class);
 }
 
-public function komentar()
-{
-    return $this->hasMany(TugasKomentar::class);
-}
+
 
 
     

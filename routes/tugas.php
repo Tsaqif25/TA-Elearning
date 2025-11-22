@@ -3,6 +3,7 @@
 use App\Http\Controllers\Tugas\TugasController;
 use App\Http\Controllers\Tugas\TugasFileController;
 use App\Http\Controllers\Tugas\TugasSubmitController;
+use App\Http\Controllers\TugasDiskusiController;
 use Illuminate\Support\Facades\Route;
 
 // ==========================
@@ -51,6 +52,23 @@ Route::middleware(['auth','role:Siswa'])
     Route::get('{tugas}','viewTugasSiswa')->name('siswa.tugas.view');
     // Route::post('{tugas}/komentar-siswa','komentarSiswa')->name('siswa.tugas.komentar.store');
 });
+
+Route::middleware(['auth','role:Pengajar'])
+->prefix('guru/tugas')->name('guru.tugas.')
+->controller(TugasDiskusiController::class)
+->group(function(){
+      Route::get('{tugas}/diskusi/{siswa}','index')->name('diskusi');
+      Route::post('{tugas}/diskusi/{siswa}','store')->name('diskusi.store');
+});
+
+Route::middleware(['auth','role:Siswa'])
+    ->prefix('siswa/tugas')->name('siswa.tugas.')
+    ->controller(TugasDiskusiController::class)
+    ->group(function(){
+        Route::get('{tugas}/diskusi', 'indexSiswa')->name('diskusi');
+        Route::post('{tugas}/diskusi', 'storeSiswa')->name('diskusi.store');
+    });
+
 
 
 

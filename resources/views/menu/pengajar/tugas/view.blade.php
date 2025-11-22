@@ -157,8 +157,9 @@
                   <th class="py-3 px-4 text-left">File</th>
                   <th class="py-3 px-4 text-center">Nilai</th>
                   <th class="py-3 px-4 text-center">Input Nilai</th>
-                  <th class="py-3 px-4 text-left">Komentar Guru</th>
+              
                   <th class="py-3 px-4 text-center">Status</th>
+                        <th class="py-3 px-4 text-center">Aksi</th> 
                 </tr>
               </thead>
 
@@ -207,10 +208,7 @@
                              class="w-16 border border-gray-200 rounded-xl p-1 text-center focus:ring-[#2B82FE] focus:border-[#2B82FE]">
                     </td>
 
-                    <td class="py-3 px-4 w-[320px]">
-                      <textarea name="komentar[]" rows="2"
-                        class="min-w-[300px] border border-gray-200 rounded-xl px-3 py-2 text-xs focus:ring-[#2B82FE] focus:border-[#2B82FE] transition">{{ $komentarGuru }}</textarea>
-                    </td>
+                  
 
                     <td class="py-3 px-4 text-center">
                       @if ($pengumpulan)
@@ -223,7 +221,16 @@
                         <span class="text-gray-400 text-xs italic">Belum upload</span>
                       @endif
                     </td>
+                    <td class="py-3 px-4 text-center">
+          <a href="{{ route('guru.tugas.diskusi', [
+    'tugas' => $tugas->id,
+    'siswa' => $siswa->id
+]) }}"
+   class="inline-flex items-center gap-1 text-blue-600 text-xs font-semibold hover:underline">
+    <i class="fa-regular fa-comments"></i> Buka Diskusi
+</a>
 
+        </td>
                   </tr>
                 @endforeach
 

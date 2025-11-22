@@ -93,7 +93,7 @@
       @endif
     </div>
 
-    {{-- ✅ Status & File Jawaban Siswa --}}
+    {{--  Status & File Jawaban Siswa --}}
     <div class="bg-white rounded-2xl border border-[#EEEEEE] shadow-sm hover:shadow-md transition p-6 mb-8">
       <h2 class="text-lg font-semibold mb-3 text-[#0A090B]">
         Status Pengerjaan:
@@ -128,23 +128,16 @@ if (!$pengumpulan) {
       </h2>
 
       {{-- Nilai & komentar guru (kalau sudah ada) --}}
-      @if (!is_null($nilai) || ($pengumpulan && $pengumpulan->komentar))
-        <div class="mt-4 grid md:grid-cols-2 gap-4">
-          @if (!is_null($nilai))
-            <div class="bg-[#F9FAFB] border border-gray-200 rounded-xl p-4">
-              <p class="text-xs text-[#7F8190] font-medium mb-1">Nilai Anda</p>
-              <p class="text-2xl font-extrabold text-[#0A090B]">{{ $nilai }}</p>
-            </div>
-          @endif
+    {{-- Nilai --}}
+@if (!is_null($nilai))
+  <div class="mt-4">
+    <div class="bg-[#F9FAFB] border border-gray-200 rounded-xl p-4 w-full md:w-1/3">
+      <p class="text-xs text-[#7F8190] font-medium mb-1">Nilai Anda</p>
+      <p class="text-2xl font-extrabold text-[#0A090B]">{{ $nilai }}</p>
+    </div>
+  </div>
+@endif
 
-          @if ($pengumpulan && $pengumpulan->komentar)
-            <div class="bg-[#F9FAFB] border border-gray-200 rounded-xl p-4">
-              <p class="text-xs text-[#7F8190] font-medium mb-1">Komentar dari Guru</p>
-              <p class="text-sm text-[#0A090B] leading-relaxed">{{ $pengumpulan->komentar }}</p>
-            </div>
-          @endif
-        </div>
-      @endif
 
       {{-- File Jawaban Siswa --}}
       @if ($pengumpulan && $pengumpulan->files->count())
@@ -177,6 +170,18 @@ if (!$pengumpulan) {
           @endforeach
         </div>
       @endif
+
+      @if ($pengumpulan)
+    <div class="mt-6 text-right">
+        <a href="{{ route('siswa.tugas.diskusi', $tugas->id) }}"
+           class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 
+                  text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md transition">
+            <i class="fa-regular fa-comments"></i>
+            Buka Diskusi
+        </a>
+    </div>
+@endif
+
     </div>
 
     {{-- 📤 Form Upload Jawaban (hanya kalau belum dinilai) --}}
