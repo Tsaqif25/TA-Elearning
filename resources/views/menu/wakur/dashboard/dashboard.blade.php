@@ -96,7 +96,7 @@
     <span class="font-medium text-gray-700">
         {{ $m->tipe }}
     </span> 
-    : {{ $m->name }}
+    : {{ $m->judul_show }}
 </p>
 
         </div>

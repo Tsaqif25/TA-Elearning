@@ -3,16 +3,17 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\Guru;
 use Filament\Tables;
 use Filament\Forms\Form;
+use App\Models\KelasMapel;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use App\Models\PengajarKelasMapel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Builder;
-use App\Models\Guru;
-use App\Models\KelasMapel;
-use App\Models\PengajarKelasMapel;
 use App\Filament\Resources\PengajarResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 
 class PengajarResource extends Resource
 {
@@ -122,7 +123,11 @@ Forms\Components\TextInput::make('password')
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ]);
+            ])
+             ->headerActions([
+     ExportAction::make()
+         ->label('Export')
+ ]);
     }
 
     public static function getPages(): array

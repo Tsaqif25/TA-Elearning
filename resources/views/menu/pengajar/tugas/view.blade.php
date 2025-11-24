@@ -143,7 +143,7 @@
             <button type="submit"
               class="bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2 rounded-full text-sm font-semibold">
               <i class="fa-solid fa-floppy-disk mr-1"></i>
-              Simpan Nilai & Komentar
+              Simpan Nilai 
             </button>
           </div>
 

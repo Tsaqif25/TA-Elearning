@@ -3,14 +3,14 @@
   <!-- Header -->
   <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-3">
     <h2 class="text-2xl font-extrabold text-[#0A090B] tracking-tight">
-      📘 Daftar Ujian
+      📘 Daftar Quiz
     </h2>
 
     {{-- Tombol Buat Ujian hanya untuk Pengajar --}}
     @if (Auth::user()->hasRole('Pengajar'))
       <a href="{{ route('ujian.create', ['kelasMapel' => $kelasMapel->id]) }}"
          class="flex items-center gap-2 bg-gradient-to-tr from-blue-500 to-green-500 text-white px-5 py-2.5 rounded-full font-semibold text-sm shadow-md ">
-        <i class="fa-solid fa-plus"></i> Tambah Ujian
+        <i class="fa-solid fa-plus"></i> Tambah Quiz
       </a>
     @endif
   </div>
@@ -21,7 +21,7 @@
       <div class="w-14 h-14 flex items-center justify-center bg-[#EEF4FF] rounded-2xl text-[#2B82FE] mb-4 shadow-sm">
         <i class="fa-solid fa-folder-open text-xl"></i>
       </div>
-      <p class="text-[#7F8190] text-sm">Belum ada ujian yang ditambahkan.</p>
+      <p class="text-[#7F8190] text-sm">Belum ada quiz yang ditambahkan.</p>
     </div>
 
   @else
@@ -47,7 +47,7 @@
             </h3>
 
             <p class="text-sm text-[#555] leading-relaxed mb-2">
-              Terdapat <strong>{{ $item->soal->count() }}</strong> soal ujian.
+              Terdapat <strong>{{ $item->soal->count() }}</strong> soal quiz.
             </p>
 
             <p class="text-xs text-[#7F8190]">
@@ -60,7 +60,7 @@
 
               <span class="inline-flex items-center gap-1">
                 <i class="fa-solid fa-bolt text-[10px]"></i>
-                Ujian
+               Quiz
               </span>
             </p>
           </div>

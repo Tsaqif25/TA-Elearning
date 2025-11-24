@@ -66,7 +66,7 @@
           </div>
 
           <!-- Link YouTube -->
-          <div>
+          {{-- <div>
             <label for="youtube_link" class="block text-sm font-semibold text-gray-800 mb-2">
               Link YouTube (bisa lebih dari satu, pisahkan dengan Enter)
             </label>
@@ -76,7 +76,7 @@
             @error('youtube_link')
               <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror
-          </div>
+          </div> --}}
 
           <!-- Dropzone -->
           <div>

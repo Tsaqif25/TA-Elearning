@@ -9,6 +9,7 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use App\Models\DataSiswa;
 use App\Filament\Resources\SiswaResource\Pages;
+  use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 
 class SiswaResource extends Resource
 {
@@ -139,7 +140,15 @@ class SiswaResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ]);
+            ]) 
+          
+
+ ->headerActions([
+     ExportAction::make()
+         ->label('Export')
+ ]);
+
+            
     }
 
     public static function getPages(): array

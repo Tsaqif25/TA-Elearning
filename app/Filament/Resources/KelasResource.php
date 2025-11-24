@@ -2,13 +2,14 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KelasResource\Pages;
-use App\Models\Kelas;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Kelas;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Filament\Resources\KelasResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 
 class KelasResource extends Resource
 {
@@ -133,7 +134,14 @@ class KelasResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ]);
+            ])
+             ->headerActions([
+                ExportAction::make()
+                    ->label('Export')
+                    ->color('primary')
+                    ->icon('heroicon-o-arrow-down-tray'),
+             ]);
+            
     }
 
     public static function getPages(): array

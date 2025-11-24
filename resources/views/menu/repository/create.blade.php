@@ -75,11 +75,11 @@
         </div>
 
         <!-- Link YouTube -->
-        <div>
+        {{-- <div>
           <label for="youtube_link" class="block text-sm font-semibold text-gray-800 mb-2">Link YouTube (Opsional)</label>
           <textarea id="youtube_link" name="youtube_link" rows="3" placeholder="https://youtu.be/abcd1234"
                     class="w-full rounded-xl border border-gray-200 bg-gray-50 focus:border-[#2B82FE] focus:ring focus:ring-[#2B82FE]/20 p-3 outline-none transition resize-none">{{ old('youtube_link') }}</textarea>
-        </div>
+        </div> --}}
 
         <!-- Dropzone -->
         <div>

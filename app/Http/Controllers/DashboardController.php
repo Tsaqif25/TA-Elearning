@@ -62,6 +62,7 @@ $materi = Materi::with('user')
     ->get()
     ->map(function ($m) {
         $m->tipe = 'materi';
+         $m->judul_show = $m->name; 
         return $m;
     });
 
@@ -71,6 +72,7 @@ $tugas = Tugas::with('user')
     ->get()
     ->map(function ($t) {
         $t->tipe = 'tugas';
+          $t->judul_show = $t->judul;
         return $t;
     });
 
@@ -80,9 +82,9 @@ $aktivitas = $materi
     ->take(10);
 
 
-$aktivitas = $materi->merge($tugas)
-    ->sortByDesc('created_at')
-    ->take(10);
+// $aktivitas = $materi->merge($tugas)
+//     ->sortByDesc('created_at')
+//     ->take(10);
 
         return view('menu.wakur.dashboard.dashboard', compact(
             'totalMateri',
